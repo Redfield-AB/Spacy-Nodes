@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./default.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy Tokenizer</name>
+    
+    <shortDescription>
+        Spacy Tokenizer
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        	Spacy Tokenizer
+        </intro>        
+    </fullDescription>
+    
+    <ports>
+		<inPort name="Data Table" index="0">Data Table</inPort>
+		<outPort name="Output Table" index="0">Output table</outPort>
+    </ports>    
+</knimeNode>

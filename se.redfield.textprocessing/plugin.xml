@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   
+   <extension
+         point="org.knime.workbench.repository.nodes">   
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeFactory">
+      </node>    
+   </extension>
+	<extension
+		point="org.knime.python.modules">
+      <directory
+            path="py/">
+      </directory>
+   </extension>
+      <extension
+            point="org.knime.workbench.repository.categories">
+         <category
+               icon="icons/redfield_logo.png"
+               level-id="redfield-textprocessing"
+               name="Redfield Textprocessing"
+               path="/community">
+         </category>
+      </extension>
+      <extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="se.redfield.textprocessing.prefs.SpacyPreferenceInitializer">
+         </initializer>
+      </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               class="se.redfield.textprocessing.prefs.SpacyPreferencePage"
+               id="se.redfield.textprocessing.prefs.SpacyPreferencePage"
+               name="Redfield Textprocessing">
+         </page>
+      </extension>
+   
+</plugin>

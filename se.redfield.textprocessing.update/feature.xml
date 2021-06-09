@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="se.redfield.textprocessing.update"
+      label="Update"
+      version="0.0.1.qualifier"
+      provider-name="Redfield AB">
+
+   <description>
+      Redfield Spacy Nodes
+   </description>
+
+   <copyright>
+      Copyright (c) 2021 Redfield AB.
+   </copyright>
+
+   <license url="">
+    
+   </license>
+
+   <includes
+         id="se.redfield.textprocessing.feature"
+         version="0.0.1.qualifier"/>
+
+</feature>
