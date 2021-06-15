@@ -42,6 +42,7 @@ import org.knime.ext.textprocessing.data.Word;
 import org.knime.ext.textprocessing.util.DocumentDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 
+import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
 
 public class SpacyTokenizerNodeModel extends NodeModel {
@@ -59,6 +60,8 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 
 	@Override
 	protected BufferedDataTable[] execute(BufferedDataTable[] inData, ExecutionContext exec) throws Exception {
+		SpacyPlugin.checkLicense();
+
 		BufferedDataTable inTable = inData[0];
 		settings.getSpacyModel().ensureDownloaded();
 

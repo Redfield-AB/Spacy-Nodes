@@ -37,6 +37,19 @@
                id="se.redfield.textprocessing.prefs.SpacyPreferencePage"
                name="Redfield Textprocessing">
          </page>
+         <page
+               category="se.redfield.textprocessing.prefs.SpacyPreferencePage"
+               class="se.redfield.textprocessing.prefs.LicensePreferencePage"
+               id="se.redfield.textprocessing.prefs.LicensePreferencePage"
+               name="License">
+         </page>
+      </extension>
+      <extension
+            point="com.nodepit.licensing.plugin.LicensableProduct">
+         <LicensableProduct
+               id="se.redfield.product"
+               publicKeyPath="resources/se.redfield.product.license.pub.gpg">
+         </LicensableProduct>
       </extension>
    
 </plugin>

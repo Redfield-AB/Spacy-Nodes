@@ -6,7 +6,7 @@
       provider-name="Redfield AB">
 
    <description>
-Spacy extension
+      Spacy extension
    </description>
 
    <copyright>
@@ -14,8 +14,12 @@ Spacy extension
    </copyright>
 
    <license url="">
-     todo
+      todo
    </license>
+
+   <requires>
+      <import feature="com.nodepit.licensing.feature" version="1.1.0" match="compatible"/>
+   </requires>
 
    <plugin
          id="se.redfield.textprocessing"
