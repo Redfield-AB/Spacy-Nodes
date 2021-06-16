@@ -11,8 +11,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,7 +128,17 @@ public class SpacyModel {
 	}
 
 	public static Collection<SpacyModel> list() {
-		return Collections.unmodifiableCollection(models.values());
+		ArrayList<SpacyModel> list = new ArrayList<>(models.values());
+		list.sort((m1, m2) -> {
+			if (m1 == LOCAL_DIR) {
+				return Integer.MIN_VALUE;
+			} else if (m2 == LOCAL_DIR) {
+				return Integer.MAX_VALUE;
+			} else {
+				return m1.title.compareTo(m2.title);
+			}
+		});
+		return list;
 	}
 
 	public static SpacyModel getDefault() {
