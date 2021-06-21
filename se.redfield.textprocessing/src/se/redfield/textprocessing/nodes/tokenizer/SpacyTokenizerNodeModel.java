@@ -33,7 +33,6 @@ import org.knime.dl.python.util.DLPythonUtils;
 import org.knime.ext.textprocessing.data.DocumentBuilder;
 import org.knime.ext.textprocessing.data.DocumentCell;
 import org.knime.ext.textprocessing.data.Paragraph;
-import org.knime.ext.textprocessing.data.PartOfSpeechTag;
 import org.knime.ext.textprocessing.data.SectionAnnotation;
 import org.knime.ext.textprocessing.data.Sentence;
 import org.knime.ext.textprocessing.data.Tag;
@@ -44,6 +43,7 @@ import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 
 import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
+import se.redfield.textprocessing.core.TagFactory;
 
 public class SpacyTokenizerNodeModel extends NodeModel {
 
@@ -166,9 +166,9 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 
 		private static Term fromJson(JSONObject obj) {
 			String tag = (String) obj.get("tag");
-			List<Tag> tags = Arrays.asList(PartOfSpeechTag.stringToTag(tag.toUpperCase()));
-			Term res = new Term(Arrays.asList(new Word((String) obj.get("text"), " ")), tags, false);
-			return res;
+			List<Tag> tags = TagFactory.pos().fromString(tag);
+			return new Term(Arrays.asList(new Word((String) obj.get("text"), " ")), tags, false);
 		}
+
 	}
 }
