@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.knime.core.node.NodeLogger;
+import org.knime.ext.textprocessing.data.NamedEntityTag;
 import org.knime.ext.textprocessing.data.PartOfSpeechTag;
 import org.knime.ext.textprocessing.data.Tag;
 import org.knime.ext.textprocessing.data.TagBuilder;
@@ -19,12 +20,20 @@ public class TagFactory {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(TagFactory.class);
 
 	private static TagFactory pos;
+	private static TagFactory ner;
 
 	public static TagFactory pos() {
 		if (pos == null) {
 			pos = new TagFactory(TagSet.POS, TagSet.UDPOS);
 		}
 		return pos;
+	}
+
+	public static TagFactory ner() {
+		if (ner == null) {
+			ner = new TagFactory(TagSet.NE);
+		}
+		return ner;
 	}
 
 	private List<TagSet> tagSets = new ArrayList<>();
@@ -53,7 +62,8 @@ public class TagFactory {
 
 	enum TagSet {
 		POS(PartOfSpeechTag.getDefault(), PartOfSpeechTag.UNKNOWN.getTag()),
-		UDPOS(new UniversalDependenciesPOSTag(), PartOfSpeechTag.UNKNOWN.getTag());
+		UDPOS(new UniversalDependenciesPOSTag(), PartOfSpeechTag.UNKNOWN.getTag()),
+		NE(NamedEntityTag.getDefault(), NamedEntityTag.UNKNOWN.getTag());
 
 		private final TagBuilder builder;
 		private final Tag unknownTag;

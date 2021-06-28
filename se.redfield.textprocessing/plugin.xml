@@ -7,6 +7,10 @@
       <node
             category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.ner.SpacyNerTaggerNodeFactory">
       </node>    
    </extension>
 	<extension

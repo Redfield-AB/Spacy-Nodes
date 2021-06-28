@@ -71,7 +71,12 @@ public class PythonContext implements AutoCloseable {
 
 	public BufferedDataTable getDataTable(ExecutionContext exec, ExecutionMonitor monitor)
 			throws PythonIOException, CanceledExecutionException {
-		return kernel.getDataTable(VAR_OUTPUT_TABLE, exec, monitor);
+		return getDataTable(VAR_OUTPUT_TABLE, exec, monitor);
+	}
+
+	public BufferedDataTable getDataTable(String name, ExecutionContext exec, ExecutionMonitor monitor)
+			throws PythonIOException, CanceledExecutionException {
+		return kernel.getDataTable(name, exec, monitor);
 	}
 
 	public void executeInKernel(String code, ExecutionMonitor exec)
