@@ -3,6 +3,7 @@
 */
 package se.redfield.textprocessing.core;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.knime.core.node.CanceledExecutionException;
@@ -13,6 +14,8 @@ import org.knime.ext.textprocessing.data.Tag;
 import org.knime.ext.textprocessing.nodes.tagging.AbstractDocumentTagger;
 import org.knime.ext.textprocessing.nodes.tagging.TaggedEntity;
 import org.knime.python2.kernel.PythonIOException;
+
+import se.redfield.textprocessing.data.tag.SpacyNerTag;
 
 public class SpacyNerTagger extends AbstractDocumentTagger {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyNerTagger.class);
@@ -26,7 +29,7 @@ public class SpacyNerTagger extends AbstractDocumentTagger {
 
 	@Override
 	protected List<Tag> getTags(String tag) {
-		return TagFactory.ner().fromString(tag);
+		return Arrays.asList(SpacyNerTag.fromString(tag).getTag());
 	}
 
 	@Override

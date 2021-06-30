@@ -55,5 +55,11 @@
                publicKeyPath="resources/se.redfield.product.license.pub.gpg">
          </LicensableProduct>
       </extension>
+      <extension
+            point="org.knime.ext.textprocessing.TagSet">
+         <TagSet
+               TagBuilder="se.redfield.textprocessing.data.tag.SpacyNerTagBuilder">
+         </TagSet>
+      </extension>
    
 </plugin>
