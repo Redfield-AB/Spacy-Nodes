@@ -44,10 +44,11 @@ import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
 import se.redfield.textprocessing.core.TagFactory;
+import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 public class SpacyTokenizerNodeModel extends NodeModel {
 
-	private final SpacyTokenizerNodeSettings settings = new SpacyTokenizerNodeSettings();
+	private final SpacyNodeSettings settings = new SpacyNodeSettings();
 
 	protected SpacyTokenizerNodeModel() {
 		super(1, 1);

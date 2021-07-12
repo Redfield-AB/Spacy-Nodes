@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.tokenizer;
+package se.redfield.textprocessing.nodes.base;
 
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeSettingsRO;
@@ -10,7 +10,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
 import se.redfield.textprocessing.core.SpacyModel;
 
-public class SpacyTokenizerNodeSettings {
+public class SpacyNodeSettings {
 
 	private static final String KEY_COLUMN = "column";
 	private static final String KEY_MODEL = "model";
@@ -20,7 +20,7 @@ public class SpacyTokenizerNodeSettings {
 	private SpacyModel spacyModel;
 	private final SettingsModelString localModelPath;
 
-	public SpacyTokenizerNodeSettings() {
+	public SpacyNodeSettings() {
 		column = new SettingsModelString(KEY_COLUMN, "");
 		spacyModel = SpacyModel.getDefault();
 		localModelPath = new SettingsModelString(KEY_LOCAL_PATH, "");
@@ -67,7 +67,7 @@ public class SpacyTokenizerNodeSettings {
 	}
 
 	public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		SpacyTokenizerNodeSettings temp = new SpacyTokenizerNodeSettings();
+		SpacyNodeSettings temp = new SpacyNodeSettings();
 		temp.loadSettings(settings);
 		temp.validate();
 	}

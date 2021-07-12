@@ -31,11 +31,11 @@ import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
 import se.redfield.textprocessing.core.SpacyNerTagger;
 import se.redfield.textprocessing.core.SpacyNlp;
-import se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeSettings;
+import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 public class SpacyNerTaggerNodeModel extends NodeModel {
 
-	private final SpacyTokenizerNodeSettings settings = new SpacyTokenizerNodeSettings();
+	private final SpacyNodeSettings settings = new SpacyNodeSettings();
 
 	protected SpacyNerTaggerNodeModel() {
 		super(1, 1);

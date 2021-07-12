@@ -23,10 +23,11 @@ import org.knime.core.node.defaultnodesettings.DialogComponentFileChooser;
 import org.knime.core.node.port.PortObjectSpec;
 
 import se.redfield.textprocessing.core.SpacyModel;
+import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 public class SpacyTokenizerNodeDialog extends DefaultNodeSettingsPane {
 
-	private SpacyTokenizerNodeSettings settings = new SpacyTokenizerNodeSettings();
+	private SpacyNodeSettings settings = new SpacyNodeSettings();
 	private JComboBox<SpacyModel> cbModels;
 
 	public SpacyTokenizerNodeDialog() {

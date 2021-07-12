@@ -53,4 +53,23 @@ public class SpacyNlp {
 
 		return tags;
 	}
+
+	public BufferedDataTable processDocuments(BufferedDataTable inTable, String column, String method)
+			throws PythonIOException, CanceledExecutionException {
+		context.putDataTable(inTable, exec);
+		context.executeInKernel(getProcessDocumentsScript(method, column), exec);
+		return context.getDataTable(exec, exec);
+	}
+
+	private String getProcessDocumentsScript(String method, String column) {
+		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder();
+		b.a(PythonContext.VAR_OUTPUT_TABLE).a(" = ").a(VAR_NLP).a(".").a(method).a("(").n();
+
+		b.a("input_table = ").a(PythonContext.VAR_INPUT_TABLE).a(",").n();
+		b.a("column = ").as(column).a(",").n();
+
+		b.a(")");
+
+		return b.toString();
+	}
 }
