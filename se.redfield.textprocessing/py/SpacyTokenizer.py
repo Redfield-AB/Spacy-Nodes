@@ -17,12 +17,14 @@ def to_json(doc):
 def to_json2(doc):
     sentences = []
     cur_sentence = []
+
     for token in doc:
-        cur_sentence.append({'text': token.text, 'tag': token.tag_, 'pos': token.pos_})
+        cur_sentence.append({'text': token.text, 'tag': token.tag_})
         if(token.is_sent_end):
-            sentences.append(cur_sentence)
+            sentences.append({'words': cur_sentence})
             cur_sentence = []
-    return json.dumps(sentences)
+
+    return json.dumps({'sentences': sentences})
 
 def tokenize(input_table, column, model_handle):
     nlp = load_model(model_handle)

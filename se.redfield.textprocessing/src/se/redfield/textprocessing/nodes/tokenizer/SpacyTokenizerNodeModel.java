@@ -9,22 +9,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.container.AbstractCellFactory;
+import org.knime.core.data.MissingCell;
 import org.knime.core.data.container.ColumnRearranger;
+import org.knime.core.data.container.SingleCellFactory;
+import org.knime.core.data.filestore.FileStoreFactory;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
+import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
@@ -38,15 +37,21 @@ import org.knime.ext.textprocessing.data.Sentence;
 import org.knime.ext.textprocessing.data.Tag;
 import org.knime.ext.textprocessing.data.Term;
 import org.knime.ext.textprocessing.data.Word;
-import org.knime.ext.textprocessing.util.DocumentDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
+import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
 import se.redfield.textprocessing.core.TagFactory;
+import se.redfield.textprocessing.data.dto.SpacyDocument;
+import se.redfield.textprocessing.data.dto.SpacySentence;
+import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 public class SpacyTokenizerNodeModel extends NodeModel {
+	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyTokenizerNodeModel.class);
 
 	private final SpacyNodeSettings settings = new SpacyNodeSettings();
 
@@ -73,10 +78,17 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 
 			ColumnRearranger r = new ColumnRearranger(result.getDataTableSpec());
 			int colIndex = result.getDataTableSpec().findColumnIndex(settings.getColumn());
-			r.replace(new DocumentCellFactory(settings.getColumn(), colIndex), colIndex);
+			r.replace(new DocumentCellFactory(createTextContainerFactory(exec), settings.getColumn(), colIndex),
+					colIndex);
 
 			return new BufferedDataTable[] { exec.createColumnRearrangeTable(result, r, exec) };
 		}
+	}
+
+	private static TextContainerDataCellFactory createTextContainerFactory(ExecutionContext exec) {
+		TextContainerDataCellFactory docFactory = TextContainerDataCellFactoryBuilder.createDocumentCellFactory();
+		docFactory.prepare(FileStoreFactory.createWorkflowFileStoreFactory(exec));
+		return docFactory;
 	}
 
 	private String getScript() {
@@ -118,17 +130,15 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 		// no internals
 	}
 
-	private static class DocumentCellFactory extends AbstractCellFactory {
+	private static class DocumentCellFactory extends SingleCellFactory {
 
 		private final int columnIndex;
 		private final TextContainerDataCellFactory factory;
-		private final JSONParser parser;
 
-		public DocumentCellFactory(String columnName, int columnIndex) {
+		public DocumentCellFactory(TextContainerDataCellFactory factory, String columnName, int columnIndex) {
 			super(createSpec(columnName));
 			this.columnIndex = columnIndex;
-			this.factory = new DocumentDataCellFactory();
-			this.parser = new JSONParser();
+			this.factory = factory;
 		}
 
 		private static DataColumnSpec createSpec(String columnName) {
@@ -136,25 +146,28 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 		}
 
 		@Override
-		public DataCell[] getCells(DataRow row) {
+		public DataCell getCell(DataRow row) {
 			String json = row.getCell(columnIndex).toString();
 			try {
-				return new DataCell[] { fromJson(json) };
-			} catch (ParseException e) {
-				throw new RuntimeException(e);
+				return fromJson(json);
+			} catch (JsonProcessingException e) {
+				LOGGER.error(e.getMessage(), e);
+				return new MissingCell(e.getMessage());
 			}
 		}
 
 		@SuppressWarnings("deprecation")
-		private DataCell fromJson(String json) throws ParseException {
-			JSONArray jsonSenteces = (JSONArray) parser.parse(json);
+		private DataCell fromJson(String json) throws JsonProcessingException {
 			List<Sentence> sentences = new ArrayList<>();
-			for (Object obj : jsonSenteces) {
-				JSONArray jsonWords = (JSONArray) obj;
+			SpacyDocument spacyDoc = SpacyDocument.fromJson(json);
+
+			for (SpacySentence spacySent : spacyDoc.getSentences()) {
 				List<Term> terms = new ArrayList<>();
-				for (Object word : jsonWords) {
-					terms.add(fromJson((JSONObject) word));
+
+				for (SpacyWord w : spacySent.getWords()) {
+					terms.add(fromSpacyWord(w));
 				}
+
 				sentences.add(new Sentence(terms));
 			}
 
@@ -165,10 +178,9 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 			return factory.createDataCell(b.createDocument());
 		}
 
-		private static Term fromJson(JSONObject obj) {
-			String tag = (String) obj.get("tag");
-			List<Tag> tags = TagFactory.pos().fromString(tag);
-			return new Term(Arrays.asList(new Word((String) obj.get("text"), " ")), tags, false);
+		private static Term fromSpacyWord(SpacyWord word) {
+			List<Tag> tags = TagFactory.pos().fromString(word.getTag());
+			return new Term(Arrays.asList(new Word(word.getText(), " ")), tags, false);
 		}
 
 	}

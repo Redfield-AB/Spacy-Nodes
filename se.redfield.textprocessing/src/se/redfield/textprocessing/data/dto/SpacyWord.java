@@ -7,6 +7,7 @@ public class SpacyWord {
 
 	private String text;
 	private String lemma;
+	private String tag;
 
 	public String getText() {
 		return text;
@@ -21,5 +22,9 @@ public class SpacyWord {
 			return text;
 		}
 		return lemma;
+	}
+
+	public String getTag() {
+		return tag;
 	}
 }
