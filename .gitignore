@@ -1,0 +1,7 @@
+!.gitkeep
+.DS_Store
+bin/
+knime-download/
+lib/
+target/
+testflow-reports/

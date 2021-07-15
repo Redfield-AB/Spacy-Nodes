@@ -22,9 +22,10 @@
    </requires>
 
    <plugin
-         id="se.redfield.textprocessing"
+         id="se.redfield.textprocessing.plugin"
          download-size="0"
          install-size="0"
-         version="0.0.1.qualifier"/>
+         version="0.0.0"
+		 unpack="false"/>
 
 </feature>
