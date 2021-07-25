@@ -4,7 +4,7 @@ import json
 import spacy
 
 def load_model(model_handle='en_core_web_sm'):
-    return spacy.load(model_handle, exclude=["parser"])
+    return spacy.load(model_handle)
 
 def to_json(doc):
     out = []
@@ -28,7 +28,6 @@ def to_json2(doc):
 
 def tokenize(input_table, column, model_handle):
     nlp = load_model(model_handle)
-    nlp.add_pipe('sentencizer')
     nlp.disable_pipes('ner')
     input_table[column] = input_table[column].apply(lambda x: to_json2(nlp(x)))
     return input_table
