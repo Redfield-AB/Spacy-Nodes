@@ -27,4 +27,9 @@ public class SpacyWord {
 	public String getTag() {
 		return tag;
 	}
+
+	@Override
+	public String toString() {
+		return text;
+	}
 }

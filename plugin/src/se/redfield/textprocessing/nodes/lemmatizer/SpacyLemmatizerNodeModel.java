@@ -4,19 +4,18 @@
 package se.redfield.textprocessing.nodes.lemmatizer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import org.knime.ext.textprocessing.data.Document;
-import org.knime.ext.textprocessing.data.DocumentBuilder;
-import org.knime.ext.textprocessing.data.Paragraph;
-import org.knime.ext.textprocessing.data.Section;
 import org.knime.ext.textprocessing.data.Sentence;
 import org.knime.ext.textprocessing.data.Term;
 import org.knime.ext.textprocessing.data.Word;
 
+import se.redfield.textprocessing.core.AbstractSpacyDocumentProcessor;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
-import se.redfield.textprocessing.data.dto.SpacyDocument;
 import se.redfield.textprocessing.data.dto.SpacySentence;
+import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
@@ -36,42 +35,45 @@ public class SpacyLemmatizerNodeModel extends SpacyBaseNodeModel {
 		return new LemmatizerDocumentProcessor();
 	}
 
-	private class LemmatizerDocumentProcessor implements SpacyDocumentProcessor {
+	private class LemmatizerDocumentProcessor extends AbstractSpacyDocumentProcessor {
 
 		@Override
-		public Document process(SpacyDocument spacyDoc, Document doc) {
-			DocumentBuilder db = new DocumentBuilder(doc);
-			int idx = 0;
-
-			for (Section s : doc.getSections()) {
-				for (Paragraph p : s.getParagraphs()) {
-					List<Sentence> sents = new ArrayList<>();
-					for (Sentence sent : p.getSentences()) {
-						SpacySentence spacySent = spacyDoc.getSentences()[idx++];
-						sents.add(buildSentence(sent, spacySent));
-					}
-					db.addParagraph(new Paragraph(sents));
-				}
-				db.createNewSection(s.getAnnotation());
-			}
-
-			return db.createDocument();
-		}
-
-		private Sentence buildSentence(Sentence orig, SpacySentence spacySent) {
+		protected Sentence mergeSentence(SpacySentence spacySent) {
 			List<Term> terms = new ArrayList<>();
 			int idx = 0;
-
-			for (Term origTerm : orig.getTerms()) {
-				List<Word> newWords = new ArrayList<>();
-
-				for (int i = 0; i < origTerm.getWords().size(); i++) {
-					newWords.add(new Word(spacySent.getWords()[idx++].getLemmaOrText(), " "));
+			while (idx < spacySent.getWords().length) {
+				if (!hasNextTerm()) {
+					throw new DocumentProcessingException();
 				}
 
-				terms.add(new Term(newWords, origTerm.getTags(), false));
-			}
+				Term orig = getNextTerm();
+				List<Word> words = new ArrayList<>();
 
+				for (Word w : orig.getWords()) {
+					if (idx >= spacySent.getWords().length) {
+						throw new DocumentProcessingException();
+					}
+
+					SpacyWord sw = spacySent.getWords()[idx++];
+
+					if (!w.getText().equals(sw.getText())) {
+						throw new DocumentProcessingException(w.getText() + "!=" + sw.getText());
+					}
+
+					words.add(new Word(sw.getLemmaOrText(), " "));
+				}
+
+				terms.add(new Term(words, orig.getTags(), orig.isUnmodifiable()));
+			}
+			return new Sentence(terms);
+		}
+
+		@Override
+		protected Sentence processSentence(SpacySentence spacySent) {
+			List<Term> terms = new ArrayList<>();
+			for (SpacyWord sw : spacySent.getWords()) {
+				terms.add(new Term(Arrays.asList(new Word(sw.getLemmaOrText(), " ")), Collections.emptyList(), false));
+			}
 			return new Sentence(terms);
 		}
 
