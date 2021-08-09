@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.knime.core.data.DataCell;
@@ -34,7 +35,6 @@ import org.knime.ext.textprocessing.data.DocumentCell;
 import org.knime.ext.textprocessing.data.Paragraph;
 import org.knime.ext.textprocessing.data.SectionAnnotation;
 import org.knime.ext.textprocessing.data.Sentence;
-import org.knime.ext.textprocessing.data.Tag;
 import org.knime.ext.textprocessing.data.Term;
 import org.knime.ext.textprocessing.data.Word;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
@@ -44,7 +44,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
-import se.redfield.textprocessing.core.TagFactory;
 import se.redfield.textprocessing.data.dto.SpacyDocument;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 import se.redfield.textprocessing.data.dto.SpacyWord;
@@ -75,13 +74,16 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 			context.putDataTable(inTable, exec);
 			context.executeInKernel(getScript(), exec);
 			BufferedDataTable result = context.getDataTable(exec, exec);
+			BufferedDataTable joined = exec.createJoinedTable(inTable, result, exec);
 
-			ColumnRearranger r = new ColumnRearranger(result.getDataTableSpec());
-			int colIndex = result.getDataTableSpec().findColumnIndex(settings.getColumn());
-			r.replace(new DocumentCellFactory(createTextContainerFactory(exec), settings.getColumn(), colIndex),
+			ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
+			int colIndex = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
+			int jsonColIdx = joined.getDataTableSpec().getNumColumns() - 1;
+			r.replace(new DocumentCellFactory(createTextContainerFactory(exec), settings.getColumn(), jsonColIdx),
 					colIndex);
+			r.remove(jsonColIdx);
 
-			return new BufferedDataTable[] { exec.createColumnRearrangeTable(result, r, exec) };
+			return new BufferedDataTable[] { exec.createColumnRearrangeTable(joined, r, exec) };
 		}
 	}
 
@@ -92,9 +94,9 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 	}
 
 	private String getScript() {
-		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyTokenizer import tokenize");
-		b.a(PythonContext.VAR_OUTPUT_TABLE).a(" = tokenize(").a(PythonContext.VAR_INPUT_TABLE).a(", ")
-				.as(settings.getColumn()).a(",").asr(settings.getSpacyModelPath()).a(")").n();
+		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyNlp import SpacyNlp");
+		b.a(PythonContext.VAR_OUTPUT_TABLE).a(" = SpacyNlp.run(").asr(settings.getSpacyModelPath()).a(",")
+				.a(PythonContext.VAR_INPUT_TABLE).a(", ").as(settings.getColumn()).a(")").n();
 		return b.toString();
 	}
 
@@ -179,8 +181,7 @@ public class SpacyTokenizerNodeModel extends NodeModel {
 		}
 
 		private static Term fromSpacyWord(SpacyWord word) {
-			List<Tag> tags = TagFactory.pos().fromString(word.getTag());
-			return new Term(Arrays.asList(new Word(word.getText(), " ")), tags, false);
+			return new Term(Arrays.asList(new Word(word.getText(), " ")), Collections.emptyList(), false);
 		}
 
 	}

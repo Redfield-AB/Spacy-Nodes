@@ -12,7 +12,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.knime.core.data.StringValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
@@ -21,6 +20,7 @@ import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelection;
 import org.knime.core.node.defaultnodesettings.DialogComponentFileChooser;
 import org.knime.core.node.port.PortObjectSpec;
+import org.knime.ext.textprocessing.data.DocumentValue;
 
 import se.redfield.textprocessing.core.SpacyModel;
 
@@ -30,7 +30,7 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 
 	public SpacyNodeDialog() {
 		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:", 0, true,
-				StringValue.class));
+				DocumentValue.class));
 		addTab("Model", createModelSelector());
 	}
 
