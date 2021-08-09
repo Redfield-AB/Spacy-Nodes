@@ -19,6 +19,10 @@
       <node
             category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.lemmatizer.SpacyLemmatizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.pos.SpacyPosTaggerNodeFactory">
       </node>    
    </extension>
 	<extension

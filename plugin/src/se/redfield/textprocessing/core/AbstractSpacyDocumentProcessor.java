@@ -54,7 +54,7 @@ public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentPro
 			while (hasMoreSpacySentences()) {
 				commitSentence(mergeSentence(getNextSpacySentence()));
 			}
-		} catch (DocumentProcessingException e) {
+		} catch (DocumentProcessingException | NoSuchElementException e) {
 			LOGGER.debug("Invalid document tokenization", e);
 			commitSentence(processSentence(curSpacySent));
 		}

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.ner;
+package se.redfield.textprocessing.nodes.pos;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
@@ -9,11 +9,11 @@ import org.knime.core.node.NodeView;
 
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
 
-public class SpacyNerTaggerNodeFactory extends NodeFactory<SpacyNerTaggerNodeModel> {
+public class SpacyPosTaggerNodeFactory extends NodeFactory<SpacyPosTaggerNodeModel> {
 
 	@Override
-	public SpacyNerTaggerNodeModel createNodeModel() {
-		return new SpacyNerTaggerNodeModel();
+	public SpacyPosTaggerNodeModel createNodeModel() {
+		return new SpacyPosTaggerNodeModel();
 	}
 
 	@Override
@@ -22,7 +22,7 @@ public class SpacyNerTaggerNodeFactory extends NodeFactory<SpacyNerTaggerNodeMod
 	}
 
 	@Override
-	public NodeView<SpacyNerTaggerNodeModel> createNodeView(int viewIndex, SpacyNerTaggerNodeModel nodeModel) {
+	public NodeView<SpacyPosTaggerNodeModel> createNodeView(int viewIndex, SpacyPosTaggerNodeModel nodeModel) {
 		return null;
 	}
 
