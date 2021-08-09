@@ -3,122 +3,161 @@
 */
 package se.redfield.textprocessing.nodes.ner;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
-import org.knime.core.data.DataCell;
-import org.knime.core.data.DataColumnSpec;
-import org.knime.core.data.DataColumnSpecCreator;
-import org.knime.core.data.DataRow;
-import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.container.ColumnRearranger;
-import org.knime.core.data.container.SingleCellFactory;
-import org.knime.core.data.filestore.FileStoreFactory;
-import org.knime.core.node.BufferedDataTable;
-import org.knime.core.node.CanceledExecutionException;
-import org.knime.core.node.ExecutionContext;
-import org.knime.core.node.ExecutionMonitor;
-import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeModel;
-import org.knime.core.node.NodeSettingsRO;
-import org.knime.core.node.NodeSettingsWO;
-import org.knime.ext.textprocessing.data.Document;
-import org.knime.ext.textprocessing.data.DocumentValue;
-import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
-import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
+import org.knime.ext.textprocessing.data.Sentence;
+import org.knime.ext.textprocessing.data.Tag;
+import org.knime.ext.textprocessing.data.Term;
+import org.knime.ext.textprocessing.data.Word;
 
-import se.redfield.textprocessing.SpacyPlugin;
-import se.redfield.textprocessing.core.PythonContext;
-import se.redfield.textprocessing.core.SpacyNerTagger;
-import se.redfield.textprocessing.core.SpacyNlp;
+import se.redfield.textprocessing.core.AbstractSpacyDocumentProcessor;
+import se.redfield.textprocessing.core.SpacyDocumentProcessor;
+import se.redfield.textprocessing.data.dto.SpacySentence;
+import se.redfield.textprocessing.data.dto.SpacyWord;
+import se.redfield.textprocessing.data.tag.SpacyNerTag;
+import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
-public class SpacyNerTaggerNodeModel extends NodeModel {
-
-	private final SpacyNodeSettings settings = new SpacyNodeSettings();
+public class SpacyNerTaggerNodeModel extends SpacyBaseNodeModel {
 
 	protected SpacyNerTaggerNodeModel() {
-		super(1, 1);
+		super(new SpacyNodeSettings());
 	}
 
 	@Override
-	protected DataTableSpec[] configure(DataTableSpec[] inSpecs) throws InvalidSettingsException {
-		return new DataTableSpec[] { null };
+	protected String getSpacyMethod() {
+		return "SpacyNerTagger";
 	}
 
 	@Override
-	protected BufferedDataTable[] execute(BufferedDataTable[] inData, ExecutionContext exec) throws Exception {
-		SpacyPlugin.checkLicense();
-
-		BufferedDataTable inTable = inData[0];
-
-		try (PythonContext context = new PythonContext()) {
-			SpacyNlp nlp = new SpacyNlp(context, exec, settings.getSpacyModelPath());
-			SpacyNerTagger tagger = new SpacyNerTagger(nlp);
-			TextContainerDataCellFactory docFactory = TextContainerDataCellFactoryBuilder.createDocumentCellFactory();
-			docFactory.prepare(FileStoreFactory.createWorkflowFileStoreFactory(exec));
-
-			ColumnRearranger r = new ColumnRearranger(inTable.getDataTableSpec());
-			int colIndex = inTable.getDataTableSpec().findColumnIndex(settings.getColumn());
-			r.replace(new SpacyNerCellFactory(docFactory, tagger, settings.getColumn(), colIndex), colIndex);
-
-			return new BufferedDataTable[] { exec.createColumnRearrangeTable(inTable, r, exec) };
-		}
+	protected SpacyDocumentProcessor createSpacyDocumentProcessor() {
+		return new SpacyNerDocumentProcessor();
 	}
 
-	@Override
-	protected void saveSettingsTo(NodeSettingsWO settings) {
-		this.settings.saveSettings(settings);
-	}
+	private class SpacyNerDocumentProcessor extends AbstractSpacyDocumentProcessor {
 
-	@Override
-	protected void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		this.settings.validateSettings(settings);
-	}
+		private List<Term> terms;
+		private int idx;
 
-	@Override
-	protected void loadValidatedSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
-		this.settings.loadSettings(settings);
-	}
+		@Override
+		protected Sentence mergeSentence(SpacySentence spacySent) {
+			SpacyWord[] words = spacySent.getWords();
 
-	@Override
-	protected void reset() {
-		// nothing to do
-	}
+			terms = new ArrayList<>();
+			idx = 0;
 
-	@Override
-	protected void loadInternals(File nodeInternDir, ExecutionMonitor exec)
-			throws IOException, CanceledExecutionException {
-		// no internals
-	}
+			while (idx < spacySent.getWords().length) {
+				if (words[idx].getIob() == 2) {
+					skipNonNeWords(words);
+				} else if (words[idx].getIob() == 3) {
+					processNe(words);
+				}
+			}
 
-	@Override
-	protected void saveInternals(File nodeInternDir, ExecutionMonitor exec)
-			throws IOException, CanceledExecutionException {
-		// no internals
-	}
-
-	private static class SpacyNerCellFactory extends SingleCellFactory {
-		private TextContainerDataCellFactory factory;
-		private SpacyNerTagger tagger;
-		private int columnIdx;
-
-		public SpacyNerCellFactory(TextContainerDataCellFactory factory, SpacyNerTagger tagger, String columnName,
-				int columnIdx) {
-			super(createSpec(factory, columnName));
-			this.factory = factory;
-			this.tagger = tagger;
-			this.columnIdx = columnIdx;
+			return new Sentence(terms);
 		}
 
-		private static DataColumnSpec createSpec(TextContainerDataCellFactory factory, String columnName) {
-			return new DataColumnSpecCreator(columnName, factory.getDataType()).createSpec();
+		private void skipNonNeWords(SpacyWord[] words) {
+			int toSkip = 0;
+			while (idx < words.length && words[idx].getIob() == 2) {
+				toSkip += 1;
+				idx += 1;
+			}
+
+			if (idx == words.length) {
+				toSkip--;
+			}
+
+			skipTerms(toSkip, false);
+		}
+
+		private void skipTerms(int toSkip, boolean discard) {
+			while (toSkip > 0) {
+				if (!hasNextTerm()) {
+					throw new DocumentProcessingException();
+				}
+
+				Term term = getNextTerm();
+
+				if (term.getWords().size() > toSkip) {
+					throw new DocumentProcessingException();
+				}
+
+				toSkip -= term.getWords().size();
+
+				if (!discard) {
+					terms.add(term);
+				}
+			}
+
+			if (toSkip < 0) {
+				throw new DocumentProcessingException();
+			}
+		}
+
+		private void processNe(SpacyWord[] words) {
+			String entity = words[idx].getEntity();
+			List<Word> neWords = collectNe(words);
+
+			if (!hasNextTerm()) {
+				throw new DocumentProcessingException();
+			}
+
+			Term orig = getNextTerm();
+			List<Tag> tags = new ArrayList<>();
+
+			if (orig.getWords().size() == neWords.size()) {
+				tags.addAll(orig.getTags());
+			} else if (orig.getWords().size() < neWords.size()) {
+				skipTerms(neWords.size() - orig.getWords().size(), true);
+			} else {
+				throw new DocumentProcessingException();
+			}
+
+			tags.add(SpacyNerTag.fromString(entity).getTag());
+			terms.add(new Term(neWords, tags, false));
+		}
+
+		private List<Word> collectNe(SpacyWord[] words) {
+			List<String> neWords = new ArrayList<>();
+			neWords.add(words[idx].getText());
+
+			idx += 1;
+
+			while (idx < words.length && words[idx].getIob() == 1) {
+				neWords.add(words[idx].getText());
+				idx += 1;
+			}
+
+			return neWords.stream().map(w -> new Word(w, " ")).collect(Collectors.toList());
 		}
 
 		@Override
-		public DataCell getCell(DataRow row) {
-			final Document d = ((DocumentValue) row.getCell(columnIdx)).getDocument();
-			return factory.createDataCell(tagger.tag(d));
+		protected Sentence processSentence(SpacySentence spacySent) {
+			SpacyWord[] words = spacySent.getWords();
+
+			terms = new ArrayList<>();
+			idx = 0;
+
+			while (idx < words.length) {
+				SpacyWord w = words[idx];
+
+				if (w.getIob() == 2) {
+					terms.add(new Term(Arrays.asList(new Word(w.getText(), " ")), Collections.emptyList(), false));
+					idx += 1;
+				} else {
+					String entity = w.getEntity();
+					List<Word> neWords = collectNe(words);
+					terms.add(new Term(neWords, Arrays.asList(SpacyNerTag.fromString(entity).getTag()), false));
+				}
+			}
+
+			return new Sentence(terms);
 		}
+
 	}
 }

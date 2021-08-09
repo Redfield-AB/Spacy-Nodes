@@ -8,6 +8,8 @@ public class SpacyWord {
 	private String text;
 	private String lemma;
 	private String tag;
+	private String entity;
+	private int iob;
 
 	public String getText() {
 		return text;
@@ -26,6 +28,14 @@ public class SpacyWord {
 
 	public String getTag() {
 		return tag;
+	}
+
+	public String getEntity() {
+		return entity;
+	}
+
+	public int getIob() {
+		return iob;
 	}
 
 	@Override

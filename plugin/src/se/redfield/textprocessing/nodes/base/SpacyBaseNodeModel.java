@@ -25,6 +25,8 @@ import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
+import org.knime.dl.python.util.DLPythonSourceCodeBuilder;
+import org.knime.dl.python.util.DLPythonUtils;
 import org.knime.ext.textprocessing.data.Document;
 import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
@@ -35,7 +37,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
-import se.redfield.textprocessing.core.SpacyNlp;
 import se.redfield.textprocessing.data.dto.SpacyDocument;
 
 public abstract class SpacyBaseNodeModel extends NodeModel {
@@ -64,9 +65,10 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		BufferedDataTable inTable = inData[0];
 
 		try (PythonContext ctx = new PythonContext()) {
-			SpacyNlp nlp = new SpacyNlp(ctx, exec, settings.getSpacyModelPath());
-			BufferedDataTable res = nlp.processDocuments(prepareInputTable(inTable, exec), settings.getColumn(),
-					getSpacyMethod());
+			ctx.putDataTable(prepareInputTable(inTable, exec), exec);
+			ctx.executeInKernel(createExecuteScript(), exec);
+			BufferedDataTable res = ctx.getDataTable(exec, exec);
+
 			BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
 
 			int docColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
@@ -80,6 +82,15 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 			return new BufferedDataTable[] { exec.createColumnRearrangeTable(joined, r, exec) };
 		}
+	}
+
+	private String createExecuteScript() {
+		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyNlp import " + getSpacyMethod());
+		b.a(PythonContext.VAR_OUTPUT_TABLE).a(" = ").a(getSpacyMethod()).a(".run(").n();
+		b.a("model_handle = ").asr(settings.getSpacyModelPath()).a(",").n();
+		b.a("input_table = ").a(PythonContext.VAR_INPUT_TABLE).a(",").n();
+		b.a("column = ").as(settings.getColumn()).a(")").n();
+		return b.toString();
 	}
 
 	private BufferedDataTable prepareInputTable(BufferedDataTable inTable, ExecutionContext exec)

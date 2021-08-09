@@ -27,7 +27,7 @@ public class SpacyLemmatizerNodeModel extends SpacyBaseNodeModel {
 
 	@Override
 	protected String getSpacyMethod() {
-		return "lemmatize_table";
+		return "SpacyLemmatizer";
 	}
 
 	@Override
