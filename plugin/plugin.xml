@@ -34,7 +34,7 @@
       <extension
             point="org.knime.workbench.repository.categories">
          <category
-               icon="icons/redfield_logo.png"
+               icon="resources/redfield_logo.png"
                level-id="redfield-textprocessing"
                name="Redfield Textprocessing"
                path="/community">

@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<knimeNode icon="./default.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>Spacy NER Tagger</name>
+<knimeNode icon="./ner.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy NER</name>
     
     <shortDescription>
-        Spacy NER Tagger
+        The node assigns recognized named entities in the document. Generalized Spacy NE tag set is used.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	Spacy NER Tagger
-        </intro>        
+        	The node assigns recognized named entities in the document. Generalized Spacy NE tag set is used. Different Spacy models might have different tag sets.
+        </intro>
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column that will be affected by NER tagging.
+        	</option>
+        </tab>
+        <tab name="Model">
+        	<option name="Spacy model">
+        		Pick one of the official Spacy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files.
+        	</option>
+        </tab>                
     </fullDescription>
     
     <ports>

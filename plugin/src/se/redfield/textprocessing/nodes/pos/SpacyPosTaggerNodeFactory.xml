@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<knimeNode icon="./default.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+<knimeNode icon="./pos.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
     <name>Spacy POS Tagger</name>
     
     <shortDescription>
-        Spacy POS Tagger
+        The node assigns part of speech to each token of the document.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	Spacy POS Tagger
-        </intro>        
+        	The node assigns part of speech to each token of the document.
+        	Generalized Spacy POS tag set is used. Different Spacy models might have different tag sets.
+        	POS or UDPOS tag sets are used.
+        </intro> 
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column that will be affected by POS tagging.
+        	</option>
+        </tab>
+        <tab name="Model">
+        	<option name="Spacy model">
+        		Pick one of the official Spacy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files. 
+        	</option>
+        </tab>         
     </fullDescription>
     
     <ports>

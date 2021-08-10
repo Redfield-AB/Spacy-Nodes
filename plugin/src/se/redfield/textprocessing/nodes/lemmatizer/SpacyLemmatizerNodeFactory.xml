@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<knimeNode icon="./default.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+<knimeNode icon="./lemmatizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
     <name>Spacy Lemmatizer</name>
     
     <shortDescription>
-        Spacy Lemmatizer
+        The node converts all tokens to their root form (lemma), removing cases, plurals, conjugations, etc.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	Spacy Lemmatizer
-        </intro>        
+        	The node converts all tokens to their root form (lemma), removing cases, plurals, conjugations, etc. Not all Spacy models contain lemmatizer.
+        </intro>
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column that will be affected by lemmatization.
+        	</option>
+        </tab>
+        <tab name="Model">
+        	<option name="Spacy model">
+        		Pick one of the official Spacy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files.
+        	</option>
+        </tab>
     </fullDescription>
     
     <ports>
