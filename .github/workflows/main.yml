@@ -44,6 +44,8 @@ jobs:
       - name: Upload Docs
         # https://stackoverflow.com/questions/58139406/only-run-job-on-specific-branch-with-github-actions
         if: github.ref == 'refs/heads/release/4.3'
-        run: ./update-product.sh https://nodepit.com/api/product/redfield-text-processing $PRODUCT_EDIT_TOKEN PRODUCT.md CHANGELOG.md
+        run: |
+          chmod a+x update-product.sh
+          ./update-product.sh https://nodepit.com/api/product/redfield-text-processing $PRODUCT_EDIT_TOKEN PRODUCT.md CHANGELOG.md
         env:
           PRODUCT_EDIT_TOKEN: ${{ secrets.PRODUCT_EDIT_TOKEN }}
