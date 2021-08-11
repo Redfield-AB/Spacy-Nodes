@@ -26,8 +26,8 @@ jobs:
       - name: Build
         run: xvfb-run mvn -V -B clean verify
 
-      - name: Test
-        run: xvfb-run testflowrunner/runTestflows.sh
+#      - name: Test
+#        run: xvfb-run testflowrunner/runTestflows.sh
 
       - name: Upload Update Site
         # https://stackoverflow.com/questions/58139406/only-run-job-on-specific-branch-with-github-actions
