@@ -35,6 +35,7 @@ jobs:
         run: |
           branch=${GITHUB_REF#refs/heads/}
           label=${branch#release/}
+          chmod a+x upload-update-site.sh
           ./upload-update-site.sh $SFTP_USER $SFTP_PASSWORD $label
         env:
           SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
