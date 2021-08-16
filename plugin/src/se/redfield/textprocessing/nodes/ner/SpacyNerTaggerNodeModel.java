@@ -68,10 +68,6 @@ public class SpacyNerTaggerNodeModel extends SpacyBaseNodeModel {
 				idx += 1;
 			}
 
-			if (idx == words.length) {
-				toSkip--;
-			}
-
 			skipTerms(toSkip, false);
 		}
 
