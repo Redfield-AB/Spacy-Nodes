@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-	<description name="Update Site for Redfeild Textprocessing Nodes">
-		Update Site for Redfeild Textprocessing Nodes
+	<description name="Update Site for Redfield Textprocessing Nodes">
+		Update Site for Redfield Textprocessing Nodes
 	</description>
 	<feature id="com.nodepit.licensing.feature"/>
 	<feature id="se.redfield.textprocessing.feature">
-		<category name="Redfeild"/>
+		<category name="Redfield"/>
 	</feature>
-	<category-def name="Redfeild" label="Redfeild">
+	<category-def name="Redfield" label="Redfield">
 		<description>
-			This category contains the Redfeild Nodes
+			This category contains the Redfield Nodes
 		</description>
 	</category-def>
 </site>

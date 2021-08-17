@@ -19,7 +19,7 @@ public class SpacyPreferenceInitializer extends AbstractPreferenceInitializer {
 	@SuppressWarnings("unused")
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyPreferenceInitializer.class);
 
-	public static final String PREF_CACHE_DIR = "redfeild.textprocessing.cachedir";
+	public static final String PREF_CACHE_DIR = "redfield.textprocessing.cachedir";
 
 	private static final String DEFAULT_CACHE_DIR = System.getProperty("java.io.tmpdir") + File.separator
 			+ "spacy-cache";
