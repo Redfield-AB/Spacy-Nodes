@@ -3,6 +3,8 @@
 */
 package se.redfield.textprocessing.data.dto;
 
+import java.util.Map;
+
 public class SpacyWord {
 
 	private String text;
@@ -10,6 +12,7 @@ public class SpacyWord {
 	private String tag;
 	private String entity;
 	private int iob;
+	private Map<String, String> morph;
 
 	public String getText() {
 		return text;
@@ -36,6 +39,10 @@ public class SpacyWord {
 
 	public int getIob() {
 		return iob;
+	}
+
+	public Map<String, String> getMorph() {
+		return morph;
 	}
 
 	@Override

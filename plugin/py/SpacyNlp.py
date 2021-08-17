@@ -56,3 +56,8 @@ class SpacyPosTagger(SpacyNlp):
     pipeline = [*SpacyNlp.pipeline, 'morphologizer', 'tagger', 'attribute_ruler']
     def token_to_dict(self, token):
         return {**super().token_to_dict(token), 'tag': token.tag_}
+
+class SpacyMorphonogizer(SpacyNlp):
+    pipeline = [*SpacyNlp.pipeline, 'morphologizer']
+    def token_to_dict(self, token):
+        return {**super().token_to_dict(token), 'morph': token.morph.to_dict()}

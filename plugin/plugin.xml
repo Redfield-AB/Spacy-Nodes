@@ -23,6 +23,10 @@
       <node
             category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.pos.SpacyPosTaggerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.morph.SpacyMorphologizerNodeFactory">
       </node>    
    </extension>
 	<extension
@@ -71,6 +75,9 @@
             point="org.knime.ext.textprocessing.TagSet">
          <TagSet
                TagBuilder="se.redfield.textprocessing.data.tag.SpacyNerTagBuilder">
+         </TagSet>
+         <TagSet
+               TagBuilder="se.redfield.textprocessing.data.tag.SpacyMorphTagBuilder">
          </TagSet>
       </extension>
    
