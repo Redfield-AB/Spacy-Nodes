@@ -8,7 +8,8 @@
     
     <fullDescription>
         <intro>
-        	The node assigns recognized named entities in the document. Generalized Spacy NE tag set is used. Different Spacy models might have different tag sets.
+        	The node assigns recognized named entities in the document. Generalized Spacy NE tag set is used.
+        	Different Spacy models might have different tag sets. Different Spacy models might lack this model.
         </intro>
         <tab name="Options">
         	<option name="Select column">
@@ -23,7 +24,7 @@
     </fullDescription>
     
     <ports>
-		<inPort name="Data Table" index="0">Data Table</inPort>
-		<outPort name="Output Table" index="0">Output table</outPort>
+		<inPort name="Input Table" index="0">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Output Table" index="0">The output table which contains the preprocessed documents.</outPort>
     </ports>    
 </knimeNode>

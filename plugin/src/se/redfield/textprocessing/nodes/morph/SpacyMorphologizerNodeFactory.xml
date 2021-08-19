@@ -3,17 +3,28 @@
     <name>Spacy Morphologizer</name>
     
     <shortDescription>
-        Spacy Morphologizer
+        The node performs morphology analysis of the text and assigns the tags for singular/plural, gender, case, conjugation, animacy, etc. for the tokens.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	Spacy Morphologizer
-        </intro>        
+        The node performs morphology analysis of the text and assigns the tags for singular/plural, gender, case, conjugation, animacy, etc. for the tokens.
+        Different Spacy models might have different tag sets. Different Spacy models might lack this model.
+        </intro>
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column that will be affected by morphologizer.
+        	</option>
+        </tab>
+        <tab name="Model">
+        	<option name="Spacy model">
+        		Pick one of the official Spacy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files.
+        	</option>
+        </tab>    
     </fullDescription>
     
     <ports>
-		<inPort name="Data Table" index="0">Data Table</inPort>
-		<outPort name="Output Table" index="0">Output table</outPort>
+		<inPort name="Input Table" index="0">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Output Table" index="0">The output table which contains the preprocessed documents.</outPort>
     </ports>    
 </knimeNode>
