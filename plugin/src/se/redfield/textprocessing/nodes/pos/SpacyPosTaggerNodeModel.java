@@ -11,7 +11,7 @@ import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.core.TagFactory;
 import se.redfield.textprocessing.core.TaggerDocumentProcessor;
 import se.redfield.textprocessing.data.dto.SpacyWord;
-import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
+import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 /**
@@ -20,7 +20,7 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
  * @author Alexander Bondaletov
  *
  */
-public class SpacyPosTaggerNodeModel extends SpacyBaseNodeModel {
+public class SpacyPosTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	protected SpacyPosTaggerNodeModel() {
 		super(new SpacyNodeSettings());

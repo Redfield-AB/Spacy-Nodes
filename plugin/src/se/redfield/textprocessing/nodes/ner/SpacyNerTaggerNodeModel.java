@@ -19,10 +19,10 @@ import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.data.tag.SpacyNerTag;
-import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
+import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
-public class SpacyNerTaggerNodeModel extends SpacyBaseNodeModel {
+public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	protected SpacyNerTaggerNodeModel() {
 		super(new SpacyNodeSettings());

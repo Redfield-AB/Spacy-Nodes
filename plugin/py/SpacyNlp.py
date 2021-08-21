@@ -61,3 +61,12 @@ class SpacyMorphonogizer(SpacyNlp):
     pipeline = [*SpacyNlp.pipeline, 'morphologizer']
     def token_to_dict(self, token):
         return {**super().token_to_dict(token), 'morph': token.morph.to_dict()}
+
+class SpacyVectorizer(SpacyNlp):
+    pipeline = ['tok2vec', 'transformer']
+
+    def process_table(self, input_table: DataFrame, column: str) -> DataFrame:
+        self.setup_pipeline()
+        docs = self.nlp.pipe(input_table[column].values)
+        vectors = [(','.join([str(num) for num in doc.vector])) for doc in docs]
+        return pd.DataFrame(vectors, index=input_table.index)

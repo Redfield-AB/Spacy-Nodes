@@ -12,6 +12,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.knime.core.data.DataValue;
+import org.knime.core.data.StringValue;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
@@ -29,8 +31,20 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 	private JComboBox<SpacyModel> cbModels;
 
 	public SpacyNodeDialog() {
+		this(false);
+	}
+
+	/**
+	 * @param acceptStringsColumns if <code>true</code> string columns will be
+	 *                             accepted for selection. Otherwise, only Document
+	 *                             columns are accepted.
+	 */
+	@SuppressWarnings("unchecked")
+	public SpacyNodeDialog(boolean acceptStringsColumns) {
+		Class<? extends DataValue> classFilter = acceptStringsColumns ? StringValue.class : DocumentValue.class;
+
 		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:", 0, true,
-				DocumentValue.class));
+				classFilter));
 		addTab("Model", createModelSelector());
 	}
 

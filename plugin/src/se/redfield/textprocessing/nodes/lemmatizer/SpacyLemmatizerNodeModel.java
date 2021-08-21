@@ -16,10 +16,10 @@ import se.redfield.textprocessing.core.AbstractSpacyDocumentProcessor;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 import se.redfield.textprocessing.data.dto.SpacyWord;
-import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
+import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
-public class SpacyLemmatizerNodeModel extends SpacyBaseNodeModel {
+public class SpacyLemmatizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	protected SpacyLemmatizerNodeModel() {
 		super(new SpacyNodeSettings());

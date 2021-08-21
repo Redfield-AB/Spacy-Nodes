@@ -72,7 +72,7 @@ public class SpacyNodeSettings {
 		temp.validate();
 	}
 
-	private void validate() throws InvalidSettingsException {
+	public void validate() throws InvalidSettingsException {
 		if (column.getStringValue().isEmpty()) {
 			throw new InvalidSettingsException("Column is not selected");
 		}

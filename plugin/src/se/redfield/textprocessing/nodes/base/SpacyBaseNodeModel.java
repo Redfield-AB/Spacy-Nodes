@@ -11,7 +11,8 @@ import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
-import org.knime.core.data.MissingCell;
+import org.knime.core.data.DataTableSpecCreator;
+import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.ColumnRearranger;
 import org.knime.core.data.container.SingleCellFactory;
 import org.knime.core.data.def.StringCell;
@@ -21,27 +22,20 @@ import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
-import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.dl.python.util.DLPythonSourceCodeBuilder;
 import org.knime.dl.python.util.DLPythonUtils;
-import org.knime.ext.textprocessing.data.Document;
+import org.knime.ext.textprocessing.data.DocumentCell;
 import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
-import se.redfield.textprocessing.core.SpacyDocumentProcessor;
-import se.redfield.textprocessing.data.dto.SpacyDocument;
 
 public abstract class SpacyBaseNodeModel extends NodeModel {
-	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyBaseNodeModel.class);
-
 	protected final SpacyNodeSettings settings;
 
 	protected SpacyBaseNodeModel(SpacyNodeSettings settings) {
@@ -51,11 +45,22 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	@Override
 	protected DataTableSpec[] configure(DataTableSpec[] inSpecs) throws InvalidSettingsException {
-		return new DataTableSpec[] { createSpec() };
+		settings.validate();
+
+		return new DataTableSpec[] { createSpec(inSpecs[0]) };
 	}
 
-	private static DataTableSpec createSpec() {
-		return null;
+	protected DataTableSpec createSpec(DataTableSpec inSpec) {
+		int idx = inSpec.findColumnIndex(settings.getColumn());
+
+		DataTableSpecCreator c = new DataTableSpecCreator(inSpec);
+		c.replaceColumn(idx, createOutputColumnSpec());
+
+		return c.createSpec();
+	}
+
+	protected DataColumnSpec createOutputColumnSpec() {
+		return new DataColumnSpecCreator(settings.getColumn(), DocumentCell.TYPE).createSpec();
 	}
 
 	@Override
@@ -63,6 +68,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		SpacyPlugin.checkLicense();
 
 		BufferedDataTable inTable = inData[0];
+		settings.getSpacyModel().ensureDownloaded();
 
 		try (PythonContext ctx = new PythonContext()) {
 			ctx.putDataTable(prepareInputTable(inTable, exec), exec);
@@ -71,14 +77,13 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 			BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
 
-			int docColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
-			int jsonColIdx = joined.getDataTableSpec().getNumColumns() - 1;
-			SpacyDocumentCellFactory fac = new SpacyDocumentCellFactory(createTextContainerFactory(exec),
-					createSpacyDocumentProcessor(), settings.getColumn(), docColIdx, jsonColIdx);
+			int inColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
+			int resColIdx = joined.getDataTableSpec().getNumColumns() - 1;
+			CellFactory fac = createCellFactory(inColIdx, resColIdx, exec);
 
 			ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
-			r.replace(fac, docColIdx);
-			r.remove(jsonColIdx);
+			r.replace(fac, inColIdx);
+			r.remove(resColIdx);
 
 			return new BufferedDataTable[] { exec.createColumnRearrangeTable(joined, r, exec) };
 		}
@@ -95,32 +100,35 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	private BufferedDataTable prepareInputTable(BufferedDataTable inTable, ExecutionContext exec)
 			throws CanceledExecutionException {
+		ColumnRearranger r = new ColumnRearranger(inTable.getDataTableSpec());
 		int idx = inTable.getDataTableSpec().findColumnIndex(settings.getColumn());
 
-		SingleCellFactory fac = new SingleCellFactory(
-				new DataColumnSpecCreator(settings.getColumn(), StringCell.TYPE).createSpec()) {
+		if (inTable.getDataTableSpec().getColumnSpec(idx).getType().isCompatible(DocumentValue.class)) {
+			SingleCellFactory fac = new SingleCellFactory(
+					new DataColumnSpecCreator(settings.getColumn(), StringCell.TYPE).createSpec()) {
 
-			@Override
-			public DataCell getCell(DataRow row) {
-				return new StringCell(((DocumentValue) row.getCell(idx)).getDocument().getDocumentBodyText());
-			}
-		};
+				@Override
+				public DataCell getCell(DataRow row) {
+					return new StringCell(((DocumentValue) row.getCell(idx)).getDocument().getDocumentBodyText());
+				}
+			};
 
-		ColumnRearranger r = new ColumnRearranger(inTable.getDataTableSpec());
-		r.replace(fac, idx);
+			r.replace(fac, idx);
+		}
+
 		r.keepOnly(idx);
 		return exec.createColumnRearrangeTable(inTable, r, exec);
 	}
 
-	private static TextContainerDataCellFactory createTextContainerFactory(ExecutionContext exec) {
+	protected TextContainerDataCellFactory createTextContainerFactory(ExecutionContext exec) {
 		TextContainerDataCellFactory docFactory = TextContainerDataCellFactoryBuilder.createDocumentCellFactory();
 		docFactory.prepare(FileStoreFactory.createWorkflowFileStoreFactory(exec));
 		return docFactory;
 	}
 
-	protected abstract String getSpacyMethod();
+	protected abstract CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec);;
 
-	protected abstract SpacyDocumentProcessor createSpacyDocumentProcessor();
+	protected abstract String getSpacyMethod();
 
 	@Override
 	protected void saveSettingsTo(NodeSettingsWO settings) {
@@ -152,42 +160,6 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	@Override
 	protected void reset() {
 		// nothing to do
-	}
-
-	private static class SpacyDocumentCellFactory extends SingleCellFactory {
-		private final TextContainerDataCellFactory factory;
-		private final SpacyDocumentProcessor processor;
-
-		private final int docColumnIdx;
-		private final int jsonColumnIdx;
-
-		public SpacyDocumentCellFactory(TextContainerDataCellFactory factory, SpacyDocumentProcessor processor,
-				String newColumnName, int docColumnIdx, int jsonColumnIdx) {
-			super(createSpec(factory, newColumnName));
-			this.factory = factory;
-			this.processor = processor;
-
-			this.docColumnIdx = docColumnIdx;
-			this.jsonColumnIdx = jsonColumnIdx;
-		}
-
-		private static DataColumnSpec createSpec(TextContainerDataCellFactory factory, String columnName) {
-			return new DataColumnSpecCreator(columnName, factory.getDataType()).createSpec();
-		}
-
-		@Override
-		public DataCell getCell(DataRow row) {
-			final Document d = ((DocumentValue) row.getCell(docColumnIdx)).getDocument();
-
-			try {
-				SpacyDocument spacyDoc = SpacyDocument.fromJson(row.getCell(jsonColumnIdx).toString());
-				return factory.createDataCell(processor.process(spacyDoc, d));
-			} catch (JsonProcessingException e) {
-				LOGGER.error(e.getMessage(), e);
-				return new MissingCell(e.getMessage());
-			}
-		}
-
 	}
 
 }

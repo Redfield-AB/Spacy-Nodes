@@ -13,7 +13,7 @@ import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.core.TaggerDocumentProcessor;
 import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.data.tag.SpacyMorphTagBuilder;
-import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
+import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 /**
@@ -22,7 +22,7 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
  * @author Alexander Bondaletov
  *
  */
-public class SpacyMorphologizerNodeModel extends SpacyBaseNodeModel {
+public class SpacyMorphologizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	protected SpacyMorphologizerNodeModel() {
 		super(new SpacyNodeSettings());

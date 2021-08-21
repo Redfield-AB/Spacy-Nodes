@@ -27,6 +27,10 @@
       <node
             category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.morph.SpacyMorphologizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.vectorizer.SpacyVectorizerNodeFactory">
       </node>    
    </extension>
 	<extension

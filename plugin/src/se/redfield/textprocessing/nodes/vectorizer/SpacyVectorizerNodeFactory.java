@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.tokenizer;
+package se.redfield.textprocessing.nodes.vectorizer;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
@@ -10,16 +10,16 @@ import org.knime.core.node.NodeView;
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
 
 /**
- * Factory class for the {@link SpacyTokenizerNodeModel} node.
+ * The factory class for the {@link SpacyVectorizerNodeModel} node.
  * 
  * @author Alexander Bondaletov
  *
  */
-public class SpacyTokenizerNodeFactory extends NodeFactory<SpacyTokenizerNodeModel> {
+public class SpacyVectorizerNodeFactory extends NodeFactory<SpacyVectorizerNodeModel> {
 
 	@Override
-	public SpacyTokenizerNodeModel createNodeModel() {
-		return new SpacyTokenizerNodeModel();
+	public SpacyVectorizerNodeModel createNodeModel() {
+		return new SpacyVectorizerNodeModel();
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class SpacyTokenizerNodeFactory extends NodeFactory<SpacyTokenizerNodeMod
 	}
 
 	@Override
-	public NodeView<SpacyTokenizerNodeModel> createNodeView(int viewIndex, SpacyTokenizerNodeModel nodeModel) {
+	public NodeView<SpacyVectorizerNodeModel> createNodeView(int viewIndex, SpacyVectorizerNodeModel nodeModel) {
 		return null;
 	}
 
