@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./embedder.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>BERT Embedder</name>
+    
+    <shortDescription>
+        BERT Embedder node calculates embeddings of the texts.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        	Node accepts non-fine-tuned BERT model (magenta output port) or fine-tuned BERT mode (grey output port) and utilizes it for calculation of the embeddings of the texts.
+        	Embeddings are the vector representation of the texts that can be used for visualization, clustering, classification, etc.
+        </intro>
+        <tab name="Settings">
+        	<option name="Sentence column">
+        		The column with texts that will be vectorized.
+        	</option>
+        	<option name="Max sequence length">
+        		The maximum length of a sequence after tokenization, limit is 512.
+        	</option>
+        </tab>
+        <tab name="Advanced">
+        	<option name="Batch size">
+        		The size of a chunk of the input data to process.
+        	</option>
+        </tab>
+        
+    </fullDescription>
+    
+    <ports>
+		<inPort name="BERT Model" index="0">BERT Model</inPort>
+		<inPort name="Data Table" index="1">Data Table</inPort>
+		<outPort name="Output Table" index="0">Table with embedding computed</outPort>
+    </ports>    
+</knimeNode>

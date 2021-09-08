@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./bert_learner.png" type="Learner" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>BERT Multi-label Classification Learner</name>
+    
+    <shortDescription>
+        The node uses BERT model and adds a predefined neural network on top.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        	The node uses BERT model and adds a predefined neural network on top.
+        	There are 3 layers added:
+        	<ul>
+        		<li>GlobalAveragePooling1D layer</li>
+        		<li>Dropout layer</li>
+        		<li>Dense layer</li>
+        	</ul>
+        	The trained model can be applied for multi-class classification.
+        </intro>
+        <tab name="Settings">
+        	<option name="Sentence column">
+        		A column with a plain text (String), that contains text to be classified.
+        		No special pre-processing is needed.
+        	</option>
+        	<option name="Class column">A column that contains class labels.</option>
+        	<option name="Max sequence length">The maximum length of a sequence after tokenization, limit is 512.</option>
+        </tab>
+        <tab name="Advanced">
+        	<option name="Number of epochs">The number of epochs used for training the classifier.</option>
+        	<option name="Batch size">The size of a chunk of the input data used for model update.</option>
+        	<option name="Validation batch size">The size of a chunk of the validation data to process.</option>
+        	<option name="Fine tune BERT">
+        		If checked than BERT model will be trained along with the additional classifier.
+        		It takes longer time to fine tune BERT, but the results are usually better.
+        	</option>
+        	<option name="Optimizer">
+        		Available <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers">optimizers</a> and their configuration.
+        	</option>
+        </tab>
+        
+    </fullDescription>
+    
+    <ports>
+		<inPort name="BERT Model" index="0">BERT Model</inPort>
+		<inPort name="Data Table" index="1">Data Table</inPort>
+		<inPort name="Validation Table" index="2">Validation Table</inPort>
+		<outPort name="BERT Classifier" index="0">BERT Classifier model</outPort>
+		<outPort name="Stats" index="1">Stats</outPort>
+    </ports>    
+</knimeNode>

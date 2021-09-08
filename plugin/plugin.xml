@@ -31,6 +31,14 @@
       <node
             category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.vectorizer.SpacyVectorizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.bert.nodes.classifier.BertClassifierNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.bert.nodes.embedder.BertEmbedderNodeFactory">
       </node>    
    </extension>
 	<extension
