@@ -36,7 +36,7 @@ public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyTokenizerNodeModel.class);
 
 	protected SpacyTokenizerNodeModel() {
-		super(new SpacyNodeSettings());
+		super(new SpacyNodeSettings(), true);
 	}
 
 	@Override

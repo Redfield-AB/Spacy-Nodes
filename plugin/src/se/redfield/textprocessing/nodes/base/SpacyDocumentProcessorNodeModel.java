@@ -25,13 +25,13 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyDocumentProcessorNodeModel.class);
 
 	protected SpacyDocumentProcessorNodeModel(SpacyNodeSettings settings) {
-		super(settings);
+		super(settings, false);
 	}
 
 	@Override
 	protected CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec) {
 		return new SpacyDocumentCellFactory(createTextContainerFactory(exec), createSpacyDocumentProcessor(),
-				settings.getColumn(), inputColumn, resultColumn);
+				settings.getOutputColumnName(), inputColumn, resultColumn);
 	}
 
 	protected abstract SpacyDocumentProcessor createSpacyDocumentProcessor();

@@ -12,6 +12,8 @@ import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.DataTableSpecCreator;
+import org.knime.core.data.DataValue;
+import org.knime.core.data.StringValue;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.ColumnRearranger;
 import org.knime.core.data.container.SingleCellFactory;
@@ -37,30 +39,73 @@ import se.redfield.textprocessing.core.PythonContext;
 
 public abstract class SpacyBaseNodeModel extends NodeModel {
 	protected final SpacyNodeSettings settings;
+	private final boolean acceptStringColumn;
 
-	protected SpacyBaseNodeModel(SpacyNodeSettings settings) {
+	protected SpacyBaseNodeModel(SpacyNodeSettings settings, boolean acceptStringColumn) {
 		super(1, 1);
 		this.settings = settings;
+		this.acceptStringColumn = acceptStringColumn;
 	}
 
 	@Override
 	protected DataTableSpec[] configure(DataTableSpec[] inSpecs) throws InvalidSettingsException {
-		settings.validate();
+		DataTableSpec inSpec = inSpecs[0];
 
-		return new DataTableSpec[] { createSpec(inSpecs[0]) };
+		if (settings.getColumn().isEmpty()) {
+			attemptAutoconfigureColumn(inSpec);
+		}
+		settings.validate();
+		validateSpec(inSpec);
+
+		return new DataTableSpec[] { createSpec(inSpec) };
 	}
 
-	protected DataTableSpec createSpec(DataTableSpec inSpec) {
+	private void attemptAutoconfigureColumn(DataTableSpec spec) {
+		DataColumnSpec defColumn = null;
+		Class<? extends DataValue> valueType = acceptStringColumn ? StringValue.class : DocumentValue.class;
+
+		for (int i = 0; i < spec.getNumColumns() && defColumn == null; i++) {
+			if (spec.getColumnSpec(i).getType().isCompatible(valueType)) {
+				defColumn = spec.getColumnSpec(i);
+			}
+		}
+
+		if (defColumn != null) {
+			settings.getColumnModel().setStringValue(defColumn.getName());
+			setWarningMessage(String.format("Column '%s' is selected automatically", defColumn.getName()));
+		}
+	}
+
+	protected DataTableSpec createSpec(DataTableSpec inSpec) throws InvalidSettingsException {
 		int idx = inSpec.findColumnIndex(settings.getColumn());
 
 		DataTableSpecCreator c = new DataTableSpecCreator(inSpec);
-		c.replaceColumn(idx, createOutputColumnSpec());
+		DataColumnSpec outColumn = createOutputColumnSpec();
+		if (settings.getReplaceColumn()) {
+			c.replaceColumn(idx, outColumn);
+		} else {
+			c.addColumns(outColumn);
+		}
 
 		return c.createSpec();
 	}
 
+	private void validateSpec(DataTableSpec inSpec) throws InvalidSettingsException {
+		int idx = inSpec.findColumnIndex(settings.getColumn());
+		if (idx < 0) {
+			throw new InvalidSettingsException(
+					String.format("Column '%s' is not found in the table", settings.getColumn()));
+		}
+
+		DataColumnSpec column = inSpec.getColumnSpec(idx);
+		Class<? extends DataValue> valueType = acceptStringColumn ? StringValue.class : DocumentValue.class;
+		if (!column.getType().isCompatible(valueType)) {
+			throw new InvalidSettingsException(String.format("Column '%s' has unsupported type", column.getName()));
+		}
+	}
+
 	protected DataColumnSpec createOutputColumnSpec() {
-		return new DataColumnSpecCreator(settings.getColumn(), DocumentCell.TYPE).createSpec();
+		return new DataColumnSpecCreator(settings.getOutputColumnName(), DocumentCell.TYPE).createSpec();
 	}
 
 	@Override
@@ -82,7 +127,11 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			CellFactory fac = createCellFactory(inColIdx, resColIdx, exec);
 
 			ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
-			r.replace(fac, inColIdx);
+			if (settings.getReplaceColumn()) {
+				r.replace(fac, inColIdx);
+			} else {
+				r.append(fac);
+			}
 			r.remove(resColIdx);
 
 			return new BufferedDataTable[] { exec.createColumnRearrangeTable(joined, r, exec) };
