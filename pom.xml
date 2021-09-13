@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>se.redfield.textprocessing</artifactId>
 	<groupId>se.redfield.textprocessing</groupId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>${revision}</version>
 	<packaging>pom</packaging>
 
 	<modules>
@@ -17,6 +17,7 @@
 	</modules>
 
 	<properties>
+		<revision>0.0.1-SNAPSHOT</revision>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -41,7 +42,7 @@
 						<artifact>
 							<groupId>se.redfield.textprocessing</groupId>
 							<artifactId>se.redfield.textprocessing.targetplatform</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
+							<version>${revision}</version>
 						</artifact>
 					</target>
 					<environments>
