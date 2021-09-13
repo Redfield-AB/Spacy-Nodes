@@ -52,7 +52,7 @@
          <category
                icon="resources/redfield_logo.png"
                level-id="redfield-textprocessing"
-               name="Redfield Textprocessing"
+               name="Redfield NLP Nodes"
                path="/community">
          </category>
       </extension>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="se.redfield.textprocessing.feature"
-      label="Redfield Textprocessing Nodes"
+      label="Redfield NLP Nodes"
       version="0.0.1.qualifier"
       provider-name="Redfield AB">
 
    <description>
-      Spacy extension
+      Redfield NLP Nodes
    </description>
 
    <copyright>
@@ -14,7 +14,28 @@
    </copyright>
 
    <license url="">
-      todo
+      Redfield NLP Nodes: Terms and Conditions Version 1.0
+
+1. Preamble: This agreement governs the relationship between a customer of Redfield NLP Nodes (hereinafter: Licensee) and Redfield AB,  Sickla Kanalgata 87, 120 68 Stockholm, Sweden. (hereinafter: Licensor). This agreement sets the terms, rights, restrictions and obligations on using Redfield NLP Nodes (hereinafter: The Software) created and owned by Licensor.
+
+2. License Grant: Licensor grants Licensee a license for The Software all with accordance with the terms set forth and other legal restrictions set forth in other software used while running The Software.
+	2.1. Personal: Licensee may not resell, rent or allow use of The Software by 3rd parties.
+	2.2. Commercial, Royalty Free: Licensee may use The Software for any purpose without any royalties. Licensee may publish and distribute The Software’s output.
+	2.3. Limited: Licensee may install and run The Software on one computer. In case, Licensee owns an additional computer (e. g. a laptop beside a workstation), The Software may be installed on one additional computer as well, but may only be used on one computer simultaneously.
+	2.4. License Period: The license is granted for one year starting with the date of purchase.
+	2.5. Non-Assignable, Non-Transferable: Licensee may not assign or transfer his rights and duties under this license.
+	2.6. Non-Derivative: Licensee may not modify the source or binary code of The Software.
+3. Term and Termination: Licensor may terminate this agreement in case where (i) Licensee was in breach of any of this agreement’s terms and conditions and such breach was not cured, immediately upon notification, or (ii) Licensee exported The Software to any jurisdiction where Licensor may not enforce his rights under this agreement in, or (iii) Licensee otherwise entered into any arrangement which caused Licensor to be unable to enforce his rights under this agreement.
+
+4. Payment and Evaluation: In consideration of the License granted under Clause 2, Licensee shall pay Licensor a fee, as stated by Licensor. Details about the fee and purchase options are available on The Software’s website. Failure to perform payment shall construe as material breach of this agreement. The Software may be evaluated free of charge during a time limited trial period or a public beta period. A trial license may be requested once per Licensee. In order to continue using The Software after the trial period, Licensee must pay Licensor a fee, as stated above.
+
+5. Support: Nothing shall require Licensor to provide Licensee with support, maintenance, updates or fixes to any bug, failure, mis-performance or other defect in The Software. Licensor may provide Licensee with updates or fixes according to his sole discretion. Licensee warrants to install all relevant updates for The Software.
+
+6. Liability, No-Warranty, No-Refunds: To the extent permitted under law, The Software is provided under an as-is basis without warranty. Licensor shall never be liable for damage, cost, expense or other payment incurred by Licensee as a result of The Software’s actions, failures, bugs and/or other interaction between The Software and Licensee’s or 3rd party’s hardware or other software. Licensee shall not be entitled to refund, rebate, compensation or restitution, even if The Software contains material flaws or incompatibilities. Licensee warrants that he inspected The Software during the free trial or beta period and found it satisfactory and adequate to his needs, that it does not interfere with his regular operation and that it does meet the standards and scope of his hardware or other software.
+
+7. Indemnification: Licensee warrants to hold Licensor harmless and indemnify Licensor for any lawsuit brought against it in regards to Licensee’s use of The Software in means that violate, breach or otherwise circumvent this license, Licensor’s intellectual property rights or Licensor’s title in The Software.
+
+8. Governing Law, Jurisdiction: Licensor and Licensee agree not to initiate or participate in class-action lawsuits in relation to The Software or to this license.
    </license>
 
    <requires>
@@ -26,6 +47,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-		 unpack="false"/>
+         unpack="false"/>
 
 </feature>
