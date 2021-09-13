@@ -24,7 +24,7 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 
 	protected SpacyVectorizerNodeModel() {
-		super(new SpacyNodeSettings());
+		super(new SpacyNodeSettings(false, "Embeddings"), true);
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 
 	@Override
 	protected DataColumnSpec createOutputColumnSpec() {
-		return new DataColumnSpecCreator(settings.getColumn(), ListCell.getCollectionType(DoubleCell.TYPE))
+		return new DataColumnSpecCreator(settings.getOutputColumnName(), ListCell.getCollectionType(DoubleCell.TYPE))
 				.createSpec();
 	}
 

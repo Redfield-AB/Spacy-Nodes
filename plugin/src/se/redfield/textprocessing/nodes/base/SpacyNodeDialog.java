@@ -19,8 +19,10 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.NotConfigurableException;
 import org.knime.core.node.defaultnodesettings.DefaultNodeSettingsPane;
+import org.knime.core.node.defaultnodesettings.DialogComponentBoolean;
 import org.knime.core.node.defaultnodesettings.DialogComponentColumnNameSelection;
 import org.knime.core.node.defaultnodesettings.DialogComponentFileChooser;
+import org.knime.core.node.defaultnodesettings.DialogComponentString;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.textprocessing.data.DocumentValue;
 
@@ -45,6 +47,9 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 
 		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:", 0, true,
 				classFilter));
+		addDialogComponent(new DialogComponentBoolean(settings.getReplaceColumnModel(), "Replace column"));
+		setHorizontalPlacement(true);
+		addDialogComponent(new DialogComponentString(settings.getAppendedColumnNameModel(), "Append Column"));
 		addTab("Model", createModelSelector());
 	}
 
