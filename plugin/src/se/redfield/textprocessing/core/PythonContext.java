@@ -21,8 +21,6 @@ import org.knime.python2.kernel.PythonKernel;
 import org.knime.python2.kernel.PythonKernelOptions;
 import org.knime.python2.kernel.PythonKernelQueue;
 
-import com.google.common.base.Strings;
-
 public class PythonContext implements AutoCloseable {
 
 	public static final String VAR_INPUT_TABLE = "input_table";
@@ -42,7 +40,7 @@ public class PythonContext implements AutoCloseable {
 					Collections.emptySet(), options, PythonCancelable.NOT_CANCELABLE);
 			return kernel;
 		} catch (PythonIOException e) {
-			final String msg = !Strings.isNullOrEmpty(e.getMessage())
+			final String msg = e.getMessage() != null && e.getMessage().isEmpty()
 					? "An error occurred while trying to launch Python: " + e.getMessage()
 					: "An unknown error occurred while trying to launch Python. See log for details.";
 			throw new DLInvalidEnvironmentException(msg, e);
