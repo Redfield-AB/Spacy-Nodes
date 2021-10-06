@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./lemmatizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>spaCy Lemmatizer</name>
+    <name>Spacy Lemmatizer</name>
     
     <shortDescription>
         The node converts all tokens to their root form (lemma), removing cases, plurals, conjugations, etc.
@@ -14,6 +14,13 @@
         <tab name="Options">
         	<option name="Select column">
         		Select a Document column that will be affected by lemmatization.
+        	</option>
+        	<option name="Replace column">
+				If checked, the document column will be replaced by the new preprocessed documents.
+				Otherwise the preprocessed documents will be appended as a new column.
+        	</option>
+        	<option name="Append column">
+        		The name of the new appended column, containing the preprocessed documents.
         	</option>
         </tab>
         <tab name="Model">

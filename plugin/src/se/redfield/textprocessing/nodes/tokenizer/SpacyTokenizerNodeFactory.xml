@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./tokenizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>spaCy Tokenizer</name>
+    <name>Spacy Tokenizer</name>
     
     <shortDescription>
         The node converts a string column with raw text to a Knime Document format, using its own tokenizer based on the selected spaCy model.
@@ -14,6 +14,13 @@
         	<option name="Select column">
         		Select a String column that will be tokenized and converted to Document.
         	</option>
+        	<option name="Replace column">
+				If checked, the document column will be replaced by the new preprocessed documents.
+				Otherwise the preprocessed documents will be appended as a new column.
+        	</option>
+        	<option name="Append column">
+        		The name of the new appended column, containing the preprocessed documents.
+        	</option>        	
         </tab>
         <tab name="Model">
         	<option name="spaCy model">
