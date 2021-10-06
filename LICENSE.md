@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feature
-      id="se.redfield.textprocessing.feature"
-      label="Redfield NLP Nodes"
-      version="0.0.1.qualifier"
-      provider-name="Redfield AB">
-
-   <description>
-      Redfield NLP Nodes
-   </description>
-
-   <copyright>
-      Copyright (c) 2021 Redfield AB.
-   </copyright>
-
-   <license url="">
-      REDFIELD NLP NODES: TERMS AND CONDITIONS Version 1.0 (2021-01-10)
+REDFIELD NLP NODES: TERMS AND CONDITIONS Version 1.0 (2021-01-10)
 
 1. Preamble: This agreement governs the relationship between a customer of the Redfield NLP Nodes (hereinafter: Licensee) and the Redfield NLP Nodes, represented by Redfiled AB and Johan Tornborg, Flemminggatan 15A 112 26 Stockholm, Sweden (hereinafter: Licensor). This agreement sets the terms, rights, restrictions and obligations on using NLP Nodes (hereinafter: The Software) created and owned by Licensor.
 
@@ -50,22 +34,8 @@
 
 	2. Tensorflow is a system for large-scale machine learning. Abadi, Martin et al., 2016. Tensorflow: A system for large-scale machine learning. In 12th $USENIX$ Symposium on Operating Systems Design and Implementation ($OSDI$ 16). pp. 265–283.
 	
-	3. Keras is an open-source neural-network library written in Python. Chollet, F. &amp; others, 2015. Keras. Available at: https://github.com/fchollet/keras.
+	3. Keras is an open-source neural-network library written in Python. Chollet, F. & others, 2015. Keras. Available at: https://github.com/fchollet/keras.
 	
 	4. Apache Commons Compress: Copyright (C) 2002-2021 The Apache Software Foundation. All Rights Reserved. Licensed the under the Apache 2.0 License. http://www.apache.org/licenses. Available at https://commons.apache.org/proper/commons-compress.
 	
 	5. FasterXML Jackson: Copyright (C)2009-2011 FasterXML, LLC. All rights reserved unless otherwise indicated. Licensed the under the Apache 2.0 License.  Available at https://github.com/FasterXML/jackson-core.
-   </license>
-
-   <requires>
-      <import feature="com.nodepit.licensing.feature" version="1.1.0" match="compatible"/>
-   </requires>
-
-   <plugin
-         id="se.redfield.textprocessing.plugin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-</feature>

@@ -1,6 +1,15 @@
 # Changelog
 
-This log gives an overview of the most prominent changes in each release. Minor fixes, changes “under the hood” and refactoring changes are not listed here. We follow the <a href="http://semver.org">Semantic Versioning</a> scheme and the guidelines from <a href="https://keepachangelog.com">“Keep a Changelog”</a> as close as possible.
+This is the initial release of Redfiel NLP nodes extension for Knime.
 
-## Unreleased
+## [1.0.0] - 2021-10-07
+### Added
 
+- Spacy Tokenizer
+- Spacy POS Tagger
+- Spacy Lemmatizer
+- Spacy Morphologizer
+- Spacy NER
+- Spacy Vectorizer
+- BERT Multi-label Classification Learner - the output model is compatible with BERT Predictor from BERT by Redfield extension
+- BERT Embedder
