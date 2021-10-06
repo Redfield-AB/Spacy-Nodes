@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <knimeNode icon="./vectorization.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>Spacy Vectorizer</name>
+    <name>spaCy Vectorizer</name>
     
     <shortDescription>
-        Spacy Vectorizer
+        spaCy Vectorizer
     </shortDescription>
     
     <fullDescription>
         <intro>
-			Spacy Vectorizer
+			spaCy Vectorizer
         </intro>    
     </fullDescription>
     

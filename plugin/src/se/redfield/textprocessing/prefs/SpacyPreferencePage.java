@@ -40,7 +40,7 @@ public class SpacyPreferencePage extends PreferencePage implements IWorkbenchPre
 		mainComposite.setLayout(gl);
 
 		Group cacheDirGroup = new Group(mainComposite, SWT.SHADOW_ETCHED_IN);
-		cacheDirGroup.setText("Spacy models cache dir");
+		cacheDirGroup.setText("spaCy models cache dir");
 		cacheDirGroup.setLayout(new GridLayout(2, false));
 		cacheDirGroup.setLayoutData(getGridData());
 

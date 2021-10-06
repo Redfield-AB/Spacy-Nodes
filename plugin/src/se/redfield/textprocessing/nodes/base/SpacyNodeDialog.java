@@ -65,7 +65,7 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 			localPath.getComponentPanel().setVisible(settings.getSpacyModel() == SpacyModel.LOCAL_DIR);
 		});
 
-		JLabel label = new JLabel("Spacy model:");
+		JLabel label = new JLabel("spaCy model:");
 		panel.add(label);
 		panel.add(cbModels);
 
