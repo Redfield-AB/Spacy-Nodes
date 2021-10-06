@@ -46,6 +46,6 @@ jobs:
         if: github.ref == 'refs/heads/release/4.3'
         run: |
           chmod a+x update-product.sh
-          ./update-product.sh https://nodepit.com/api/product/redfield-nlp-nodes $PRODUCT_EDIT_TOKEN PRODUCT.md CHANGELOG.md
+          ./update-product.sh https://nodepit.com/api/product/redfield-nlp-nodes $PRODUCT_EDIT_TOKEN PRODUCT.md CHANGELOG.md LICENSE.md
         env:
           PRODUCT_EDIT_TOKEN: ${{ secrets.PRODUCT_EDIT_TOKEN }}

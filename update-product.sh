@@ -5,24 +5,26 @@ set -e
 # we require jq
 command -v jq >/dev/null 2>&1 || { echo >&2 "'jq' is required."; exit 1; }
 
-if [ "$#" -ne 4 ]; then
-  echo "Usage: $0 <url> <edit-token> <product.md> <changelog.md>" >&2; exit 1
+if [ "$#" -ne 5 ]; then
+  echo "Usage: $0 <url> <edit-token> <product.md> <changelog.md> <license.md>" >&2; exit 1
 fi
 
 URL=$1
 TOKEN=$2
 PRODUCT=$(<$3)
 CHANGELOG=$(<$4)
+LICENSE=$(<$5)
 
-# https://stackoverflow.com/a/13466143
+# https://stackoverflow.com/a/50380697
 json_escape () {
-  printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
+  echo "$1" | jq -aRs .
 }
 
 ESCAPED_PRODUCT=`json_escape "$PRODUCT"`
 ESCAPED_CHANGELOG=`json_escape "$CHANGELOG"`
+ESCAPED_LICENSE=`json_escape "$LICENSE"`
 
-JSON=$(echo "{\"text\":$ESCAPED_PRODUCT}" "{\"changelog\":$ESCAPED_CHANGELOG}" | jq -s add)
+JSON=$(echo "{\"text\":$ESCAPED_PRODUCT}" "{\"changelog\":$ESCAPED_CHANGELOG}" "{\"license\":$ESCAPED_LICENSE}" | jq -s add)
 
 # TODO Define and provide more product details within the 
 # repository e.g name, style, vendor, icon, hidden, faq.
