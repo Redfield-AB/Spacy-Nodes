@@ -67,13 +67,7 @@
          <page
                class="se.redfield.textprocessing.prefs.SpacyPreferencePage"
                id="se.redfield.textprocessing.prefs.SpacyPreferencePage"
-               name="Redfield Textprocessing">
-         </page>
-         <page
-               category="se.redfield.textprocessing.prefs.SpacyPreferencePage"
-               class="se.redfield.textprocessing.prefs.LicensePreferencePage"
-               id="se.redfield.textprocessing.prefs.LicensePreferencePage"
-               name="License">
+               name="Redfield NLP Nodes">
          </page>
       </extension>
       <extension
