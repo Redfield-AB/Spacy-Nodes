@@ -87,7 +87,7 @@ public class BertClassifierNodeModel extends NodeModel {
 	private BufferedDataTable runTrain(BertModelConfig bertModel, FileStore fileStore, ClassifierInput input,
 			ExecutionContext exec) throws PythonKernelCleanupException, DLInvalidEnvironmentException,
 			PythonIOException, CanceledExecutionException {
-		try (BertCommands commands = new BertCommands()) {
+		try (BertCommands commands = new BertCommands(settings.getPythonCommand())) {
 			commands.putDataTable(input.getTrainingTable(),
 					exec.createSubProgress(input.hasValidationTable() ? 0.05 : 0.1));
 			if (input.hasValidationTable()) {

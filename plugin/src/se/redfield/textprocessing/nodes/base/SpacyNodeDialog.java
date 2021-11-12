@@ -25,12 +25,14 @@ import org.knime.core.node.defaultnodesettings.DialogComponentFileChooser;
 import org.knime.core.node.defaultnodesettings.DialogComponentString;
 import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.textprocessing.data.DocumentValue;
+import org.knime.python2.config.PythonFixedVersionExecutableSelectionPanel;
 
 import se.redfield.textprocessing.core.SpacyModel;
 
 public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 	private SpacyNodeSettings settings = new SpacyNodeSettings();
 	private JComboBox<SpacyModel> cbModels;
+	private final PythonFixedVersionExecutableSelectionPanel selector;
 
 	public SpacyNodeDialog() {
 		this(false);
@@ -43,6 +45,8 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 	 */
 	@SuppressWarnings("unchecked")
 	public SpacyNodeDialog(boolean acceptStringsColumns) {
+		selector = new PythonFixedVersionExecutableSelectionPanel(this, settings.getPythonCommand());
+
 		Class<? extends DataValue> classFilter = acceptStringsColumns ? StringValue.class : DocumentValue.class;
 
 		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:", 0, true,
@@ -50,7 +54,9 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 		addDialogComponent(new DialogComponentBoolean(settings.getReplaceColumnModel(), "Replace column"));
 		setHorizontalPlacement(true);
 		addDialogComponent(new DialogComponentString(settings.getAppendedColumnNameModel(), "Append Column"));
+
 		addTab("Model", createModelSelector());
+		addTab("Python", selector);
 	}
 
 	private Component createModelSelector() {
@@ -80,16 +86,17 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 	public void loadAdditionalSettingsFrom(NodeSettingsRO settings, PortObjectSpec[] specs)
 			throws NotConfigurableException {
 		try {
-			this.settings.loadSettings(settings);
+			this.settings.loadSettingsFrom(settings);
 		} catch (InvalidSettingsException e) {
 			// ignore
 		}
 
 		cbModels.setSelectedItem(this.settings.getSpacyModel());
+		selector.loadSettingsFrom(settings);
 	}
 
 	@Override
 	public void saveAdditionalSettingsTo(NodeSettingsWO settings) throws InvalidSettingsException {
-		this.settings.saveSettings(settings);
+		this.settings.saveSettingsTo(settings);
 	}
 }

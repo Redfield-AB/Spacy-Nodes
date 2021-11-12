@@ -11,7 +11,6 @@ import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.dl.core.DLInvalidEnvironmentException;
-import org.knime.dl.python.prefs.DLPythonPreferences;
 import org.knime.python2.PythonCommand;
 import org.knime.python2.kernel.PythonCancelable;
 import org.knime.python2.kernel.PythonCanceledExecutionException;
@@ -28,13 +27,12 @@ public class PythonContext implements AutoCloseable {
 
 	private final PythonKernel kernel;
 
-	public PythonContext() throws DLInvalidEnvironmentException {
-		kernel = createKernel();
+	public PythonContext(PythonCommand command) throws DLInvalidEnvironmentException {
+		kernel = createKernel(command);
 	}
 
-	private static PythonKernel createKernel() throws DLInvalidEnvironmentException {
+	private static PythonKernel createKernel(PythonCommand command) throws DLInvalidEnvironmentException {
 		PythonKernelOptions options = getKernelOptions();
-		PythonCommand command = getCommand();
 		try {
 			PythonKernel kernel = PythonKernelQueue.getNextKernel(command, Collections.emptySet(),
 					Collections.emptySet(), options, PythonCancelable.NOT_CANCELABLE);
@@ -51,10 +49,6 @@ public class PythonContext implements AutoCloseable {
 
 	private static PythonKernelOptions getKernelOptions() {
 		return new PythonKernelOptions().forAddedAdditionalRequiredModuleNames(Arrays.asList("spacy"));
-	}
-
-	private static PythonCommand getCommand() {
-		return DLPythonPreferences.getPythonTF2CommandPreference();
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		BufferedDataTable inTable = inData[0];
 		settings.getSpacyModel().ensureDownloaded();
 
-		try (PythonContext ctx = new PythonContext()) {
+		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand())) {
 			ctx.putDataTable(prepareInputTable(inTable, exec), exec);
 			ctx.executeInKernel(createExecuteScript(), exec);
 			BufferedDataTable res = ctx.getDataTable(exec, exec);
@@ -181,7 +181,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	@Override
 	protected void saveSettingsTo(NodeSettingsWO settings) {
-		this.settings.saveSettings(settings);
+		this.settings.saveSettingsTo(settings);
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	@Override
 	protected void loadValidatedSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
-		this.settings.loadSettings(settings);
+		this.settings.loadSettingsFrom(settings);
 	}
 
 	@Override

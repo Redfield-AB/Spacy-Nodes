@@ -64,7 +64,7 @@ public class BertEmbedder {
 	public BufferedDataTable computeEmbeddings(BertPortObjectBase bertObject, BufferedDataTable inTable,
 			ExecutionContext exec) throws PythonIOException, CanceledExecutionException, PythonKernelCleanupException,
 			DLInvalidEnvironmentException {
-		try (BertCommands commands = new BertCommands()) {
+		try (BertCommands commands = new BertCommands(settings.getPythonCommand())) {
 			commands.putDataTable(inTable, exec.createSubProgress(0.1));
 			commands.executeInKernel(computeEmbeddingsScript(bertObject), exec.createSubProgress(0.8));
 			BufferedDataTable res = commands.getDataTable(BertCommands.VAR_OUTPUT_TABLE, exec,

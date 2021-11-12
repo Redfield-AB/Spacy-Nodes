@@ -12,6 +12,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelIntegerBounded;
 
 import se.redfield.bert.setting.InputSettings;
+import se.redfield.bert.setting.PythonNodeSettings;
 
 /**
  * Settings for the {@link BertEmbedderNodeModel} node.
@@ -19,7 +20,7 @@ import se.redfield.bert.setting.InputSettings;
  * @author Alexander Bondaletov
  *
  */
-public class BertEmbedderSettings {
+public class BertEmbedderSettings extends PythonNodeSettings {
 	private static final String KEY_INPUT_SETTINGS = "input";
 	private static final String KEY_BATCH_SIZE = "batchSize";
 	private static final String KEY_INCLUDE_SEQ_EMBEDDINGS = "includeSeqEmbeddings";
@@ -42,7 +43,9 @@ public class BertEmbedderSettings {
 	 * 
 	 * @param settings
 	 */
+	@Override
 	public void saveSettingsTo(NodeSettingsWO settings) {
+		super.saveSettingsTo(settings);
 		inputSettings.saveSettingsTo(settings.addNodeSettings(KEY_INPUT_SETTINGS));
 		batchSize.saveSettingsTo(settings);
 		includeSeqEmbeddings.saveSettingsTo(settings);
@@ -89,7 +92,9 @@ public class BertEmbedderSettings {
 	 * @param settings
 	 * @throws InvalidSettingsException
 	 */
+	@Override
 	public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
+		super.loadSettingsFrom(settings);
 		inputSettings.loadSettingsFrom(settings.getNodeSettings(KEY_INPUT_SETTINGS));
 		batchSize.loadSettingsFrom(settings);
 		includeSeqEmbeddings.loadSettingsFrom(settings);

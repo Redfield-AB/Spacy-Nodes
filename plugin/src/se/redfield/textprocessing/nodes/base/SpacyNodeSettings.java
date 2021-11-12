@@ -9,9 +9,10 @@ import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 
+import se.redfield.bert.setting.PythonNodeSettings;
 import se.redfield.textprocessing.core.SpacyModel;
 
-public class SpacyNodeSettings {
+public class SpacyNodeSettings extends PythonNodeSettings {
 
 	private static final String KEY_COLUMN = "column";
 	private static final String KEY_MODEL = "model";
@@ -92,7 +93,9 @@ public class SpacyNodeSettings {
 		}
 	}
 
-	public void saveSettings(NodeSettingsWO settings) {
+	@Override
+	public void saveSettingsTo(NodeSettingsWO settings) {
+		super.saveSettingsTo(settings);
 		column.saveSettingsTo(settings);
 		settings.addString(KEY_MODEL, spacyModel.getPackageName());
 		localModelPath.saveSettingsTo(settings);
@@ -100,7 +103,9 @@ public class SpacyNodeSettings {
 		appendedColumnName.saveSettingsTo(settings);
 	}
 
-	public void loadSettings(NodeSettingsRO settings) throws InvalidSettingsException {
+	@Override
+	public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
+		super.loadSettingsFrom(settings);
 		column.loadSettingsFrom(settings);
 		spacyModel = SpacyModel.fromPackageName(settings.getString(KEY_MODEL));
 		localModelPath.loadSettingsFrom(settings);
@@ -110,7 +115,7 @@ public class SpacyNodeSettings {
 
 	public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
 		SpacyNodeSettings temp = new SpacyNodeSettings();
-		temp.loadSettings(settings);
+		temp.loadSettingsFrom(settings);
 		temp.validate();
 	}
 
