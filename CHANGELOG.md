@@ -2,6 +2,10 @@
 
 This is the initial release of Redfiel NLP nodes extension for Knime.
 
+## [1.0.1] - 2021-11-18
+### Added
+Conda environment flow variables support
+
 ## [1.0.0] - 2021-10-07
 ### Added
 

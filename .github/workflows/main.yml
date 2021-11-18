@@ -43,7 +43,7 @@ jobs:
 
       - name: Upload Docs
         # https://stackoverflow.com/questions/58139406/only-run-job-on-specific-branch-with-github-actions
-        if: github.ref == 'refs/heads/release/4.3'
+        if: github.ref == 'refs/heads/release/4.4'
         run: |
           chmod a+x update-product.sh
           ./update-product.sh https://nodepit.com/api/product/redfield-nlp-nodes $PRODUCT_EDIT_TOKEN PRODUCT.md CHANGELOG.md LICENSE.md

@@ -2,7 +2,7 @@
 <feature
       id="se.redfield.textprocessing.feature"
       label="Redfield NLP Nodes"
-      version="1.0.0.qualifier"
+      version="1.0.1.qualifier"
       provider-name="Redfield AB">
 
    <description>

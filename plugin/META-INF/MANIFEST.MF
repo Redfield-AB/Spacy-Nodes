@@ -3,7 +3,7 @@ Automatic-Module-Name: se.redfield.textprocessing.plugin
 Bundle-ManifestVersion: 2
 Bundle-Name: Redfield Textprocessing extension for KNIME Workbench
 Bundle-SymbolicName: se.redfield.textprocessing.plugin; singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-ClassPath: .,
  lib/
 Bundle-Activator: se.redfield.textprocessing.SpacyPlugin
