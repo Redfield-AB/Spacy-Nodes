@@ -27,7 +27,16 @@
         	<option name="spaCy model">
         		Pick one of the official spaCy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files.
         	</option>
-        </tab>                
+        </tab>          
+        <tab name="Python">
+    		<option name="Python">
+    			Select one of Python execution environment options:
+    			<ul>
+        			<li>use default Python environment for Deep Learning</li>
+        			<li>use Conda environment</li>
+        		</ul>
+    		</option>
+        </tab>              
     </fullDescription>
     
     <ports>

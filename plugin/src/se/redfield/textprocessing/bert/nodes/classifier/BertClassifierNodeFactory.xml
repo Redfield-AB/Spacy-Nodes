@@ -37,7 +37,15 @@
         		Available <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers">optimizers</a> and their configuration.
         	</option>
         </tab>
-        
+        <tab name="Python">
+    		<option name="Python">
+    			Select one of Python execution environment options:
+    			<ul>
+        			<li>use default Python environment for Deep Learning</li>
+        			<li>use Conda environment</li>
+        		</ul>
+    		</option>
+        </tab>        
     </fullDescription>
     
     <ports>
