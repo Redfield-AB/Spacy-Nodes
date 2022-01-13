@@ -34,7 +34,6 @@ import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
 
-import se.redfield.textprocessing.SpacyPlugin;
 import se.redfield.textprocessing.core.PythonContext;
 
 public abstract class SpacyBaseNodeModel extends NodeModel {
@@ -110,8 +109,6 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	@Override
 	protected BufferedDataTable[] execute(BufferedDataTable[] inData, ExecutionContext exec) throws Exception {
-		SpacyPlugin.checkLicense();
-
 		BufferedDataTable inTable = inData[0];
 		settings.getSpacyModel().ensureDownloaded();
 

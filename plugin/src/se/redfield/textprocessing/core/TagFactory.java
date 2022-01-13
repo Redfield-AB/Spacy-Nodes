@@ -54,7 +54,7 @@ public class TagFactory {
 		}
 
 		if (tags.isEmpty()) {
-			LOGGER.warn("Unknown tag: " + tag);
+			LOGGER.debug("Unknown tag: " + tag);
 		}
 
 		return tags;

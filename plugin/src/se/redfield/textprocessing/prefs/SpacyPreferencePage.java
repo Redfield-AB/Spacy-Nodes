@@ -8,10 +8,6 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import com.nodepit.licensing.LicensableProduct;
-import com.nodepit.licensing.LicenseManager;
-import com.nodepit.licensing.ui.LicenseFileFieldEditor;
-
 import se.redfield.textprocessing.SpacyPlugin;
 
 public class SpacyPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -28,10 +24,7 @@ public class SpacyPreferencePage extends FieldEditorPreferencePage implements IW
 
 	@Override
 	protected void createFieldEditors() {
-		LicensableProduct product = LicenseManager.getProduct("se.redfield.product");
-
 		addField(new DirectoryFieldEditor(SpacyPreferenceInitializer.PREF_CACHE_DIR, "Cache dir",
 				getFieldEditorParent()));
-		addField(new LicenseFileFieldEditor(product, getFieldEditorParent()));
 	}
 }

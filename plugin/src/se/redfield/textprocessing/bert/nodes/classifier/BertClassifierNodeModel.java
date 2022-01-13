@@ -34,7 +34,6 @@ import se.redfield.bert.nodes.port.BertClassifierPortObjectSpec;
 import se.redfield.bert.nodes.port.BertModelConfig;
 import se.redfield.bert.nodes.port.BertModelPortObject;
 import se.redfield.bert.nodes.port.BertModelPortObjectSpec;
-import se.redfield.textprocessing.SpacyPlugin;
 
 /**
  * BERT Classifier node. Takes BERT model and constructs classifier that then
@@ -68,7 +67,6 @@ public class BertClassifierNodeModel extends NodeModel {
 
 	@Override
 	protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
-		SpacyPlugin.checkLicense();
 		BertModelPortObject bertModel = (BertModelPortObject) inObjects[PORT_BERT_MODEL];
 		FileStore fileStore = exec.createFileStore("model");
 

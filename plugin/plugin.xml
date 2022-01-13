@@ -71,13 +71,6 @@
          </page>
       </extension>
       <extension
-            point="com.nodepit.licensing.plugin.LicensableProduct">
-         <LicensableProduct
-               id="se.redfield.product"
-               publicKeyPath="resources/se.redfield.product.license.pub.gpg">
-         </LicensableProduct>
-      </extension>
-      <extension
             point="org.knime.ext.textprocessing.TagSet">
          <TagSet
                TagBuilder="se.redfield.textprocessing.data.tag.SpacyNerTagBuilder">

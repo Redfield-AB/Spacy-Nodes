@@ -22,7 +22,6 @@ import org.knime.core.node.port.PortType;
 
 import se.redfield.bert.nodes.port.BertModelPortObject;
 import se.redfield.bert.nodes.port.BertPortObjectBase;
-import se.redfield.textprocessing.SpacyPlugin;
 
 /**
  * 
@@ -57,7 +56,6 @@ public class BertEmbedderNodeModel extends NodeModel {
 
 	@Override
 	protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
-		SpacyPlugin.checkLicense();
 		BertPortObjectBase obj = (BertPortObjectBase) inObjects[PORT_BERT_MODEL];
 		return new PortObject[] {
 				embedder.computeEmbeddings(obj, (BufferedDataTable) inObjects[PORT_DATA_TABLE], exec) };

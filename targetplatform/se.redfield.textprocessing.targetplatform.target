@@ -29,10 +29,6 @@
 <unit id="org.knime.features.ext.textprocessing.feature.group" version="0.0.0"/>
 <repository location="https://update.knime.com/analytics-platform/4.4/"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="com.nodepit.licensing.feature.feature.group" version="0.0.0"/>
-<repository location="https://download.nodepit.com/nodepit-licensing/1.1.0"/>
-</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 		<repository location="https://update.knime.com/community-contributions/trusted/4.4"/>
 			<unit id="se.redfield.bert.feature.feature.group" version="0.0.0"/>
