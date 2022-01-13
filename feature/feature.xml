@@ -57,10 +57,6 @@
  5. FasterXML Jackson: Copyright (C)2009-2011 FasterXML, LLC. All rights reserved unless otherwise indicated. Licensed the under the Apache 2.0 License.  Available at https://github.com/FasterXML/jackson-core.
    </license>
 
-   <requires>
-      <import feature="com.nodepit.licensing.feature" version="1.1.0" match="compatible"/>
-   </requires>
-
    <plugin
          id="se.redfield.textprocessing.plugin"
          download-size="0"
