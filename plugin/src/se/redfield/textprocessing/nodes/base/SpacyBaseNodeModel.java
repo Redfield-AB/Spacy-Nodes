@@ -27,6 +27,9 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.port.PortObject;
+import org.knime.core.node.port.PortObjectSpec;
+import org.knime.core.node.port.PortType;
 import org.knime.dl.python.util.DLPythonSourceCodeBuilder;
 import org.knime.dl.python.util.DLPythonUtils;
 import org.knime.ext.textprocessing.data.DocumentCell;
@@ -35,20 +38,25 @@ import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
 
 import se.redfield.textprocessing.core.PythonContext;
+import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
 
 public abstract class SpacyBaseNodeModel extends NodeModel {
+	public static final int PORT_MODEL = 0;
+	public static final int PORT_TABLE = 1;
+
 	protected final SpacyNodeSettings settings;
 	private final boolean acceptStringColumn;
 
 	protected SpacyBaseNodeModel(SpacyNodeSettings settings, boolean acceptStringColumn) {
-		super(1, 1);
+		super(new PortType[] { SpacyModelPortObject.TYPE, BufferedDataTable.TYPE },
+				new PortType[] { SpacyModelPortObject.TYPE, BufferedDataTable.TYPE });
 		this.settings = settings;
 		this.acceptStringColumn = acceptStringColumn;
 	}
 
 	@Override
-	protected DataTableSpec[] configure(DataTableSpec[] inSpecs) throws InvalidSettingsException {
-		DataTableSpec inSpec = inSpecs[0];
+	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+		DataTableSpec inSpec = (DataTableSpec) inSpecs[PORT_TABLE];
 
 		if (settings.getColumn().isEmpty()) {
 			attemptAutoconfigureColumn(inSpec);
@@ -56,7 +64,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		settings.validate();
 		validateSpec(inSpec);
 
-		return new DataTableSpec[] { createSpec(inSpec) };
+		return new PortObjectSpec[] { inSpecs[PORT_MODEL], createSpec(inSpec) };
 	}
 
 	private void attemptAutoconfigureColumn(DataTableSpec spec) {
@@ -108,13 +116,13 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	}
 
 	@Override
-	protected BufferedDataTable[] execute(BufferedDataTable[] inData, ExecutionContext exec) throws Exception {
-		BufferedDataTable inTable = inData[0];
-		settings.getSpacyModel().ensureDownloaded();
+	protected PortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
+		SpacyModelPortObject model = (SpacyModelPortObject) inData[PORT_MODEL];
+		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
 
 		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand())) {
 			ctx.putDataTable(prepareInputTable(inTable, exec), exec);
-			ctx.executeInKernel(createExecuteScript(), exec);
+			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec);
 			BufferedDataTable res = ctx.getDataTable(exec, exec);
 
 			BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
@@ -131,14 +139,14 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			}
 			r.remove(resColIdx);
 
-			return new BufferedDataTable[] { exec.createColumnRearrangeTable(joined, r, exec) };
+			return new PortObject[] { model, exec.createColumnRearrangeTable(joined, r, exec) };
 		}
 	}
 
-	private String createExecuteScript() {
+	private String createExecuteScript(String modelPath) {
 		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyNlp import " + getSpacyMethod());
 		b.a(PythonContext.VAR_OUTPUT_TABLE).a(" = ").a(getSpacyMethod()).a(".run(").n();
-		b.a("model_handle = ").asr(settings.getSpacyModelPath()).a(",").n();
+		b.a("model_handle = ").asr(modelPath).a(",").n();
 		b.a("input_table = ").a(PythonContext.VAR_INPUT_TABLE).a(",").n();
 		b.a("column = ").as(settings.getColumn()).a(")").n();
 		return b.toString();

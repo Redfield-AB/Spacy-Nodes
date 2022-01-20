@@ -39,6 +39,10 @@
       <node
             category-path="/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.bert.nodes.embedder.BertEmbedderNodeFactory">
+      </node>
+      <node
+            category-path="/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeFactory">
       </node>    
    </extension>
 	<extension
@@ -78,6 +82,18 @@
          <TagSet
                TagBuilder="se.redfield.textprocessing.data.tag.SpacyMorphTagBuilder">
          </TagSet>
+      </extension>
+      <extension
+            point="org.knime.core.PortType">
+         <portType
+               color="#09a4d7"
+               hidden="false"
+               name="se.redfield.textprocessing.nodes.port.SpacyModelPortObject"
+               objectClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObject"
+               objectSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObject$Serializer"
+               specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
+               specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
+         </portType>
       </extension>
    
 </plugin>
