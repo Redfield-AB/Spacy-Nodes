@@ -36,8 +36,8 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 
 		Class<? extends DataValue> classFilter = acceptStringsColumns ? StringValue.class : DocumentValue.class;
 
-		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:", 0, true,
-				classFilter));
+		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:",
+				SpacyBaseNodeModel.PORT_TABLE, true, classFilter));
 		addDialogComponent(new DialogComponentBoolean(settings.getReplaceColumnModel(), "Replace column"));
 		setHorizontalPlacement(true);
 		addDialogComponent(new DialogComponentString(settings.getAppendedColumnNameModel(), "Append Column"));
