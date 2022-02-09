@@ -3,9 +3,15 @@
 */
 package se.redfield.textprocessing.nodes.selector;
 
+import java.util.Optional;
+
+import org.knime.core.node.ConfigurableNodeFactory;
 import org.knime.core.node.NodeDialogPane;
-import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
+import org.knime.core.node.context.NodeCreationConfiguration;
+import org.knime.filehandling.core.port.FileSystemPortObject;
+
+import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
 
 /**
  * The factory class for the {@link SpacyModelSelectorNodeModel} node.
@@ -13,11 +19,24 @@ import org.knime.core.node.NodeView;
  * @author Alexander Bondaletov
  *
  */
-public class SpacyModelSelectorNodeFactory extends NodeFactory<SpacyModelSelectorNodeModel> {
+public class SpacyModelSelectorNodeFactory extends ConfigurableNodeFactory<SpacyModelSelectorNodeModel> {
+
+	/**
+	 * File System Connection port name.
+	 */
+	public static final String FILE_SYSTEM_CONNECTION_PORT_NAME = "File System Connection";
 
 	@Override
-	public SpacyModelSelectorNodeModel createNodeModel() {
-		return new SpacyModelSelectorNodeModel();
+	protected Optional<PortsConfigurationBuilder> createPortsConfigBuilder() {
+		PortsConfigurationBuilder builder = new PortsConfigurationBuilder();
+		builder.addOptionalInputPortGroup(FILE_SYSTEM_CONNECTION_PORT_NAME, FileSystemPortObject.TYPE);
+		builder.addFixedOutputPortGroup("Spacy Model", SpacyModelPortObject.TYPE);
+		return Optional.of(builder);
+	}
+
+	@Override
+	protected SpacyModelSelectorNodeModel createNodeModel(NodeCreationConfiguration creationConfig) {
+		return new SpacyModelSelectorNodeModel(creationConfig.getPortConfig().orElseThrow(IllegalStateException::new));
 	}
 
 	@Override
@@ -36,8 +55,8 @@ public class SpacyModelSelectorNodeFactory extends NodeFactory<SpacyModelSelecto
 	}
 
 	@Override
-	protected NodeDialogPane createNodeDialogPane() {
-		return new SpacyModelSelectorNodeDialog();
+	protected NodeDialogPane createNodeDialogPane(NodeCreationConfiguration creationConfig) {
+		return new SpacyModelSelectorNodeDialog(creationConfig.getPortConfig().orElseThrow(IllegalStateException::new));
 	}
 
 }

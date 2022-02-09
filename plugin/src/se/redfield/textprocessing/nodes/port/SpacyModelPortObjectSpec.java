@@ -8,6 +8,8 @@ import org.knime.core.node.ModelContentRO;
 import org.knime.core.node.ModelContentWO;
 import org.knime.core.node.port.AbstractSimplePortObjectSpec;
 
+import se.redfield.textprocessing.core.model.SpacyModelDescription;
+
 public class SpacyModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 	/**
 	 * The serializer for the {@link SpacyModelPortObjectSpec}

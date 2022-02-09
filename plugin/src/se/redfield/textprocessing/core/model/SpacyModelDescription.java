@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.port;
+package se.redfield.textprocessing.core.model;
 
 import org.knime.core.node.ModelContentRO;
 import org.knime.core.node.ModelContentWO;

@@ -3,19 +3,10 @@
 */
 package se.redfield.textprocessing.nodes.selector;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.util.EnumSet;
 
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.io.FileUtils;
 import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
@@ -23,96 +14,57 @@ import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeModel;
 import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
+import org.knime.core.node.context.ports.PortsConfiguration;
 import org.knime.core.node.port.PortObject;
 import org.knime.core.node.port.PortObjectSpec;
-import org.knime.core.node.port.PortType;
+import org.knime.filehandling.core.defaultnodesettings.status.NodeModelStatusConsumer;
+import org.knime.filehandling.core.defaultnodesettings.status.StatusMessage.MessageType;
 
-import se.redfield.textprocessing.nodes.port.SpacyModelDescription;
+import se.redfield.textprocessing.core.model.SpacyModelDescription;
+import se.redfield.textprocessing.core.model.download.FsModelDownloader;
+import se.redfield.textprocessing.core.model.download.RepositoryModelDownloader;
+import se.redfield.textprocessing.core.model.download.SpacyModelDownloader;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
-import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
+import se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeSettings.SpacyModelSelectionMode;
 
 public class SpacyModelSelectorNodeModel extends NodeModel {
 
-	private final SpacyModelSelectorNodeSettings settings = new SpacyModelSelectorNodeSettings();
+	private final SpacyModelSelectorNodeSettings settings;
+	private final NodeModelStatusConsumer statusConsumer = new NodeModelStatusConsumer(
+			EnumSet.of(MessageType.ERROR, MessageType.WARNING));
 
-	protected SpacyModelSelectorNodeModel() {
-		super(new PortType[] {}, new PortType[] { SpacyModelPortObject.TYPE });
+	protected SpacyModelSelectorNodeModel(PortsConfiguration portsConfig) {
+		super(portsConfig.getInputPorts(), portsConfig.getOutputPorts());
+		settings = new SpacyModelSelectorNodeSettings(portsConfig);
 	}
 
 	@Override
 	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
 		settings.validate();
-		return new PortObjectSpec[] { createSpec() };
+		settings.configure(inSpecs, statusConsumer);
+		statusConsumer.setWarningsIfRequired(this::setWarningMessage);
+		SpacyModelDownloader downloader = createDownloader();
+		return new PortObjectSpec[] { createSpec(downloader.getModelDescripton()) };
 	}
 
-	private SpacyModelPortObjectSpec createSpec() {
-		SpacyModelDescription model = new SpacyModelDescription(
-				settings.getModelDef().getModelDownloadDir().getAbsolutePath());
-		return new SpacyModelPortObjectSpec(model);
+	private static SpacyModelPortObjectSpec createSpec(SpacyModelDescription desc) {
+		return new SpacyModelPortObjectSpec(desc);
 	}
 
 	@Override
 	protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
-		ensureModelDownloaded(exec);
-		return new PortObject[] { new SpacyModelPortObject(createSpec()) };
+		SpacyModelDownloader downloader = createDownloader();
+		downloader.ensureDownloaded(exec);
+		return new PortObject[] { new SpacyModelPortObject(createSpec(downloader.getModelDescripton())) };
 	}
 
-	private void ensureModelDownloaded(ExecutionContext exec) throws IOException {
-		if (!Files.isDirectory(settings.getModelDef().getModelDownloadDir().toPath())) {
-			downloadModel(exec);
+	private SpacyModelDownloader createDownloader() {
+		if (settings.getSelectionMode() == SpacyModelSelectionMode.SPACY) {
+			return new RepositoryModelDownloader(settings.getModelDef());
+		} else {
+			return new FsModelDownloader(settings.getLocalPathModel());
 		}
-		exec.setProgress(1);
-	}
-
-	private void downloadModel(ExecutionContext exec) throws IOException {
-		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
-		File archive = new File(cacheDir, settings.getModelDef().getId() + ".tar.gz");
-
-		exec.setProgress("Downloading the model");
-		FileUtils.copyURLToFile(new URL(settings.getModelDef().getUrl()), archive);
-		exec.setProgress("Unpacking the model");
-
-		String packagePrefix = findPackagePrefix(archive);
-
-		try (InputStream fi = Files.newInputStream(archive.toPath());
-				BufferedInputStream bi = new BufferedInputStream(fi);
-				GzipCompressorInputStream gzi = new GzipCompressorInputStream(bi);
-				TarArchiveInputStream ti = new TarArchiveInputStream(gzi)) {
-
-			ArchiveEntry entry;
-			while ((entry = ti.getNextEntry()) != null) {
-				if (!entry.isDirectory() && entry.getName().startsWith(packagePrefix)) {
-					String name = settings.getModelDef().getId() + "/"
-							+ entry.getName().substring(packagePrefix.length() + 1);
-					Path newPath = cacheDir.toPath().resolve(name);
-
-					Path parent = newPath.getParent();
-					if (parent != null && Files.notExists(parent)) {
-						Files.createDirectories(parent);
-					}
-
-					Files.copy(ti, newPath, StandardCopyOption.REPLACE_EXISTING);
-				}
-			}
-		}
-		Files.delete(archive.toPath());
-	}
-
-	private static String findPackagePrefix(File archive) throws IOException {
-		try (InputStream fi = Files.newInputStream(archive.toPath());
-				BufferedInputStream bi = new BufferedInputStream(fi);
-				GzipCompressorInputStream gzi = new GzipCompressorInputStream(bi);
-				TarArchiveInputStream ti = new TarArchiveInputStream(gzi)) {
-
-			ArchiveEntry entry;
-			while ((entry = ti.getNextEntry()) != null) {
-				if (entry.getName().endsWith("config.cfg")) {
-					return entry.getName().substring(0, entry.getName().lastIndexOf('/'));
-				}
-			}
-		}
-		throw new IOException("config.cfg is not found in the archive");
 	}
 
 	@Override

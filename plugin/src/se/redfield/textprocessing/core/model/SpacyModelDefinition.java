@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.selector;
+package se.redfield.textprocessing.core.model;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -99,15 +98,4 @@ public class SpacyModelDefinition {
 		}
 	}
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-		Gson gson = new GsonBuilder().create();
-		File f = new File("config/spacy-models.json");
-		System.out.println(f.getAbsolutePath());
-		try (FileReader r = new FileReader(f)) {
-			List<SpacyModelDefinition> list = gson.fromJson(r, new TypeToken<List<SpacyModelDefinition>>() {
-			}.getType());
-
-			list.forEach(i -> System.out.println(i.size + i.url));
-		}
-	}
 }
