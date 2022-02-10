@@ -88,7 +88,9 @@ public class SpacyModelSelectorNodeSettings {
 
 	public void configure(PortObjectSpec[] inSpecs, Consumer<StatusMessage> msgConsumer)
 			throws InvalidSettingsException {
-		localPath.configureInModel(inSpecs, msgConsumer);
+		if (selectionMode == SpacyModelSelectionMode.LOCAL) {
+			localPath.configureInModel(inSpecs, msgConsumer);
+		}
 	}
 
 	public enum SpacyModelSelectionMode {
