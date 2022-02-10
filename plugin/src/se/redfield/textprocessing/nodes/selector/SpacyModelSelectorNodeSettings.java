@@ -33,7 +33,7 @@ public class SpacyModelSelectorNodeSettings {
 
 	public SpacyModelSelectorNodeSettings(PortsConfiguration portsConfig) {
 		this.portsConfig = portsConfig;
-		modelDef = null;// SpacyModelDefinition.list().get(0);
+		modelDef = null;
 		selectionMode = SpacyModelSelectionMode.SPACY;
 		localPath = new SettingsModelReaderFileChooser(KEY_LOCAL_PATH, portsConfig,
 				SpacyModelSelectorNodeFactory.FILE_SYSTEM_CONNECTION_PORT_NAME, EnumConfig.create(FilterMode.FOLDER),
@@ -61,7 +61,9 @@ public class SpacyModelSelectorNodeSettings {
 	}
 
 	public void saveSettingsTo(NodeSettingsWO settings) {
-		settings.addString(KEY_MODEL_DEF, modelDef.getId());
+		if (modelDef != null) {
+			settings.addString(KEY_MODEL_DEF, modelDef.getId());
+		}
 		settings.addString(KEY_SELECTION_MODE, selectionMode.getKey());
 		localPath.saveSettingsTo(settings);
 	}
@@ -79,9 +81,14 @@ public class SpacyModelSelectorNodeSettings {
 	}
 
 	public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
-		String modelId = settings.getString(KEY_MODEL_DEF);
-		modelDef = SpacyModelDefinition.list().stream().filter(m -> m.getId().equals(modelId)).findFirst().orElseThrow(
-				() -> new InvalidSettingsException("Could not find a model definition for the model: " + modelId));
+		String modelId = settings.getString(KEY_MODEL_DEF, null);
+		if (modelId != null) {
+			modelDef = SpacyModelDefinition.list().stream().filter(m -> m.getId().equals(modelId)).findFirst()
+					.orElseThrow(() -> new InvalidSettingsException(
+							"Could not find a model definition for the model: " + modelId));
+		} else {
+			modelDef = null;
+		}
 		selectionMode = SpacyModelSelectionMode.fromKey(settings.getString(KEY_SELECTION_MODE));
 		localPath.loadSettingsFrom(settings);
 	}
