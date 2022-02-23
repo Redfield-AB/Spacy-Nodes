@@ -10,6 +10,7 @@ import org.knime.ext.textprocessing.data.Tag;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.core.TagFactory;
 import se.redfield.textprocessing.core.TaggerDocumentProcessor;
+import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
@@ -29,6 +30,11 @@ public class SpacyPosTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 	@Override
 	protected String getSpacyMethod() {
 		return "SpacyPosTagger";
+	}
+
+	@Override
+	protected SpacyFeature getFeature() {
+		return SpacyFeature.POS;
 	}
 
 	@Override

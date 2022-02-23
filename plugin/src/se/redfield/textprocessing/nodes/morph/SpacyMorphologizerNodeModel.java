@@ -11,6 +11,7 @@ import org.knime.ext.textprocessing.data.Tag;
 
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.core.TaggerDocumentProcessor;
+import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.data.tag.SpacyMorphTagBuilder;
 import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
@@ -31,6 +32,11 @@ public class SpacyMorphologizerNodeModel extends SpacyDocumentProcessorNodeModel
 	@Override
 	protected String getSpacyMethod() {
 		return "SpacyMorphonogizer";
+	}
+
+	@Override
+	protected SpacyFeature getFeature() {
+		return SpacyFeature.MORPHOLOGY;
 	}
 
 	@Override

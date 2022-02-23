@@ -70,7 +70,7 @@ def process_models(df: pd.DataFrame):
     res['version']    = df['Version']
     res['lang']       = df['Name'].map(lambda s : s.split('_')[0])
     res['url']        = df['url']
-    res['components'] = df['Components'].map(lambda s : s.split(', '))
+    res['components'] = df['Components'].map(lambda s : [tok.strip() for tok in s.split(',')])
     return res
 
 if __name__ == '__main__':

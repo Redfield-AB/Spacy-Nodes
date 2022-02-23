@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.knime.core.node.ExecutionMonitor;
 
 import se.redfield.textprocessing.core.model.SpacyModelDefinition;
+import se.redfield.textprocessing.core.model.SpacyModelDescription;
 import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
 
 public class RepositoryModelDownloader extends SpacyModelDownloader {
@@ -27,6 +28,11 @@ public class RepositoryModelDownloader extends SpacyModelDownloader {
 
 	public RepositoryModelDownloader(SpacyModelDefinition def) {
 		this.def = def;
+	}
+
+	@Override
+	public SpacyModelDescription getModelDescription(boolean configure) {
+		return new SpacyModelDescription(getModelDownloadDir().getAbsolutePath(), def.getFeatures());
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import org.knime.core.data.container.SingleCellFactory;
 import org.knime.core.data.def.DoubleCell;
 import org.knime.core.node.ExecutionContext;
 
+import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
@@ -30,6 +31,11 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 	@Override
 	protected String getSpacyMethod() {
 		return "SpacyVectorizer";
+	}
+
+	@Override
+	protected SpacyFeature getFeature() {
+		return SpacyFeature.VECTORIZATION;
 	}
 
 	@Override

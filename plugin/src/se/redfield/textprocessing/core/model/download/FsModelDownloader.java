@@ -5,6 +5,7 @@ package se.redfield.textprocessing.core.model.download;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,11 +16,15 @@ import java.nio.file.attribute.BasicFileAttributes;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
+import org.knime.filehandling.core.connections.FSFiles;
 import org.knime.filehandling.core.connections.FSPath;
 import org.knime.filehandling.core.connections.meta.FSType;
 import org.knime.filehandling.core.defaultnodesettings.filechooser.reader.ReadPathAccessor;
 import org.knime.filehandling.core.defaultnodesettings.filechooser.reader.SettingsModelReaderFileChooser;
 
+import se.redfield.textprocessing.core.model.SpacyFeature;
+import se.redfield.textprocessing.core.model.SpacyModelDescription;
+import se.redfield.textprocessing.core.model.SpacyModelMeta;
 import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
 
 public class FsModelDownloader extends SpacyModelDownloader {
@@ -34,18 +39,52 @@ public class FsModelDownloader extends SpacyModelDownloader {
 	}
 
 	@Override
-	protected File getModelDownloadDir() throws InvalidSettingsException {
+	public SpacyModelDescription getModelDescription(boolean configure) throws InvalidSettingsException {
+		if (configure) {
+			return new SpacyModelDescription(fsPath.getLocation().getPath(), null);
+		} else {
+			return readFromMeta();
+		}
+	}
+
+	private SpacyModelDescription readFromMeta() throws InvalidSettingsException {
 		try (ReadPathAccessor accessor = fsPath.createReadPathAccessor()) {
 			FSPath path = accessor.getRootPath(m -> {
 			});
-			if (isLocal) {
-				return new File(path.toAbsolutePath().toString());
-			} else {
-				return new File(getCacheDir(), path.getFileName().toString());
+
+			FSPath metaFilePath = path.resolve(new String[] { "meta.json" });
+			if (!FSFiles.exists(metaFilePath)) {
+				throw new InvalidSettingsException("meta.json file is not found");
+			}
+
+			try (Reader reader = Files.newBufferedReader(metaFilePath)) {
+				SpacyModelMeta meta = SpacyModelMeta.read(reader);
+				return new SpacyModelDescription(getModelDownloadDir(accessor).toString(),
+						SpacyFeature.fromPipeline(meta.getComponents()));
 			}
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
+			throw new InvalidSettingsException(e);
+		}
+	}
+
+	@Override
+	protected File getModelDownloadDir() throws InvalidSettingsException {
+		try (ReadPathAccessor accessor = fsPath.createReadPathAccessor()) {
+			return getModelDownloadDir(accessor);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage(), e);
 			return null;
+		}
+	}
+
+	private File getModelDownloadDir(ReadPathAccessor accessor) throws IOException, InvalidSettingsException {
+		FSPath path = accessor.getRootPath(m -> {
+		});
+		if (isLocal) {
+			return new File(path.toAbsolutePath().toString());
+		} else {
+			return new File(getCacheDir(), path.getFileName().toString());
 		}
 	}
 
@@ -59,7 +98,7 @@ public class FsModelDownloader extends SpacyModelDownloader {
 			try (ReadPathAccessor accessor = fsPath.createReadPathAccessor()) {
 				FSPath path = accessor.getRootPath(m -> {
 				});
-				Path target = getModelDownloadDir().toPath();
+				Path target = getModelDownloadDir(accessor).toPath();
 
 				Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
 

@@ -26,6 +26,7 @@ import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.data.dto.SpacyDocument;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 import se.redfield.textprocessing.data.dto.SpacyWord;
@@ -42,6 +43,11 @@ public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 	@Override
 	protected String getSpacyMethod() {
 		return "SpacyNlp";
+	}
+
+	@Override
+	protected SpacyFeature getFeature() {
+		return SpacyFeature.TOKENIZATION;
 	}
 
 	@Override

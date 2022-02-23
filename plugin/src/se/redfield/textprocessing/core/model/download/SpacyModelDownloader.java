@@ -14,10 +14,6 @@ import se.redfield.textprocessing.core.model.SpacyModelDescription;
 
 public abstract class SpacyModelDownloader {
 
-	public SpacyModelDescription getModelDescripton() throws InvalidSettingsException {
-		return new SpacyModelDescription(getModelDownloadDir().getAbsolutePath());
-	}
-
 	public void ensureDownloaded(ExecutionMonitor exec) throws IOException, InvalidSettingsException {
 		if (!Files.isDirectory(getModelDownloadDir().toPath())) {
 			download(exec);
@@ -27,4 +23,6 @@ public abstract class SpacyModelDownloader {
 	protected abstract File getModelDownloadDir() throws InvalidSettingsException;
 
 	protected abstract void download(ExecutionMonitor exec) throws IOException, InvalidSettingsException;
+
+	public abstract SpacyModelDescription getModelDescription(boolean configure) throws InvalidSettingsException;
 }

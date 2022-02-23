@@ -27,6 +27,7 @@
 <unit id="org.knime.features.workbench.feature.group" version="0.0.0"/>
 <unit id="org.knime.features.dl.tensorflow2.feature.group" version="0.0.0"/>
 <unit id="org.knime.features.ext.textprocessing.feature.group" version="0.0.0"/>
+<unit id="org.knime.features.base.filehandling.feature.group" version="0.0.0"/>
 <repository location="https://update.knime.com/analytics-platform/4.4/"/>
 </location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">

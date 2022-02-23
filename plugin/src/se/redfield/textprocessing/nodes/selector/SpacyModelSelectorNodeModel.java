@@ -45,7 +45,7 @@ public class SpacyModelSelectorNodeModel extends NodeModel {
 		settings.configure(inSpecs, statusConsumer);
 		statusConsumer.setWarningsIfRequired(this::setWarningMessage);
 		SpacyModelDownloader downloader = createDownloader();
-		return new PortObjectSpec[] { createSpec(downloader.getModelDescripton()) };
+		return new PortObjectSpec[] { createSpec(downloader.getModelDescription(true)) };
 	}
 
 	private static SpacyModelPortObjectSpec createSpec(SpacyModelDescription desc) {
@@ -56,7 +56,7 @@ public class SpacyModelSelectorNodeModel extends NodeModel {
 	protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
 		SpacyModelDownloader downloader = createDownloader();
 		downloader.ensureDownloaded(exec);
-		return new PortObject[] { new SpacyModelPortObject(createSpec(downloader.getModelDescripton())) };
+		return new PortObject[] { new SpacyModelPortObject(createSpec(downloader.getModelDescription(false))) };
 	}
 
 	private SpacyModelDownloader createDownloader() {

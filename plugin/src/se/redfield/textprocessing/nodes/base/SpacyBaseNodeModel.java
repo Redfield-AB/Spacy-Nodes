@@ -5,6 +5,7 @@ package se.redfield.textprocessing.nodes.base;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
@@ -38,7 +39,9 @@ import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
 
 import se.redfield.textprocessing.core.PythonContext;
+import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
+import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
 
 public abstract class SpacyBaseNodeModel extends NodeModel {
 	public static final int PORT_MODEL = 0;
@@ -62,7 +65,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			attemptAutoconfigureColumn(inSpec);
 		}
 		settings.validate();
-		validateSpec(inSpec);
+		validateSpec(inSpecs);
 
 		return new PortObjectSpec[] { inSpecs[PORT_MODEL], createSpec(inSpec) };
 	}
@@ -97,17 +100,30 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		return c.createSpec();
 	}
 
-	private void validateSpec(DataTableSpec inSpec) throws InvalidSettingsException {
-		int idx = inSpec.findColumnIndex(settings.getColumn());
+	private void validateSpec(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
+		DataTableSpec tableSpec = (DataTableSpec) inSpecs[PORT_TABLE];
+		int idx = tableSpec.findColumnIndex(settings.getColumn());
 		if (idx < 0) {
 			throw new InvalidSettingsException(
 					String.format("Column '%s' is not found in the table", settings.getColumn()));
 		}
 
-		DataColumnSpec column = inSpec.getColumnSpec(idx);
+		DataColumnSpec column = tableSpec.getColumnSpec(idx);
 		Class<? extends DataValue> valueType = acceptStringColumn ? StringValue.class : DocumentValue.class;
 		if (!column.getType().isCompatible(valueType)) {
 			throw new InvalidSettingsException(String.format("Column '%s' has unsupported type", column.getName()));
+		}
+
+		SpacyModelPortObjectSpec modelSpec = (SpacyModelPortObjectSpec) inSpecs[PORT_MODEL];
+		Set<SpacyFeature> features = modelSpec.getModel().getFeatures();
+
+		if (features == null) {
+			throw new InvalidSettingsException(
+					"Model features are not available. Please execute the model selector node first.");
+		}
+
+		if (!features.contains(getFeature())) {
+			throw new InvalidSettingsException(getFeature() + " is not supported by the provided model.");
 		}
 	}
 
@@ -183,6 +199,8 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	protected abstract CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec);;
 
 	protected abstract String getSpacyMethod();
+
+	protected abstract SpacyFeature getFeature();
 
 	@Override
 	protected void saveSettingsTo(NodeSettingsWO settings) {

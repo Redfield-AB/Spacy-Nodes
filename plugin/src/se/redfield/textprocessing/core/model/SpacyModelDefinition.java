@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.knime.core.node.NodeLogger;
 import org.knime.dl.util.DLUtils;
@@ -32,6 +33,7 @@ public class SpacyModelDefinition {
 	private String lang;
 	private String url;
 	private String[] components;
+	private Set<SpacyFeature> features;
 
 	public String getName() {
 		return name;
@@ -55,6 +57,13 @@ public class SpacyModelDefinition {
 
 	public String getId() {
 		return name + "-" + version;
+	}
+
+	public Set<SpacyFeature> getFeatures() {
+		if (features == null) {
+			features = SpacyFeature.fromPipeline(components);
+		}
+		return features;
 	}
 
 	public File getModelDownloadDir() {

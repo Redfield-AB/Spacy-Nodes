@@ -16,6 +16,7 @@ import org.knime.ext.textprocessing.data.Word;
 
 import se.redfield.textprocessing.core.AbstractSpacyDocumentProcessor;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
+import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.data.tag.SpacyNerTag;
@@ -31,6 +32,11 @@ public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 	@Override
 	protected String getSpacyMethod() {
 		return "SpacyNerTagger";
+	}
+
+	@Override
+	protected SpacyFeature getFeature() {
+		return SpacyFeature.NER;
 	}
 
 	@Override
