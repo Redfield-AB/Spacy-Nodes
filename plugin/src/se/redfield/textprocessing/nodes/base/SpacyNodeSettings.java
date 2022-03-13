@@ -8,20 +8,23 @@ import org.knime.core.node.NodeSettingsRO;
 import org.knime.core.node.NodeSettingsWO;
 import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
+import org.knime.dl.python.prefs.DLPythonPreferences;
+import org.knime.python2.PythonVersion;
+import org.knime.python2.config.PythonCommandConfig;
 
-import se.redfield.bert.setting.PythonNodeSettings;
-
-public class SpacyNodeSettings extends PythonNodeSettings {
+public class SpacyNodeSettings {
 
 	private static final String KEY_COLUMN = "column";
 	private static final String KEY_LOCAL_PATH = "localPath";
 	private static final String KEY_REPLACE_COLUMN = "replaceColumn";
 	private static final String KEY_APPENDED_COLUMN_NAME = "appendedColumnName";
+	private static final String KEY_PYTHON_COMMAND = "pythonCommand";
 
 	private final SettingsModelString column;
 	private final SettingsModelString localModelPath;
 	private final SettingsModelBoolean replaceColumn;
 	private final SettingsModelString appendedColumnName;
+	private final PythonCommandConfig pythonCommand;
 
 	public SpacyNodeSettings() {
 		this(true, "Processed document");
@@ -32,6 +35,8 @@ public class SpacyNodeSettings extends PythonNodeSettings {
 		localModelPath = new SettingsModelString(KEY_LOCAL_PATH, "");
 		replaceColumn = new SettingsModelBoolean(KEY_REPLACE_COLUMN, defReplaceColumn);
 		appendedColumnName = new SettingsModelString(KEY_APPENDED_COLUMN_NAME, defAppendedColumnName);
+		pythonCommand = new PythonCommandConfig(KEY_PYTHON_COMMAND, PythonVersion.PYTHON3,
+				DLPythonPreferences::getCondaInstallationPath, DLPythonPreferences::getPythonTF2CommandPreference);
 
 		appendedColumnName.setEnabled(!defReplaceColumn);
 		replaceColumn.addChangeListener(e -> appendedColumnName.setEnabled(!replaceColumn.getBooleanValue()));
@@ -73,22 +78,24 @@ public class SpacyNodeSettings extends PythonNodeSettings {
 		}
 	}
 
-	@Override
+	public PythonCommandConfig getPythonCommand() {
+		return pythonCommand;
+	}
+
 	public void saveSettingsTo(NodeSettingsWO settings) {
-		super.saveSettingsTo(settings);
 		column.saveSettingsTo(settings);
 		localModelPath.saveSettingsTo(settings);
 		replaceColumn.saveSettingsTo(settings);
 		appendedColumnName.saveSettingsTo(settings);
+		pythonCommand.saveSettingsTo(settings);
 	}
 
-	@Override
 	public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
-		super.loadSettingsFrom(settings);
 		column.loadSettingsFrom(settings);
 		localModelPath.loadSettingsFrom(settings);
 		appendedColumnName.loadSettingsFrom(settings);
 		replaceColumn.loadSettingsFrom(settings);
+		pythonCommand.loadSettingsFrom(settings);
 	}
 
 	public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
