@@ -7,6 +7,7 @@ class SpacyNlp:
     pipeline = ['tok2vec', 'transformer', 'parser', 'senter']
     def __init__(self, model_handle) -> None:
         self.nlp = spacy.load(model_handle)
+        self.assigned_tags = set()
 
     def process_table(self, input_table: DataFrame, column: str) -> DataFrame:
         self.setup_pipeline()
@@ -37,7 +38,9 @@ class SpacyNlp:
     @classmethod
     def run(cls, model_handle: str, input_table: DataFrame, column:str) -> DataFrame:
         nlp = cls(model_handle)
-        return nlp.process_table(input_table, column)
+        result_table =  nlp.process_table(input_table, column)
+        meta_table = pd.DataFrame(nlp.assigned_tags.difference({'', None}))
+        return result_table, meta_table
 
 
 class SpacyLemmatizer(SpacyNlp):
@@ -49,17 +52,23 @@ class SpacyLemmatizer(SpacyNlp):
 class SpacyNerTagger(SpacyNlp):
     pipeline = [*SpacyNlp.pipeline, 'ner']
     def token_to_dict(self, token):
+        self.assigned_tags.add(token.ent_type_)
         return {**super().token_to_dict(token), 'entity': token.ent_type_, 'iob': token.ent_iob}
 
 
 class SpacyPosTagger(SpacyNlp):
     pipeline = [*SpacyNlp.pipeline, 'morphologizer', 'tagger', 'attribute_ruler']
     def token_to_dict(self, token):
+        self.assigned_tags.add(token.tag_)
         return {**super().token_to_dict(token), 'tag': token.tag_}
 
 class SpacyMorphonogizer(SpacyNlp):
     pipeline = [*SpacyNlp.pipeline, 'morphologizer']
     def token_to_dict(self, token):
+        tags = [k + ':' + v for k,v in token.morph.to_dict().items()]
+        for tag in tags:
+            self.assigned_tags.add(tag)
+
         return {**super().token_to_dict(token), 'morph': token.morph.to_dict()}
 
 class SpacyVectorizer(SpacyNlp):

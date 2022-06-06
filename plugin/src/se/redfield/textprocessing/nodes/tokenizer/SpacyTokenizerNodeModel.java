@@ -11,9 +11,11 @@ import java.util.List;
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataRow;
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.MissingCell;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.SingleCellFactory;
+import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.NodeLogger;
 import org.knime.ext.textprocessing.data.DocumentBuilder;
@@ -51,7 +53,8 @@ public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 	}
 
 	@Override
-	protected CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec) {
+	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
+			BufferedDataTable metaTable, ExecutionContext exec) {
 		return new DocumentCellFactory(createOutputColumnSpec(), createTextContainerFactory(exec), resultColumn);
 	}
 

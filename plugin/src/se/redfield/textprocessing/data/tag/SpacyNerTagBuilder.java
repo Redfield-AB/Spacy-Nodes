@@ -13,13 +13,26 @@ import org.knime.ext.textprocessing.data.TagBuilder;
 
 public class SpacyNerTagBuilder implements TagBuilder {
 
+	private static final SpacyNerTagBuilder instance = new SpacyNerTagBuilder();
+
+	/**
+	 * @return The tag builder instance.
+	 */
+	public static SpacyNerTagBuilder getInstance() {
+		return instance;
+	}
+
 	public SpacyNerTagBuilder() {
 		// default constructor
 	}
 
 	@Override
 	public Tag buildTag(String value) {
-		return SpacyNerTag.fromString(value).getTag();
+		SpacyNerTag tag = SpacyNerTag.fromString(value);
+		if (tag == SpacyNerTag.UNKNOWN) {
+			return null;
+		}
+		return tag.getTag();
 	}
 
 	@Override

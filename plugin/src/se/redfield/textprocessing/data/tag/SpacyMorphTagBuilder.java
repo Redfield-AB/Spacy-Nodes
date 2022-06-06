@@ -28,7 +28,6 @@ public class SpacyMorphTagBuilder implements TagBuilder {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyMorphTagBuilder.class);
 
 	private static final String TAG_TYPE = "SPACY_MORPH";
-	private static final Tag UNKNOWN = new Tag("unknown", TAG_TYPE);
 	private static final String TAGS_FILE = "config/morph_tags.csv";
 
 	private static final SpacyMorphTagBuilder instance = new SpacyMorphTagBuilder();
@@ -80,13 +79,13 @@ public class SpacyMorphTagBuilder implements TagBuilder {
 		return buildTag(buildTagValue(group, value));
 	}
 
-	private static String buildTagValue(String group, String value) {
+	public static String buildTagValue(String group, String value) {
 		return group + ":" + value;
 	}
 
 	@Override
 	public Tag buildTag(String value) {
-		return tags.getOrDefault(value, UNKNOWN);
+		return tags.get(value);
 	}
 
 	@Override

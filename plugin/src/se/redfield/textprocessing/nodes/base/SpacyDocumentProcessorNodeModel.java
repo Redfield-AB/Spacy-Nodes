@@ -3,23 +3,33 @@
 */
 package se.redfield.textprocessing.nodes.base;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.MissingCell;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.SingleCellFactory;
+import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.NodeLogger;
 import org.knime.ext.textprocessing.data.Document;
 import org.knime.ext.textprocessing.data.DocumentValue;
+import org.knime.ext.textprocessing.data.TagBuilder;
+import org.knime.ext.textprocessing.data.tag.TagSet;
+import org.knime.ext.textprocessing.data.tag.TagSets;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.data.dto.SpacyDocument;
+import se.redfield.textprocessing.data.tag.DynamicTagBuilder;
+import se.redfield.textprocessing.data.tag.TagSetTagBuilder;
 
 public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyDocumentProcessorNodeModel.class);
@@ -29,9 +39,52 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 	}
 
 	@Override
-	protected CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec) {
-		return new SpacyDocumentCellFactory(createTextContainerFactory(exec), createSpacyDocumentProcessor(),
-				settings.getOutputColumnName(), inputColumn, resultColumn);
+	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
+			BufferedDataTable metaTable, ExecutionContext exec) {
+		TextContainerDataCellFactory textContainerFactory = createTextContainerFactory(exec);
+
+		DataColumnSpecCreator creator = new DataColumnSpecCreator(settings.getOutputColumnName(),
+				textContainerFactory.getDataType());
+		Set<TagSet> dynamicTagSets = TagSets.getDynamicTagSets(inSpec.getColumnSpec(inputColumn));
+		TagSets.addTagSetsToMetaData(creator, dynamicTagSets);
+
+		SpacyDocumentProcessor docProcessor = createSpacyDocumentProcessor();
+
+		if (docProcessor.getTagBuilder() != null) {
+			Set<String> tags = collectAssignedTags(metaTable);
+			TagBuilder builder = selectTagBuilder(tags, docProcessor.getTagBuilder(), dynamicTagSets);
+			docProcessor.setTagBuilder(builder);
+
+			if (builder instanceof DynamicTagBuilder) {
+				TagSets.addTagBuildersToMetaData(creator, Set.of(builder));
+			}
+		}
+
+		return new SpacyDocumentCellFactory(textContainerFactory, docProcessor, creator.createSpec(), inputColumn,
+				resultColumn);
+	}
+
+	private static Set<String> collectAssignedTags(BufferedDataTable metaTable) {
+		Set<String> tags = new HashSet<>();
+		for (DataRow row : metaTable) {
+			tags.add(row.getCell(0).toString());
+		}
+		return tags;
+	}
+
+	private static TagBuilder selectTagBuilder(Set<String> tags, TagBuilder staticBuilder,
+			Set<TagSet> availableTagSets) {
+		if (tags.stream().allMatch(t -> staticBuilder.buildTag(t) != null)) {
+			return staticBuilder;
+		}
+
+		for (TagSet tagSet : availableTagSets) {
+			if (tagSet.asStringList().containsAll(tags)) {
+				return new TagSetTagBuilder(tagSet);
+			}
+		}
+
+		return new DynamicTagBuilder(availableTagSets, tags);
 	}
 
 	protected abstract SpacyDocumentProcessor createSpacyDocumentProcessor();
@@ -44,17 +97,13 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 		private final int jsonColumnIdx;
 
 		public SpacyDocumentCellFactory(TextContainerDataCellFactory factory, SpacyDocumentProcessor processor,
-				String newColumnName, int docColumnIdx, int jsonColumnIdx) {
-			super(createSpec(factory, newColumnName));
+				DataColumnSpec newColumnSpec, int docColumnIdx, int jsonColumnIdx) {
+			super(newColumnSpec);
 			this.factory = factory;
 			this.processor = processor;
 
 			this.docColumnIdx = docColumnIdx;
 			this.jsonColumnIdx = jsonColumnIdx;
-		}
-
-		private static DataColumnSpec createSpec(TextContainerDataCellFactory factory, String columnName) {
-			return new DataColumnSpecCreator(columnName, factory.getDataType()).createSpec();
 		}
 
 		@Override

@@ -46,15 +46,16 @@ public class SpacyMorphologizerNodeModel extends SpacyDocumentProcessorNodeModel
 
 	private class SpacyMorphDocumentProcessor extends TaggerDocumentProcessor {
 
+		protected SpacyMorphDocumentProcessor() {
+			super(SpacyMorphTagBuilder.getInstance());
+		}
+
 		@Override
 		protected List<Tag> getTags(SpacyWord word) {
 			List<Tag> tags = new ArrayList<>();
 
 			for (Entry<String, String> e : word.getMorph().entrySet()) {
-				String[] values = e.getValue().split(",");
-				for (String val : values) {
-					tags.add(SpacyMorphTagBuilder.getInstance().getTag(e.getKey(), val));
-				}
+				tags.add(getTagBuilder().buildTag(SpacyMorphTagBuilder.buildTagValue(e.getKey(), e.getValue())));
 			}
 
 			return tags;

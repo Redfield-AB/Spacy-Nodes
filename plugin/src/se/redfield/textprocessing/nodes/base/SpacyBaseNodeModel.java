@@ -140,12 +140,13 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			ctx.putDataTable(prepareInputTable(inTable, exec), exec);
 			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec);
 			BufferedDataTable res = ctx.getDataTable(exec, exec);
+			BufferedDataTable meta = ctx.getDataTable(PythonContext.VAR_META_TABLE, exec, exec);
 
 			BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
 
 			int inColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
 			int resColIdx = joined.getDataTableSpec().getNumColumns() - 1;
-			CellFactory fac = createCellFactory(inColIdx, resColIdx, exec);
+			CellFactory fac = createCellFactory(inColIdx, resColIdx, joined.getDataTableSpec(), meta, exec);
 
 			ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
 			if (settings.getReplaceColumn()) {
@@ -161,7 +162,8 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	private String createExecuteScript(String modelPath) {
 		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyNlp import " + getSpacyMethod());
-		b.a(PythonContext.VAR_OUTPUT_TABLE).a(" = ").a(getSpacyMethod()).a(".run(").n();
+		b.a(PythonContext.VAR_OUTPUT_TABLE).a(",").a(PythonContext.VAR_META_TABLE).a(" = ").a(getSpacyMethod())
+				.a(".run(").n();
 		b.a("model_handle = ").asr(modelPath).a(",").n();
 		b.a("input_table = ").a(PythonContext.VAR_INPUT_TABLE).a(",").n();
 		b.a("column = ").as(settings.getColumn()).a(")").n();
@@ -196,7 +198,8 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		return docFactory;
 	}
 
-	protected abstract CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec);;
+	protected abstract CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
+			BufferedDataTable metaTable, ExecutionContext exec);
 
 	protected abstract String getSpacyMethod();
 

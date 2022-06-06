@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.knime.ext.textprocessing.data.Sentence;
 import org.knime.ext.textprocessing.data.Tag;
+import org.knime.ext.textprocessing.data.TagBuilder;
 import org.knime.ext.textprocessing.data.Term;
 import org.knime.ext.textprocessing.data.Word;
 
@@ -24,6 +25,10 @@ import se.redfield.textprocessing.data.dto.SpacyWord;
  *
  */
 public abstract class TaggerDocumentProcessor extends AbstractSpacyDocumentProcessor {
+
+	protected TaggerDocumentProcessor(TagBuilder builder) {
+		super(builder);
+	}
 
 	@Override
 	protected Sentence mergeSentence(SpacySentence spacySent) {

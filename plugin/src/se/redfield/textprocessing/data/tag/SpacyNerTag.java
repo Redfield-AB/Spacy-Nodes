@@ -11,9 +11,14 @@ import java.util.stream.Collectors;
 import org.knime.ext.textprocessing.data.Tag;
 
 public enum SpacyNerTag {
-	LOC("placeName"), MISC, ORG("orgName", "ORGANIZATION"), EVENT, GPE("geogName"), PERSON("PER", "persName"), PRODUCT,
+	LOC("placeName", "GPE_LOC"), //
+	ORG("orgName", "ORGANIZATION", "GPE_ORG"), //
+	EVENT("EVT"), //
+	GPE("geogName"), //
+	PERSON("PER", "persName"), //
+	PRODUCT("PROD"), //
 	CARDINAL, DATE, FAC, LANGUAGE, LAW, MONEY, NORP, ORDINAL, PERCENT, QUANTITY, TIME, WORK_OF_ART, MOVEMENT, PET_NAME,
-	PHONE, TITLE_AFFIX, DATETIME, FACILITY, NAT_REL_POL, NUMERIC_VALUE, PERIOD, UNKNOWN;
+	PHONE, TITLE_AFFIX, DATETIME, FACILITY, NAT_REL_POL, NUMERIC_VALUE, PERIOD, DRV, MISC, UNKNOWN;
 
 	public static final String TAG_TYPE = "SPACY_NE";
 

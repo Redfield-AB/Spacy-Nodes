@@ -11,11 +11,13 @@ import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
 import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
+import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.collection.CollectionCellFactory;
 import org.knime.core.data.collection.ListCell;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.SingleCellFactory;
 import org.knime.core.data.def.DoubleCell;
+import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 
 import se.redfield.textprocessing.core.model.SpacyFeature;
@@ -45,7 +47,8 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 	}
 
 	@Override
-	protected CellFactory createCellFactory(int inputColumn, int resultColumn, ExecutionContext exec) {
+	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
+			BufferedDataTable metaTable, ExecutionContext exec) {
 		return new SpacyVectorizerCellFactory(createOutputColumnSpec(), resultColumn);
 	}
 

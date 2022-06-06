@@ -16,6 +16,7 @@ import org.knime.ext.textprocessing.data.Paragraph;
 import org.knime.ext.textprocessing.data.Section;
 import org.knime.ext.textprocessing.data.SectionAnnotation;
 import org.knime.ext.textprocessing.data.Sentence;
+import org.knime.ext.textprocessing.data.TagBuilder;
 import org.knime.ext.textprocessing.data.Term;
 
 import se.redfield.textprocessing.data.dto.SpacyDocument;
@@ -45,6 +46,22 @@ public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentPro
 	private Term curTerm;
 
 	private List<Sentence> outSentences;
+
+	private TagBuilder tagBuilder;
+
+	protected AbstractSpacyDocumentProcessor(TagBuilder builder) {
+		tagBuilder = builder;
+	}
+
+	@Override
+	public TagBuilder getTagBuilder() {
+		return tagBuilder;
+	}
+
+	@Override
+	public void setTagBuilder(TagBuilder builder) {
+		tagBuilder = builder;
+	}
 
 	@Override
 	public Document process(SpacyDocument spacyDoc, Document doc) {

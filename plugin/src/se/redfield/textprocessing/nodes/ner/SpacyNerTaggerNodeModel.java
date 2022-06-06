@@ -19,7 +19,7 @@ import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 import se.redfield.textprocessing.data.dto.SpacyWord;
-import se.redfield.textprocessing.data.tag.SpacyNerTag;
+import se.redfield.textprocessing.data.tag.SpacyNerTagBuilder;
 import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
@@ -48,6 +48,10 @@ public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 		private List<Term> terms;
 		private int idx;
+
+		protected SpacyNerDocumentProcessor() {
+			super(SpacyNerTagBuilder.getInstance());
+		}
 
 		@Override
 		protected Sentence mergeSentence(SpacySentence spacySent) {
@@ -120,7 +124,7 @@ public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 				throw new DocumentProcessingException();
 			}
 
-			tags.add(SpacyNerTag.fromString(entity).getTag());
+			tags.add(getTagBuilder().buildTag(entity));
 			terms.add(new Term(neWords, tags, false));
 		}
 
@@ -154,7 +158,7 @@ public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 				} else {
 					String entity = w.getEntity();
 					List<Word> neWords = collectNe(words);
-					terms.add(new Term(neWords, Arrays.asList(SpacyNerTag.fromString(entity).getTag()), false));
+					terms.add(new Term(neWords, Arrays.asList(getTagBuilder().buildTag(entity)), false));
 				}
 			}
 

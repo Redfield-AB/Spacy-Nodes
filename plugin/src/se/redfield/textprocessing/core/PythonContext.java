@@ -24,6 +24,7 @@ public class PythonContext implements AutoCloseable {
 
 	public static final String VAR_INPUT_TABLE = "input_table";
 	public static final String VAR_OUTPUT_TABLE = "output_table";
+	public static final String VAR_META_TABLE = "meta_table";
 
 	private final PythonKernel kernel;
 

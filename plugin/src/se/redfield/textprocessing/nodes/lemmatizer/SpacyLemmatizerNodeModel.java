@@ -43,6 +43,10 @@ public class SpacyLemmatizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	private class LemmatizerDocumentProcessor extends AbstractSpacyDocumentProcessor {
 
+		protected LemmatizerDocumentProcessor() {
+			super(null);
+		}
+
 		@Override
 		protected Sentence mergeSentence(SpacySentence spacySent) {
 			List<Term> terms = new ArrayList<>();
