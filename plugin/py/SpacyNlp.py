@@ -77,5 +77,11 @@ class SpacyVectorizer(SpacyNlp):
     def process_table(self, input_table: DataFrame, column: str) -> DataFrame:
         self.setup_pipeline()
         docs = self.nlp.pipe(input_table[column].values)
-        vectors = [(','.join([str(num) for num in doc.vector])) for doc in docs]
+        vectors = [(','.join([str(num) for num in self.get_vector(doc)])) for doc in docs]
         return pd.DataFrame(vectors, index=input_table.index)
+
+    def get_vector(self, doc):
+        if len(doc.vector) > 0:
+            return doc.vector
+        else:
+            return doc._.trf_data.model_output.pooler_output[0]

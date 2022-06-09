@@ -63,8 +63,8 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 
 		@Override
 		public DataCell getCell(DataRow row) {
-			List<DoubleCell> cells = Arrays.stream(row.getCell(columnIdx).toString().split(",")).map(Double::valueOf)
-					.map(DoubleCell::new).collect(Collectors.toList());
+			List<DoubleCell> cells = Arrays.stream(row.getCell(columnIdx).toString().split(","))
+					.filter(s -> !s.isEmpty()).map(Double::valueOf).map(DoubleCell::new).collect(Collectors.toList());
 			return CollectionCellFactory.createListCell(cells);
 		}
 
