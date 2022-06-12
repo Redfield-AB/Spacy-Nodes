@@ -4,6 +4,7 @@
 package se.redfield.textprocessing.nodes.base;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.knime.core.data.DataCell;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.data.dto.SpacyDocument;
 import se.redfield.textprocessing.data.tag.DynamicTagBuilder;
-import se.redfield.textprocessing.data.tag.TagSetTagBuilder;
+import se.redfield.textprocessing.data.tag.GenericTagBuilder;
 
 public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyDocumentProcessorNodeModel.class);
@@ -79,8 +80,9 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 		}
 
 		for (TagSet tagSet : availableTagSets) {
-			if (tagSet.asStringList().containsAll(tags)) {
-				return new TagSetTagBuilder(tagSet);
+			List<String> tagSetTags = tagSet.asStringList();
+			if (tagSetTags.containsAll(tags)) {
+				return new GenericTagBuilder(tagSet.getType(), tagSetTags);
 			}
 		}
 

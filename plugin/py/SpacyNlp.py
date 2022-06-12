@@ -69,7 +69,7 @@ class SpacyMorphonogizer(SpacyNlp):
         for tag in tags:
             self.assigned_tags.add(tag)
 
-        return {**super().token_to_dict(token), 'morph': token.morph.to_dict()}
+        return {**super().token_to_dict(token), 'morph': tags}
 
 class SpacyVectorizer(SpacyNlp):
     pipeline = ['tok2vec', 'transformer']

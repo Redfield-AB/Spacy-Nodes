@@ -5,7 +5,6 @@ package se.redfield.textprocessing.nodes.morph;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import org.knime.ext.textprocessing.data.Tag;
 
@@ -54,8 +53,8 @@ public class SpacyMorphologizerNodeModel extends SpacyDocumentProcessorNodeModel
 		protected List<Tag> getTags(SpacyWord word) {
 			List<Tag> tags = new ArrayList<>();
 
-			for (Entry<String, String> e : word.getMorph().entrySet()) {
-				tags.add(getTagBuilder().buildTag(SpacyMorphTagBuilder.buildTagValue(e.getKey(), e.getValue())));
+			for (String tag : word.getMorph()) {
+				tags.add(getTagBuilder().buildTag(tag));
 			}
 
 			return tags;
