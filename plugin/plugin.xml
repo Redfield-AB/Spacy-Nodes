@@ -82,6 +82,9 @@
          <TagSet
                TagBuilder="se.redfield.textprocessing.data.tag.SpacyMorphTagBuilder">
          </TagSet>
+         <TagSet
+               TagBuilder="se.redfield.textprocessing.data.tag.SpacyPosTagBuilder">
+         </TagSet>
       </extension>
       <extension
             point="org.knime.core.PortType">

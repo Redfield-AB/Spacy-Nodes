@@ -4,8 +4,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Redfield Textprocessing extension for KNIME Workbench
 Bundle-SymbolicName: se.redfield.textprocessing.plugin; singleton:=true
 Bundle-Version: 1.0.1.qualifier
-Bundle-ClassPath: .,
- lib/
+Bundle-ClassPath: .
 Bundle-Activator: se.redfield.textprocessing.SpacyPlugin
 Bundle-Vendor: Redfield AB
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.13.0,4.0.0)",
