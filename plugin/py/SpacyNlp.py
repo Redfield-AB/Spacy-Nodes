@@ -2,6 +2,8 @@ import json
 from pandas.core.frame import DataFrame
 import spacy
 import pandas as pd
+import knime_io as knio
+
 
 class SpacyNlp:
     pipeline = ['tok2vec', 'transformer', 'parser', 'senter']
@@ -40,7 +42,9 @@ class SpacyNlp:
         nlp = cls(model_handle)
         result_table =  nlp.process_table(input_table, column)
         meta_table = pd.DataFrame(nlp.assigned_tags.difference({'', None}))
-        return result_table, meta_table
+
+        knio.output_tables[0] = knio.write_table(result_table)
+        knio.output_tables[1] = knio.write_table(meta_table)
 
 
 class SpacyLemmatizer(SpacyNlp):

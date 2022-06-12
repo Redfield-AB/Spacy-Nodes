@@ -136,11 +136,11 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		SpacyModelPortObject model = (SpacyModelPortObject) inData[PORT_MODEL];
 		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
 
-		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand())) {
-			ctx.putDataTable(prepareInputTable(inTable, exec), exec);
+		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand(), 2)) {
+			ctx.putDataTable(0, prepareInputTable(inTable, exec), exec);
 			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec);
-			BufferedDataTable res = ctx.getDataTable(exec, exec);
-			BufferedDataTable meta = ctx.getDataTable(PythonContext.VAR_META_TABLE, exec, exec);
+			BufferedDataTable res = ctx.getDataTable(0, exec, exec);
+			BufferedDataTable meta = ctx.getDataTable(1, exec, exec);
 
 			BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
 
@@ -162,10 +162,9 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	private String createExecuteScript(String modelPath) {
 		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyNlp import " + getSpacyMethod());
-		b.a(PythonContext.VAR_OUTPUT_TABLE).a(",").a(PythonContext.VAR_META_TABLE).a(" = ").a(getSpacyMethod())
-				.a(".run(").n();
+		b.a(getSpacyMethod()).a(".run(").n();
 		b.a("model_handle = ").asr(modelPath).a(",").n();
-		b.a("input_table = ").a(PythonContext.VAR_INPUT_TABLE).a(",").n();
+		PythonContext.putInputTableArgs(b, "input_table", 0);
 		b.a("column = ").as(settings.getColumn()).a(")").n();
 		return b.toString();
 	}
