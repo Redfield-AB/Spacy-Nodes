@@ -1,7 +1,6 @@
 import json
-from pandas.core.frame import DataFrame
 import spacy
-import pandas as pd
+import pyarrow as pa
 import knime_io as knio
 
 
@@ -11,11 +10,14 @@ class SpacyNlp:
         self.nlp = spacy.load(model_handle)
         self.assigned_tags = set()
 
-    def process_table(self, input_table: DataFrame, column: str) -> DataFrame:
+    def process_table(self, input_table: pa.Table, column: str) -> pa.Table:
         self.setup_pipeline()
-        docs = self.nlp.pipe(input_table[column].values)
-        json_results = [self.doc_to_json(doc) for doc in docs]
-        return pd.DataFrame(json_results, index=input_table.index)
+        docs = self.nlp.pipe(input_table[column].to_pylist())
+        results = self.collect_results(docs)
+        return pa.Table.from_arrays([input_table[0], results], names=[input_table.column_names[0], 'result'])
+    
+    def collect_results(self, docs):
+        return [self.doc_to_json(doc) for doc in docs]
     
     def setup_pipeline(self):
         for p in self.nlp.pipe_names:
@@ -38,10 +40,12 @@ class SpacyNlp:
         return {'text': token.text}
 
     @classmethod
-    def run(cls, model_handle: str, input_table: DataFrame, column:str) -> DataFrame:
+    def run(cls, model_handle: str, input_table: pa.Table, column:str):
         nlp = cls(model_handle)
         result_table =  nlp.process_table(input_table, column)
-        meta_table = pd.DataFrame(nlp.assigned_tags.difference({'', None}))
+
+        tags = nlp.assigned_tags.difference({'', None})
+        meta_table = pa.Table.from_arrays([['Row' + str(i) for i in range(len(tags))], tags], names=['RowId','tags'])
 
         knio.output_tables[0] = knio.write_table(result_table)
         knio.output_tables[1] = knio.write_table(meta_table)
@@ -78,11 +82,8 @@ class SpacyMorphonogizer(SpacyNlp):
 class SpacyVectorizer(SpacyNlp):
     pipeline = ['tok2vec', 'transformer']
 
-    def process_table(self, input_table: DataFrame, column: str) -> DataFrame:
-        self.setup_pipeline()
-        docs = self.nlp.pipe(input_table[column].values)
-        vectors = [(','.join([str(num) for num in self.get_vector(doc)])) for doc in docs]
-        return pd.DataFrame(vectors, index=input_table.index)
+    def collect_results(self, docs):
+        return [(','.join([str(num) for num in self.get_vector(doc)])) for doc in docs]
 
     def get_vector(self, doc):
         if len(doc.vector) > 0:

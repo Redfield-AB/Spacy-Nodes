@@ -95,6 +95,6 @@ public class PythonContext implements AutoCloseable {
 
 	public static void putInputTableArgs(DLPythonSourceCodeBuilder b, String argName, int idx) {
 		String tableName = String.format(KNIO_INPUT_TABLE, idx);
-		b.a(argName).a(" = ").a(tableName).a(".to_pandas(),").n();
+		b.a(argName).a(" = ").a(tableName).a(".to_pyarrow(),").n();
 	}
 }
