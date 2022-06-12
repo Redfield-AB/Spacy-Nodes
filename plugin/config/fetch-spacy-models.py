@@ -5,7 +5,8 @@ from bs4.element import Tag
 
 
 RELEASES_URL = 'https://github.com/explosion/spacy-models/releases?page='
-model_version = None
+MODEL_VERSIONS = {'3.2.0', '3.3.0'}
+fetched_versions = set()
 
 def parse_table(tag: Tag, prefix=''):
     res = {}
@@ -31,18 +32,14 @@ def parse_page(html: str):
         release = parse_release(div)
 
         version = release['Version']
-        global model_version
-        if(model_version is None):
-            model_version = version
-        elif(model_version != version):
+        if(version in MODEL_VERSIONS):
+            result.append(release)
+            fetched_versions.add(version)
+        elif(len(fetched_versions) == len(MODEL_VERSIONS)):
             done = True
             break
-
-        result.append(release)
-
-    if(len(result) == 0):
-        print("Parsing failed.")
-        done = True
+        else:
+            pass
 
     return (result, done)
 

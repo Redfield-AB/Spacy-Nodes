@@ -39,7 +39,9 @@
     </fullDescription>
     
     <ports>
-		<inPort name="Input Table" index="0">The input table</inPort>
-		<outPort name="Output Table" index="0">The output table</outPort>
+    	<inPort name="Spacy Model" index="0">The Spacy model</inPort>
+		<inPort name="Input Table" index="1">The input table</inPort>
+		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
+		<outPort name="Output Table" index="1">The output table</outPort>
     </ports>    
 </knimeNode>

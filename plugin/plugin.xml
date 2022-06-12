@@ -34,14 +34,6 @@
       </node>
       <node
             category-path="/redfield-textprocessing"
-            factory-class="se.redfield.textprocessing.bert.nodes.classifier.BertClassifierNodeFactory">
-      </node>
-      <node
-            category-path="/redfield-textprocessing"
-            factory-class="se.redfield.textprocessing.bert.nodes.embedder.BertEmbedderNodeFactory">
-      </node>
-      <node
-            category-path="/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeFactory">
       </node>    
    </extension>

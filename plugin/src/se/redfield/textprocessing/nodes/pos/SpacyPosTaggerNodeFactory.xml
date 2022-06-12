@@ -40,7 +40,9 @@
     </fullDescription>
     
     <ports>
-		<inPort name="Input Table" index="0">The input table which contains the documents to preprocess.</inPort>
-		<outPort name="Output Table" index="0">The output table which contains the preprocessed documents.</outPort>
+	    <inPort name="Spacy Model" index="0">The Spacy model</inPort>
+		<inPort name="Input Table" index="1">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
+		<outPort name="Output Table" index="1">The output table which contains the preprocessed documents.</outPort>
     </ports>    
 </knimeNode>
