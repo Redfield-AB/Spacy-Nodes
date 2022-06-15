@@ -37,6 +37,7 @@ import org.knime.ext.textprocessing.data.DocumentCell;
 import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactory;
 import org.knime.ext.textprocessing.util.TextContainerDataCellFactoryBuilder;
+import org.knime.python2.kernel.PythonIOException;
 
 import se.redfield.textprocessing.core.PythonContext;
 import se.redfield.textprocessing.core.model.SpacyFeature;
@@ -46,6 +47,8 @@ import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
 public abstract class SpacyBaseNodeModel extends NodeModel {
 	public static final int PORT_MODEL = 0;
 	public static final int PORT_TABLE = 1;
+
+	protected static final String PYTHON_RES_COLUMN_NAME = "result";
 
 	protected final SpacyNodeSettings settings;
 	private final boolean acceptStringColumn;
@@ -139,25 +142,31 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand(), 2)) {
 			ctx.putDataTable(0, prepareInputTable(inTable, exec), exec);
 			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec);
-			BufferedDataTable res = ctx.getDataTable(0, exec, exec);
-			BufferedDataTable meta = ctx.getDataTable(1, exec, exec);
 
-			BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
-
-			int inColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
-			int resColIdx = joined.getDataTableSpec().getNumColumns() - 1;
-			CellFactory fac = createCellFactory(inColIdx, resColIdx, joined.getDataTableSpec(), meta, exec);
-
-			ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
-			if (settings.getReplaceColumn()) {
-				r.replace(fac, inColIdx);
-			} else {
-				r.append(fac);
-			}
-			r.remove(resColIdx);
-
-			return new PortObject[] { model, exec.createColumnRearrangeTable(joined, r, exec) };
+			return new PortObject[] { model, buildOutputTable(inTable, ctx, exec) };
 		}
+	}
+
+	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec)
+			throws CanceledExecutionException, PythonIOException {
+		BufferedDataTable res = ctx.getDataTable(0, exec, exec);
+		BufferedDataTable meta = ctx.getDataTable(1, exec, exec);
+
+		BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
+
+		int inColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
+		int resColIdx = joined.getDataTableSpec().getNumColumns() - 1;
+		CellFactory fac = createCellFactory(inColIdx, resColIdx, joined.getDataTableSpec(), meta, exec);
+
+		ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
+		if (settings.getReplaceColumn()) {
+			r.replace(fac, inColIdx);
+		} else {
+			r.append(fac);
+		}
+		r.remove(resColIdx);
+
+		return exec.createColumnRearrangeTable(joined, r, exec);
 	}
 
 	private String createExecuteScript(String modelPath) {

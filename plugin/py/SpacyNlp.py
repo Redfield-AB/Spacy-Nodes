@@ -1,6 +1,7 @@
 import json
 import spacy
 import pyarrow as pa
+import numpy as np
 import knime_io as knio
 
 
@@ -83,7 +84,7 @@ class SpacyVectorizer(SpacyNlp):
     pipeline = ['tok2vec', 'transformer']
 
     def collect_results(self, docs):
-        return [(','.join([str(num) for num in self.get_vector(doc)])) for doc in docs]
+        return [np.array(self.get_vector(doc), dtype=np.float64) for doc in docs]
 
     def get_vector(self, doc):
         if len(doc.vector) > 0:
