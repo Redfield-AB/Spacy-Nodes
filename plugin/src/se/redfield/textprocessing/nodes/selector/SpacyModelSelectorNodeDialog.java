@@ -36,6 +36,12 @@ import org.knime.filehandling.core.defaultnodesettings.filechooser.reader.Settin
 import se.redfield.textprocessing.core.model.SpacyModelDefinition;
 import se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeSettings.SpacyModelSelectionMode;
 
+/**
+ * The node dialog for the SpaCy model selector node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 
 	private final SpacyModelSelectorNodeSettings settings;
@@ -48,6 +54,9 @@ public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 
 	private DialogComponentReaderFileChooser fileChooser;
 
+	/**
+	 * @param portsConfig the ports configuration.
+	 */
 	public SpacyModelSelectorNodeDialog(PortsConfiguration portsConfig) {
 		settings = new SpacyModelSelectorNodeSettings(portsConfig);
 
@@ -180,6 +189,7 @@ public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 	}
 
 	private static class ModelsTableModel extends AbstractTableModel {
+		private static final long serialVersionUID = 1L;
 
 		private static final int COLUMN_NAME = 0;
 		private static final int COLUMN_LANG = 1;

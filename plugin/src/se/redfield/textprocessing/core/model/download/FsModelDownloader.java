@@ -27,12 +27,21 @@ import se.redfield.textprocessing.core.model.SpacyModelDescription;
 import se.redfield.textprocessing.core.model.SpacyModelMeta;
 import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
 
+/**
+ * {@link SpacyModelDownloader} for the models provided by FS Path
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class FsModelDownloader extends SpacyModelDownloader {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(FsModelDownloader.class);
 
 	private final SettingsModelReaderFileChooser fsPath;
 	private final boolean isLocal;
 
+	/**
+	 * @param fsPath The model directory path
+	 */
 	public FsModelDownloader(SettingsModelReaderFileChooser fsPath) {
 		this.fsPath = fsPath;
 		isLocal = fsPath.getLocation().getFSType().equals(FSType.LOCAL_FS);

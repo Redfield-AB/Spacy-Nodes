@@ -19,6 +19,12 @@ import org.knime.filehandling.core.defaultnodesettings.status.StatusMessage;
 
 import se.redfield.textprocessing.core.model.SpacyModelDefinition;
 
+/**
+ * The SpaCy model selector node settings.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyModelSelectorNodeSettings {
 
 	private static final String KEY_MODEL_DEF = "model";
@@ -31,6 +37,9 @@ public class SpacyModelSelectorNodeSettings {
 
 	private final PortsConfiguration portsConfig;
 
+	/**
+	 * @param portsConfig the ports configuration.
+	 */
 	public SpacyModelSelectorNodeSettings(PortsConfiguration portsConfig) {
 		this.portsConfig = portsConfig;
 		modelDef = null;
@@ -40,26 +49,44 @@ public class SpacyModelSelectorNodeSettings {
 				EnumSet.of(FSCategory.CONNECTED, FSCategory.LOCAL, FSCategory.MOUNTPOINT, FSCategory.RELATIVE));
 	}
 
+	/**
+	 * @return the selected model definition
+	 */
 	public SpacyModelDefinition getModelDef() {
 		return modelDef;
 	}
 
+	/**
+	 * @param modelDef the model definition.
+	 */
 	public void setModelDef(SpacyModelDefinition modelDef) {
 		this.modelDef = modelDef;
 	}
 
+	/**
+	 * @return the model selection mode
+	 */
 	public SpacyModelSelectionMode getSelectionMode() {
 		return selectionMode;
 	}
 
+	/**
+	 * @param selectionMode the model selection mode.
+	 */
 	public void setSelectionMode(SpacyModelSelectionMode selectionMode) {
 		this.selectionMode = selectionMode;
 	}
 
+	/**
+	 * @return the path of the selected local model
+	 */
 	public SettingsModelReaderFileChooser getLocalPathModel() {
 		return localPath;
 	}
 
+	/**
+	 * @param settings the settings object.
+	 */
 	public void saveSettingsTo(NodeSettingsWO settings) {
 		if (modelDef != null) {
 			settings.addString(KEY_MODEL_DEF, modelDef.getId());
@@ -68,18 +95,35 @@ public class SpacyModelSelectorNodeSettings {
 		localPath.saveSettingsTo(settings);
 	}
 
+	/**
+	 * Validates the settings stored in the given settings object.
+	 * 
+	 * @param settings the settings object.
+	 * @throws InvalidSettingsException
+	 */
 	public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
 		SpacyModelSelectorNodeSettings temp = new SpacyModelSelectorNodeSettings(portsConfig);
 		temp.loadSettingsFrom(settings);
 		temp.validate();
 	}
 
+	/**
+	 * Validates the current settings.
+	 * 
+	 * @throws InvalidSettingsException
+	 */
 	public void validate() throws InvalidSettingsException {
 		if (selectionMode == SpacyModelSelectionMode.SPACY && modelDef == null) {
 			throw new InvalidSettingsException("The Spacy model is not selected");
 		}
 	}
 
+	/**
+	 * Loads the settings from the given settings object.
+	 * 
+	 * @param settings
+	 * @throws InvalidSettingsException
+	 */
 	public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
 		String modelId = settings.getString(KEY_MODEL_DEF, null);
 		if (modelId != null) {
@@ -93,6 +137,11 @@ public class SpacyModelSelectorNodeSettings {
 		localPath.loadSettingsFrom(settings);
 	}
 
+	/**
+	 * @param inSpecs     the port object specs
+	 * @param msgConsumer the message consumer
+	 * @throws InvalidSettingsException
+	 */
 	public void configure(PortObjectSpec[] inSpecs, Consumer<StatusMessage> msgConsumer)
 			throws InvalidSettingsException {
 		if (selectionMode == SpacyModelSelectionMode.LOCAL) {
@@ -100,8 +149,19 @@ public class SpacyModelSelectorNodeSettings {
 		}
 	}
 
+	/**
+	 * The model selector mode.
+	 *
+	 */
 	public enum SpacyModelSelectionMode {
-		SPACY("SpaCy official model"), LOCAL("Local model");
+		/**
+		 * The model from the official repository
+		 */
+		SPACY("SpaCy official model"),
+		/**
+		 * The model stored locally
+		 */
+		LOCAL("Local model");
 
 		private String title;
 
@@ -109,6 +169,9 @@ public class SpacyModelSelectorNodeSettings {
 			this.title = title;
 		}
 
+		/**
+		 * @return the key stored in the settings
+		 */
 		public String getKey() {
 			return name();
 		}
@@ -118,6 +181,11 @@ public class SpacyModelSelectorNodeSettings {
 			return title;
 		}
 
+		/**
+		 * @param key the key stored in the settings
+		 * @return the selection mode object.
+		 * @throws InvalidSettingsException
+		 */
 		public static SpacyModelSelectionMode fromKey(String key) throws InvalidSettingsException {
 			try {
 				return SpacyModelSelectionMode.valueOf(key);

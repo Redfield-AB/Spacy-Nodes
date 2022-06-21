@@ -44,8 +44,20 @@ import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
 
+/**
+ * Base {@link NodeModel} implementation for other SpaCy nodes.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public abstract class SpacyBaseNodeModel extends NodeModel {
+	/**
+	 * The input port containing SpaCy model.
+	 */
 	public static final int PORT_MODEL = 0;
+	/**
+	 * The input port containing the input table.
+	 */
 	public static final int PORT_TABLE = 1;
 
 	protected static final String PYTHON_RES_COLUMN_NAME = "result";
@@ -89,7 +101,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		}
 	}
 
-	protected DataTableSpec createSpec(DataTableSpec inSpec) throws InvalidSettingsException {
+	protected DataTableSpec createSpec(DataTableSpec inSpec) {
 		int idx = inSpec.findColumnIndex(settings.getColumn());
 
 		DataTableSpecCreator c = new DataTableSpecCreator(inSpec);

@@ -3,6 +3,12 @@
 */
 package se.redfield.textprocessing.data.tag;
 
+/**
+ * Tag builder for the SpaCy NER tags.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyNerTagBuilder extends ResourceFileTagBuilder {
 
 	private static final SpacyNerTagBuilder instance = new SpacyNerTagBuilder();
@@ -14,6 +20,9 @@ public class SpacyNerTagBuilder extends ResourceFileTagBuilder {
 		return instance;
 	}
 
+	/**
+	 * Creates new instance.
+	 */
 	public SpacyNerTagBuilder() {
 		super("SPACY_NE", "config/ner_tags.txt");
 	}

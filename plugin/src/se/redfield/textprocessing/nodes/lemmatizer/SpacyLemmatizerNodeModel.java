@@ -20,6 +20,12 @@ import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
+/**
+ * The SpaCy lemmatizer node model.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyLemmatizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	protected SpacyLemmatizerNodeModel() {

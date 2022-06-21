@@ -9,6 +9,12 @@ import org.knime.core.node.NodeView;
 
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
 
+/**
+ * The factory class for the {@link SpacyNerTaggerNodeModel} node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyNerTaggerNodeFactory extends NodeFactory<SpacyNerTaggerNodeModel> {
 
 	@Override

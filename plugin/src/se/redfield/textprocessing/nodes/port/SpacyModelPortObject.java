@@ -13,6 +13,12 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.core.node.port.PortType;
 import org.knime.core.node.port.PortTypeRegistry;
 
+/**
+ * The SpaCy model port object.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyModelPortObject extends AbstractSimplePortObject {
 
 	/**
@@ -28,10 +34,16 @@ public class SpacyModelPortObject extends AbstractSimplePortObject {
 
 	private SpacyModelPortObjectSpec spec;
 
+	/**
+	 * Default constructor
+	 */
 	public SpacyModelPortObject() {
 		this(null);
 	}
 
+	/**
+	 * @param spec The port object spec.
+	 */
 	public SpacyModelPortObject(SpacyModelPortObjectSpec spec) {
 		this.spec = spec;
 	}
@@ -57,6 +69,9 @@ public class SpacyModelPortObject extends AbstractSimplePortObject {
 		this.spec = (SpacyModelPortObjectSpec) spec;
 	}
 
+	/**
+	 * @return The local path the model is stored in.
+	 */
 	public String getModelPath() {
 		return spec.getModel().getPath();
 	}

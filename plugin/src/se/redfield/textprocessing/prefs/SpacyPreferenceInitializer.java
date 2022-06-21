@@ -12,6 +12,8 @@ import org.knime.core.node.NodeLogger;
 import se.redfield.textprocessing.SpacyPlugin;
 
 /**
+ * Preferences initializer.
+ * 
  * @author Alexander Bondaletov
  *
  */
@@ -19,6 +21,9 @@ public class SpacyPreferenceInitializer extends AbstractPreferenceInitializer {
 	@SuppressWarnings("unused")
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyPreferenceInitializer.class);
 
+	/**
+	 * The cache directory setting key
+	 */
 	public static final String PREF_CACHE_DIR = "redfield.textprocessing.cachedir";
 
 	private static final String DEFAULT_CACHE_DIR = System.getProperty("java.io.tmpdir") + File.separator
@@ -31,6 +36,9 @@ public class SpacyPreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PREF_CACHE_DIR, DEFAULT_CACHE_DIR);
 	}
 
+	/**
+	 * @return the cache directory for the downloaded spacy models.
+	 */
 	public static String getCacheDir() {
 		final IPreferenceStore pStore = SpacyPlugin.getDefault().getPreferenceStore();
 		if (!pStore.contains(PREF_CACHE_DIR)) {

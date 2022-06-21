@@ -12,8 +12,21 @@ import org.knime.core.node.InvalidSettingsException;
 
 import se.redfield.textprocessing.core.model.SpacyModelDescription;
 
+/**
+ * Abstract class for downloading SpaCy models.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public abstract class SpacyModelDownloader {
 
+	/**
+	 * Checks if the model is already downloaded and downloads it, if necessary.
+	 * 
+	 * @param exec Execution monitor
+	 * @throws IOException
+	 * @throws InvalidSettingsException
+	 */
 	public void ensureDownloaded(ExecutionMonitor exec) throws IOException, InvalidSettingsException {
 		if (!Files.isDirectory(getModelDownloadDir().toPath())) {
 			download(exec);
@@ -24,5 +37,11 @@ public abstract class SpacyModelDownloader {
 
 	protected abstract void download(ExecutionMonitor exec) throws IOException, InvalidSettingsException;
 
+	/**
+	 * 
+	 * @param configure Whether the call is performed during the configure stage.
+	 * @return The spacy model description.
+	 * @throws InvalidSettingsException
+	 */
 	public abstract SpacyModelDescription getModelDescription(boolean configure) throws InvalidSettingsException;
 }

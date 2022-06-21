@@ -22,10 +22,20 @@ import se.redfield.textprocessing.core.model.SpacyModelDefinition;
 import se.redfield.textprocessing.core.model.SpacyModelDescription;
 import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
 
+/**
+ * {@link SpacyModelDownloader} for downloading models from the official SpaCy
+ * repository.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class RepositoryModelDownloader extends SpacyModelDownloader {
 
 	private SpacyModelDefinition def;
 
+	/**
+	 * @param def The SpaCy model definition.
+	 */
 	public RepositoryModelDownloader(SpacyModelDefinition def) {
 		this.def = def;
 	}

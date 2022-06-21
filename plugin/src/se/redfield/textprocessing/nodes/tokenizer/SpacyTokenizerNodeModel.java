@@ -35,6 +35,12 @@ import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
+/**
+ * The tokenizer node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyTokenizerNodeModel.class);
 

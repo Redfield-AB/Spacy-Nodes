@@ -28,6 +28,12 @@ import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
 import se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeSettings.SpacyModelSelectionMode;
 
+/**
+ * The SpaCy model selector node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyModelSelectorNodeModel extends NodeModel {
 
 	private final SpacyModelSelectorNodeSettings settings;

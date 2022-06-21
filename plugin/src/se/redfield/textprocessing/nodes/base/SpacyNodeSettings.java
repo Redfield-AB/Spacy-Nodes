@@ -12,27 +12,37 @@ import org.knime.dl.python.prefs.DLPythonPreferences;
 import org.knime.python2.PythonVersion;
 import org.knime.python2.config.PythonCommandConfig;
 
+/**
+ * The node settings for the different SpaCy nodes.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyNodeSettings {
 
 	private static final String KEY_COLUMN = "column";
-	private static final String KEY_LOCAL_PATH = "localPath";
 	private static final String KEY_REPLACE_COLUMN = "replaceColumn";
 	private static final String KEY_APPENDED_COLUMN_NAME = "appendedColumnName";
 	private static final String KEY_PYTHON_COMMAND = "pythonCommand";
 
 	private final SettingsModelString column;
-	private final SettingsModelString localModelPath;
 	private final SettingsModelBoolean replaceColumn;
 	private final SettingsModelString appendedColumnName;
 	private final PythonCommandConfig pythonCommand;
 
+	/**
+	 * Default constructor
+	 */
 	public SpacyNodeSettings() {
 		this(true, "Processed document");
 	}
 
+	/**
+	 * @param defReplaceColumn      The default value of the replaceColumn option.
+	 * @param defAppendedColumnName The default appended column name.
+	 */
 	public SpacyNodeSettings(boolean defReplaceColumn, String defAppendedColumnName) {
 		column = new SettingsModelString(KEY_COLUMN, "");
-		localModelPath = new SettingsModelString(KEY_LOCAL_PATH, "");
 		replaceColumn = new SettingsModelBoolean(KEY_REPLACE_COLUMN, defReplaceColumn);
 		appendedColumnName = new SettingsModelString(KEY_APPENDED_COLUMN_NAME, defAppendedColumnName);
 		pythonCommand = new PythonCommandConfig(KEY_PYTHON_COMMAND, PythonVersion.PYTHON3,
@@ -42,34 +52,51 @@ public class SpacyNodeSettings {
 		replaceColumn.addChangeListener(e -> appendedColumnName.setEnabled(!replaceColumn.getBooleanValue()));
 	}
 
+	/**
+	 * @return the column settings model
+	 */
 	public SettingsModelString getColumnModel() {
 		return column;
 	}
 
+	/**
+	 * @return the selected column.
+	 */
 	public String getColumn() {
 		return column.getStringValue();
 	}
 
-	public SettingsModelString getLocalModelPathModel() {
-		return localModelPath;
-	}
-
+	/**
+	 * @return the replaceColumn settings model.
+	 */
 	public SettingsModelBoolean getReplaceColumnModel() {
 		return replaceColumn;
 	}
 
+	/**
+	 * @return whether to replace selected column or append the new one.
+	 */
 	public boolean getReplaceColumn() {
 		return replaceColumn.getBooleanValue();
 	}
 
+	/**
+	 * @return the appendedColumnName settings model.
+	 */
 	public SettingsModelString getAppendedColumnNameModel() {
 		return appendedColumnName;
 	}
 
+	/**
+	 * @return the name for the appended column.
+	 */
 	public String getAppendedColumnName() {
 		return appendedColumnName.getStringValue();
 	}
 
+	/**
+	 * @return the name of the output column
+	 */
 	public String getOutputColumnName() {
 		if (getReplaceColumn()) {
 			return getColumn();
@@ -78,32 +105,55 @@ public class SpacyNodeSettings {
 		}
 	}
 
+	/**
+	 * @return the python command option.
+	 */
 	public PythonCommandConfig getPythonCommand() {
 		return pythonCommand;
 	}
 
+	/**
+	 * Saves the current settings into provided {@link NodeSettingsWO} object.
+	 * 
+	 * @param settings the settings object
+	 */
 	public void saveSettingsTo(NodeSettingsWO settings) {
 		column.saveSettingsTo(settings);
-		localModelPath.saveSettingsTo(settings);
 		replaceColumn.saveSettingsTo(settings);
 		appendedColumnName.saveSettingsTo(settings);
 		pythonCommand.saveSettingsTo(settings);
 	}
 
+	/**
+	 * Loads the settings form the given {@link NodeSettingsRO} object.
+	 * 
+	 * @param settings the settings object.
+	 * @throws InvalidSettingsException
+	 */
 	public void loadSettingsFrom(NodeSettingsRO settings) throws InvalidSettingsException {
 		column.loadSettingsFrom(settings);
-		localModelPath.loadSettingsFrom(settings);
 		appendedColumnName.loadSettingsFrom(settings);
 		replaceColumn.loadSettingsFrom(settings);
 		pythonCommand.loadSettingsFrom(settings);
 	}
 
+	/**
+	 * Validates the settings stored in the given {@link NodeSettingsRO} object.
+	 * 
+	 * @param settings the settings object.
+	 * @throws InvalidSettingsException
+	 */
 	public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
 		SpacyNodeSettings temp = new SpacyNodeSettings();
 		temp.loadSettingsFrom(settings);
 		temp.validate();
 	}
 
+	/**
+	 * Validates the current settings.
+	 * 
+	 * @throws InvalidSettingsException
+	 */
 	public void validate() throws InvalidSettingsException {
 		if (column.getStringValue().isEmpty()) {
 			throw new InvalidSettingsException("Column is not selected");

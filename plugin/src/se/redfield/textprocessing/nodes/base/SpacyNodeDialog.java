@@ -17,10 +17,19 @@ import org.knime.core.node.port.PortObjectSpec;
 import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.python2.config.PythonFixedVersionExecutableSelectionPanel;
 
+/**
+ * The node dialog for different SpaCy nodes.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 	private SpacyNodeSettings settings = new SpacyNodeSettings();
 	private final PythonFixedVersionExecutableSelectionPanel selector;
 
+	/**
+	 * Default constructor
+	 */
 	public SpacyNodeDialog() {
 		this(false);
 	}

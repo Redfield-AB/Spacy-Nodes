@@ -9,6 +9,12 @@ import org.knime.core.node.NodeView;
 
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
 
+/**
+ * The node factory for the {@link SpacyLemmatizerNodeModel} node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyLemmatizerNodeFactory extends NodeFactory<SpacyLemmatizerNodeModel> {
 
 	@Override

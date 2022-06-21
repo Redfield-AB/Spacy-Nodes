@@ -23,6 +23,12 @@ import se.redfield.textprocessing.data.tag.SpacyNerTagBuilder;
 import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
+/**
+ * SpaCy NER (named entity recognition) node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 	protected SpacyNerTaggerNodeModel() {

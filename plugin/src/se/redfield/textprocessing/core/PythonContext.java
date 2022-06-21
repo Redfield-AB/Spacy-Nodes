@@ -25,6 +25,12 @@ import org.knime.python2.kernel.PythonKernelOptions;
 import org.knime.python2.kernel.PythonKernelQueue;
 import org.knime.python3.PythonSourceDirectoryLocator;
 
+/**
+ * Gateway class for interacting with the python code.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class PythonContext implements AutoCloseable {
 
 	private static final String KNIO_INPUT_TABLE = "knio.input_tables[%d]";
@@ -32,6 +38,11 @@ public class PythonContext implements AutoCloseable {
 
 	private final PythonKernel kernel;
 
+	/**
+	 * @param command         The python command.
+	 * @param numOutputTables The expected number of output tables.
+	 * @throws DLInvalidEnvironmentException
+	 */
 	public PythonContext(PythonCommand command, int numOutputTables) throws DLInvalidEnvironmentException {
 		kernel = createKernel(command);
 		kernel.setExpectedOutputTables(new String[numOutputTables]);
@@ -71,28 +82,71 @@ public class PythonContext implements AutoCloseable {
 		kernel.close();
 	}
 
+	/**
+	 * Puts provided data table into the python context.
+	 * 
+	 * @param idx   The table index.
+	 * @param table The table.
+	 * @param exec  The execution monitor.
+	 * @throws PythonIOException
+	 * @throws CanceledExecutionException
+	 */
 	public void putDataTable(int idx, BufferedDataTable table, ExecutionMonitor exec)
 			throws PythonIOException, CanceledExecutionException {
 		String name = String.format(KNIO_INPUT_TABLE, idx);
 		kernel.putDataTable(name, table, exec);
 	}
 
+	/**
+	 * Gets the data table from the python context.
+	 * 
+	 * @param exec    Execution context.
+	 * @param monitor Execution monitor.
+	 * @return the data table.
+	 * @throws PythonIOException
+	 * @throws CanceledExecutionException
+	 */
 	public BufferedDataTable getDataTable(ExecutionContext exec, ExecutionMonitor monitor)
 			throws PythonIOException, CanceledExecutionException {
 		return getDataTable(0, exec, monitor);
 	}
 
+	/**
+	 * Gets the data table with the given index from the python context.
+	 * 
+	 * @param idx     The table index.
+	 * @param exec    Execution context.
+	 * @param monitor Execution monitor.
+	 * @return The data table.
+	 * @throws PythonIOException
+	 * @throws CanceledExecutionException
+	 */
 	public BufferedDataTable getDataTable(int idx, ExecutionContext exec, ExecutionMonitor monitor)
 			throws PythonIOException, CanceledExecutionException {
 		String name = String.format(KNIO_OUTPUT_TABLE, idx);
 		return kernel.getDataTable(name, exec, monitor);
 	}
 
+	/**
+	 * Executes the given python code.
+	 * 
+	 * @param code The python code.
+	 * @param exec Execution monitor.
+	 * @throws PythonIOException
+	 * @throws CanceledExecutionException
+	 */
 	public void executeInKernel(String code, ExecutionMonitor exec)
 			throws PythonIOException, CanceledExecutionException {
 		kernel.execute(code, new PythonExecutionMonitorCancelable(exec));
 	}
 
+	/**
+	 * Puts input table argument into provided code builder.
+	 * 
+	 * @param b       The code builder.
+	 * @param argName The python function argument name.
+	 * @param idx     The table index.
+	 */
 	public static void putInputTableArgs(DLPythonSourceCodeBuilder b, String argName, int idx) {
 		String tableName = String.format(KNIO_INPUT_TABLE, idx);
 		b.a(argName).a(" = ").a(tableName).a(".to_pyarrow(),").n();

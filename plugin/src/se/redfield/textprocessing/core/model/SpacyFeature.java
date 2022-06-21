@@ -8,12 +8,36 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Enum representing different SpaCy model capabilities.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public enum SpacyFeature {
-	LEMMATIZATION("Lemmatization", "lemmatizer"), //
-	MORPHOLOGY("Morphology", "morphologizer"), //
-	NER("NER", "ner"), //
-	POS("POS", "tagger", "morphologizer"), //
-	TOKENIZATION("Tonenization"), //
+	/**
+	 * Lemmatization
+	 */
+	LEMMATIZATION("Lemmatization", "lemmatizer"),
+	/**
+	 * Morphology
+	 */
+	MORPHOLOGY("Morphology", "morphologizer"),
+	/**
+	 * Named Entity Recognition
+	 */
+	NER("NER", "ner"),
+	/**
+	 * Part-of-Speech tagging
+	 */
+	POS("POS", "tagger", "morphologizer"),
+	/**
+	 * Tokenization
+	 */
+	TOKENIZATION("Tonenization"),
+	/**
+	 * Vectorizaton
+	 */
 	VECTORIZATION("Vectorization", "tok2vec", "transformer");
 
 	private String title;
@@ -33,6 +57,10 @@ public enum SpacyFeature {
 		return components.isEmpty() || Arrays.stream(pipeline).anyMatch(s -> components.contains(s));
 	}
 
+	/**
+	 * @param pipeline The model pipeline components.
+	 * @return The set of supported features
+	 */
 	public static Set<SpacyFeature> fromPipeline(String[] pipeline) {
 		return Arrays.stream(SpacyFeature.values()).filter(f -> f.check(pipeline)).collect(Collectors.toSet());
 	}

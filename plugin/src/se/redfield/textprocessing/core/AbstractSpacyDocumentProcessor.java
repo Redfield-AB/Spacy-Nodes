@@ -22,11 +22,22 @@ import org.knime.ext.textprocessing.data.Term;
 import se.redfield.textprocessing.data.dto.SpacyDocument;
 import se.redfield.textprocessing.data.dto.SpacySentence;
 
+/**
+ * Abstract implementation of the {@link SpacyDocumentProcessor} interface.
+ * 
+ * Iterates through {@link SpacyDocument} and original {@link Document}
+ * attempting to merge existing tags from the {@link Document} with the new tags
+ * from the {@link SpacyDocument}.
+ * 
+ * In case the merge process fails, uses {@link SpacyDocument} as a base for the
+ * resulting {@link Document}.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentProcessor {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(AbstractSpacyDocumentProcessor.class);
 
-	private Document doc;
-	private SpacyDocument spacyDoc;
 	private DocumentBuilder builder;
 
 	private Iterator<SpacySentence> spacySentenceIter;
@@ -90,8 +101,6 @@ public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentPro
 	protected abstract Sentence processSentence(SpacySentence spacySent);
 
 	private void init(SpacyDocument spacyDoc, Document doc) {
-		this.doc = doc;
-		this.spacyDoc = spacyDoc;
 		builder = new DocumentBuilder(doc);
 
 		spacySentenceIter = Arrays.asList(spacyDoc.getSentences()).iterator();
@@ -227,13 +236,23 @@ public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentPro
 		return curTerm;
 	}
 
+	/**
+	 * The document processing exception.
+	 *
+	 */
 	public static class DocumentProcessingException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 
+		/**
+		 * Creates new instance.
+		 */
 		public DocumentProcessingException() {
 			super();
 		}
 
+		/**
+		 * @param message The error message.
+		 */
 		public DocumentProcessingException(String message) {
 			super(message);
 		}

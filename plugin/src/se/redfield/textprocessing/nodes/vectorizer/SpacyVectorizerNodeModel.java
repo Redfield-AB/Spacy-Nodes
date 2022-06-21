@@ -21,6 +21,12 @@ import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.nodes.base.SpacyBaseNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
+/**
+ * The vectorizer node.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 
 	protected SpacyVectorizerNodeModel() {

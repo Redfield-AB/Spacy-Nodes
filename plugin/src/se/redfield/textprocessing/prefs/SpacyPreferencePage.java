@@ -10,8 +10,17 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import se.redfield.textprocessing.SpacyPlugin;
 
+/**
+ * The preference page.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	/**
+	 * Creates new instance.
+	 */
 	public SpacyPreferencePage() {
 		super();
 		setPreferenceStore(SpacyPlugin.getDefault().getPreferenceStore());

@@ -10,7 +10,13 @@ import org.knime.core.node.port.AbstractSimplePortObjectSpec;
 
 import se.redfield.textprocessing.core.model.SpacyModelDescription;
 
-public class SpacyModelPortObjectSpec extends AbstractSimplePortObjectSpec {
+/**
+ * The spec for the SpaCy model port object.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
+public class SpacyModelPortObjectSpec extends AbstractSimplePortObjectSpec {// NOSONAR
 	/**
 	 * The serializer for the {@link SpacyModelPortObjectSpec}
 	 *
@@ -20,10 +26,16 @@ public class SpacyModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 
 	private final SpacyModelDescription model;
 
+	/**
+	 * Default constructor.
+	 */
 	public SpacyModelPortObjectSpec() {
 		this(new SpacyModelDescription());
 	}
 
+	/**
+	 * @param model The model description.
+	 */
 	public SpacyModelPortObjectSpec(SpacyModelDescription model) {
 		this.model = model;
 	}
@@ -38,6 +50,9 @@ public class SpacyModelPortObjectSpec extends AbstractSimplePortObjectSpec {
 		this.model.load(model);
 	}
 
+	/**
+	 * @return the model description.
+	 */
 	public SpacyModelDescription getModel() {
 		return model;
 	}

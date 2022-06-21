@@ -21,6 +21,13 @@ import com.google.gson.reflect.TypeToken;
 
 import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
 
+/**
+ * Class holding different information about available official SpaCy models.
+ * The list of models is stored in the config file.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public class SpacyModelDefinition {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyModelDefinition.class);
 	private static final String MODELS_FILE = "config/spacy-models.json";
@@ -35,30 +42,52 @@ public class SpacyModelDefinition {
 	private String[] components;
 	private Set<SpacyFeature> features;
 
+	/**
+	 * @return The model name.
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * @return The model size.
+	 */
 	public String getSize() {
 		return size;
 	}
 
+	/**
+	 * @return The SpaCy version required for the model.
+	 */
 	public String getVersion() {
 		return version;
 	}
 
+	/**
+	 * @return The model language.
+	 */
 	public String getLang() {
 		return lang;
 	}
 
+	/**
+	 * @return The model download URL
+	 */
 	public String getUrl() {
 		return url;
 	}
 
+	/**
+	 * @return The model unique identifier. Constructed from the model name and
+	 *         version.
+	 */
 	public String getId() {
 		return name + "-" + version;
 	}
 
+	/**
+	 * @return The set of features supported by the model.
+	 */
 	public Set<SpacyFeature> getFeatures() {
 		if (features == null) {
 			features = SpacyFeature.fromPipeline(components);
@@ -66,6 +95,9 @@ public class SpacyModelDefinition {
 		return features;
 	}
 
+	/**
+	 * @return The directory the model is (or will be) downloaded.
+	 */
 	public File getModelDownloadDir() {
 		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
 		return new File(cacheDir, getId());
@@ -84,6 +116,9 @@ public class SpacyModelDefinition {
 		return Objects.hashCode(getId());
 	}
 
+	/**
+	 * @return The list of available SpaCy models.
+	 */
 	public static List<SpacyModelDefinition> list() {
 		if (models == null) {
 			try {

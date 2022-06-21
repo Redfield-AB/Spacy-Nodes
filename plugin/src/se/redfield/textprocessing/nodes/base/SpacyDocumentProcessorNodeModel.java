@@ -18,6 +18,7 @@ import org.knime.core.data.container.SingleCellFactory;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.NodeLogger;
+import org.knime.core.node.NodeModel;
 import org.knime.ext.textprocessing.data.Document;
 import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.ext.textprocessing.data.TagBuilder;
@@ -32,6 +33,13 @@ import se.redfield.textprocessing.data.dto.SpacyDocument;
 import se.redfield.textprocessing.data.tag.DynamicTagBuilder;
 import se.redfield.textprocessing.data.tag.GenericTagBuilder;
 
+/**
+ * The base {@link NodeModel} for the nodes that outputs the document as a
+ * result.
+ * 
+ * @author Alexander Bondaletov
+ *
+ */
 public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyDocumentProcessorNodeModel.class);
 
