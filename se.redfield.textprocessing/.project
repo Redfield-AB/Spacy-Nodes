@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>se.redfield.textprocessing.plugin</name>
+	<name>se.redfield.textprocessing</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,7 +14,7 @@
 			<name>org.eclipse.m2e.core.maven2Builder</name>
 			<arguments>
 			</arguments>
-		</buildCommand>		
+		</buildCommand>
 		<buildCommand>
 			<name>org.eclipse.pde.ManifestBuilder</name>
 			<arguments>
