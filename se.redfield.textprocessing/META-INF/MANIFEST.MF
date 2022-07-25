@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: se.redfield.textprocessing.plugin
+Automatic-Module-Name: se.redfield.textprocessing
 Bundle-ManifestVersion: 2
 Bundle-Name: Redfield Textprocessing extension for KNIME Workbench
 Bundle-SymbolicName: se.redfield.textprocessing;singleton:=true
