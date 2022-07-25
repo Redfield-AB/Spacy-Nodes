@@ -192,10 +192,11 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	private BufferedDataTable prepareInputTable(BufferedDataTable inTable, ExecutionContext exec)
 			throws CanceledExecutionException {
-		ColumnRearranger r = new ColumnRearranger(inTable.getDataTableSpec());
-		int idx = inTable.getDataTableSpec().findColumnIndex(settings.getColumn());
+		final var spec = inTable.getDataTableSpec();
+		ColumnRearranger r = new ColumnRearranger(spec);
+		int idx = spec.findColumnIndex(settings.getColumn());
 
-		if (inTable.getDataTableSpec().getColumnSpec(idx).getType().isCompatible(DocumentValue.class)) {
+		if (spec.getColumnSpec(idx).getType().isCompatible(DocumentValue.class)) {
 			SingleCellFactory fac = new SingleCellFactory(
 					new DataColumnSpecCreator(settings.getColumn(), StringCell.TYPE).createSpec()) {
 
