@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.knime.core.node.NodeLogger;
-import org.knime.dl.util.DLUtils;
 import org.knime.ext.textprocessing.data.TagBuilder;
+import org.knime.python3.PythonSourceDirectoryLocator;
 
 /**
  * {@link TagBuilder} implementation that loads the tags from the resource text
@@ -32,8 +32,7 @@ public class ResourceFileTagBuilder extends GenericTagBuilder {
 
 	private static List<String> readTags(String tagFile) {
 		try {
-			return Files
-					.readAllLines(DLUtils.Files.getFileFromSameBundle(ResourceFileTagBuilder.class, tagFile).toPath());
+			return Files.readAllLines(PythonSourceDirectoryLocator.getPathFor(ResourceFileTagBuilder.class, tagFile));
 		} catch (IllegalArgumentException | IOException e) {
 			LOGGER.error(e.getMessage(), e);
 		}

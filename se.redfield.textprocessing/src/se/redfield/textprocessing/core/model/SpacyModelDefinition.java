@@ -4,16 +4,16 @@
 package se.redfield.textprocessing.core.model;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import org.knime.core.node.NodeLogger;
-import org.knime.dl.util.DLUtils;
+import org.knime.python3.PythonSourceDirectoryLocator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -134,8 +134,8 @@ public class SpacyModelDefinition {
 
 	private static List<SpacyModelDefinition> loadModels() throws IOException {
 		Gson gson = new GsonBuilder().create();
-		try (FileReader reader = new FileReader(
-				DLUtils.Files.getFileFromSameBundle(SpacyModelDefinition.class, MODELS_FILE))) {
+		var path = PythonSourceDirectoryLocator.getPathFor(SpacyModelDefinition.class, MODELS_FILE);
+		try (var reader = Files.newBufferedReader(path)) {
 			Type typeOf = new TypeToken<List<SpacyModelDefinition>>() {
 			}.getType();
 			return gson.fromJson(reader, typeOf);
