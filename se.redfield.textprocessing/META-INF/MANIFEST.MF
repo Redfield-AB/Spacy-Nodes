@@ -1,28 +1,28 @@
 Manifest-Version: 1.0
-Automatic-Module-Name: se.redfield.textprocessing.plugin
+Automatic-Module-Name: se.redfield.textprocessing
 Bundle-ManifestVersion: 2
 Bundle-Name: Redfield Textprocessing extension for KNIME Workbench
 Bundle-SymbolicName: se.redfield.textprocessing;singleton:=true
 Bundle-Version: 1.0.1.qualifier
-Bundle-ClassPath: .
+Bundle-ClassPath: spacy.jar
 Bundle-Activator: se.redfield.textprocessing.SpacyPlugin
 Bundle-Vendor: Redfield AB
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.13.0,4.0.0)",
  org.knime.workbench.core;bundle-version="[4.0.0,5.0.0)",
  org.knime.workbench.repository;bundle-version="[4.0.0,5.0.0)",
  org.knime.base;bundle-version="[4.0.0,5.0.0)",
- org.knime.dl.tensorflow2;bundle-version="[4.2.0,5.0.0)",
- org.knime.dl.python;bundle-version="4.2.0",
+ org.knime.dl.python;bundle-version="[4.6.0,5.0.0)",
  org.knime.python2;bundle-version="[4.2.0,5.0.0)",
- org.knime.dl;bundle-version="[4.2.0,5.0.0)",
- org.knime.ext.textprocessing;bundle-version="[4.3.0,5.0.0)",
- org.apache.commons.compress;bundle-version="1.19.0",
- com.fasterxml.jackson.core.jackson-annotations;bundle-version="2.11.0",
- com.fasterxml.jackson.core.jackson-core;bundle-version="2.11.0",
- com.fasterxml.jackson.core.jackson-databind;bundle-version="2.11.0",
- com.google.gson;bundle-version="2.8.1",
- org.knime.filehandling.core;bundle-version="4.4.2",
+ org.knime.ext.textprocessing;bundle-version="[4.6.0,5.0.0)",
+ org.apache.commons.compress;bundle-version="[1.19.0,2.0.0)",
+ com.fasterxml.jackson.core.jackson-annotations;bundle-version="[2.11.0,3.0.0)",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="[2.11.0,3.0.0)",
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="[2.11.0,3.0.0)",
+ com.google.gson;bundle-version="[2.8.1,3.0.0)",
+ org.knime.filehandling.core;bundle-version="[4.6.0,5.0.0)",
  org.knime.python3;bundle-version="[4.6.0,5.0.0)",
- org.knime.python3.scripting;bundle-version="[4.6.0,5.0.0)"
+ org.knime.python3.scripting;bundle-version="[4.6.0,5.0.0)",
+ org.knime.conda;bundle-version="[4.6.0,5.0.0)"
 Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir
 

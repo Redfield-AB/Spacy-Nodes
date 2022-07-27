@@ -11,7 +11,6 @@ import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
-import org.knime.dl.core.DLInvalidEnvironmentException;
 import org.knime.dl.python.util.DLPythonSourceCodeBuilder;
 import org.knime.dl.python.util.DLPythonUtils;
 import org.knime.python2.PythonCommand;
@@ -43,12 +42,12 @@ public class PythonContext implements AutoCloseable {
 	 * @param numOutputTables The expected number of output tables.
 	 * @throws DLInvalidEnvironmentException
 	 */
-	public PythonContext(PythonCommand command, int numOutputTables) throws DLInvalidEnvironmentException {
+	public PythonContext(PythonCommand command, int numOutputTables) {
 		kernel = createKernel(command);
 		kernel.setExpectedOutputTables(new String[numOutputTables]);
 	}
 
-	private static PythonKernel createKernel(PythonCommand command) throws DLInvalidEnvironmentException {
+	private static PythonKernel createKernel(PythonCommand command) {
 		PythonKernelOptions options = getKernelOptions();
 		try {
 			PythonKernel kernel = PythonKernelQueue.getNextKernel(command, PythonKernelBackendType.PYTHON3,
@@ -60,7 +59,7 @@ public class PythonContext implements AutoCloseable {
 			final String msg = e.getMessage() != null && e.getMessage().isEmpty()
 					? "An error occurred while trying to launch Python: " + e.getMessage()
 					: "An unknown error occurred while trying to launch Python. See log for details.";
-			throw new DLInvalidEnvironmentException(msg, e);
+			throw new IllegalStateException(msg, e);
 		} catch (PythonCanceledExecutionException e) {
 			throw new IllegalStateException("Implementation error", e);
 		}
@@ -149,6 +148,6 @@ public class PythonContext implements AutoCloseable {
 	 */
 	public static void putInputTableArgs(DLPythonSourceCodeBuilder b, String argName, int idx) {
 		String tableName = String.format(KNIO_INPUT_TABLE, idx);
-		b.a(argName).a(" = ").a(tableName).a(".to_pyarrow(),").n();
+		b.a(argName).a(" = ").a(tableName).a(",").n();
 	}
 }

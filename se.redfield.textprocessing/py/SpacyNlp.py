@@ -11,11 +11,16 @@ class SpacyNlp:
         self.nlp = spacy.load(model_handle)
         self.assigned_tags = set()
 
-    def process_table(self, input_table: pa.Table, column: str) -> pa.Table:
+    def process_table(self, input_table: knio.ReadTable, column: str) -> pa.Table:
         self.setup_pipeline()
-        docs = self.nlp.pipe(input_table[column].to_pylist())
-        results = self.collect_results(docs)
-        return pa.Table.from_arrays([input_table[0], results], names=[input_table.column_names[0], 'result'])
+        write_table = knio.batch_write_table()
+        for batch in input_table.batches():
+            batch = batch.to_pyarrow()
+            docs = self.nlp.pipe(batch[column].to_pylist())
+            results = self.collect_results(docs)
+            output_batch = pa.RecordBatch.from_arrays([batch[0], results], names=[batch.field(0).name, 'result'])
+            write_table.append(output_batch)
+        return write_table
     
     def collect_results(self, docs):
         return [self.doc_to_json(doc) for doc in docs]
@@ -41,14 +46,14 @@ class SpacyNlp:
         return {'text': token.text}
 
     @classmethod
-    def run(cls, model_handle: str, input_table: pa.Table, column:str):
+    def run(cls, model_handle: str, input_table: knio.ReadTable, column:str):
         nlp = cls(model_handle)
         result_table =  nlp.process_table(input_table, column)
 
         tags = nlp.assigned_tags.difference({'', None})
         meta_table = pa.Table.from_arrays([['Row' + str(i) for i in range(len(tags))], tags], names=['RowId','tags'])
 
-        knio.output_tables[0] = knio.write_table(result_table)
+        knio.output_tables[0] = result_table
         knio.output_tables[1] = knio.write_table(meta_table)
 
 
