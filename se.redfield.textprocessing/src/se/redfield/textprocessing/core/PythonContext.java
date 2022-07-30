@@ -36,6 +36,7 @@ public class PythonContext implements AutoCloseable {
 	private static final String KNIO_OUTPUT_TABLE = "knio.output_tables[%d]";
 
 	private final PythonKernel kernel;
+	private final PythonProgressListener progressListener;
 
 	/**
 	 * @param command         The python command.
@@ -45,6 +46,10 @@ public class PythonContext implements AutoCloseable {
 	public PythonContext(PythonCommand command, int numOutputTables) {
 		kernel = createKernel(command);
 		kernel.setExpectedOutputTables(new String[numOutputTables]);
+
+		progressListener = new PythonProgressListener();
+		kernel.addStdoutListener(progressListener);
+		kernel.addStderrorListener(progressListener);
 	}
 
 	private static PythonKernel createKernel(PythonCommand command) {
@@ -94,36 +99,38 @@ public class PythonContext implements AutoCloseable {
 			throws PythonIOException, CanceledExecutionException {
 		String name = String.format(KNIO_INPUT_TABLE, idx);
 		kernel.putDataTable(name, table, exec);
+
+		exec.checkCanceled();
+		exec.setProgress(1);
 	}
 
 	/**
 	 * Gets the data table from the python context.
 	 * 
-	 * @param exec    Execution context.
-	 * @param monitor Execution monitor.
+	 * @param exec Execution context.
 	 * @return the data table.
 	 * @throws PythonIOException
 	 * @throws CanceledExecutionException
 	 */
-	public BufferedDataTable getDataTable(ExecutionContext exec, ExecutionMonitor monitor)
-			throws PythonIOException, CanceledExecutionException {
-		return getDataTable(0, exec, monitor);
+	public BufferedDataTable getDataTable(ExecutionContext exec) throws PythonIOException, CanceledExecutionException {
+		return getDataTable(0, exec);
 	}
 
 	/**
 	 * Gets the data table with the given index from the python context.
 	 * 
-	 * @param idx     The table index.
-	 * @param exec    Execution context.
-	 * @param monitor Execution monitor.
+	 * @param idx  The table index.
+	 * @param exec Execution context.
 	 * @return The data table.
 	 * @throws PythonIOException
 	 * @throws CanceledExecutionException
 	 */
-	public BufferedDataTable getDataTable(int idx, ExecutionContext exec, ExecutionMonitor monitor)
+	public BufferedDataTable getDataTable(int idx, ExecutionContext exec)
 			throws PythonIOException, CanceledExecutionException {
 		String name = String.format(KNIO_OUTPUT_TABLE, idx);
-		return kernel.getDataTable(name, exec, monitor);
+		BufferedDataTable result = kernel.getDataTable(name, exec, exec);
+		exec.setProgress(1);
+		return result;
 	}
 
 	/**
@@ -136,7 +143,10 @@ public class PythonContext implements AutoCloseable {
 	 */
 	public void executeInKernel(String code, ExecutionMonitor exec)
 			throws PythonIOException, CanceledExecutionException {
+		progressListener.setMonitor(exec);
 		kernel.execute(code, new PythonExecutionMonitorCancelable(exec));
+		progressListener.setMonitor(null);
+		exec.setProgress(1.0);
 	}
 
 	/**

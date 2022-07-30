@@ -16,7 +16,9 @@ import org.knime.core.data.MissingCell;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.SingleCellFactory;
 import org.knime.core.node.BufferedDataTable;
+import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
+import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.NodeLogger;
 import org.knime.core.node.NodeModel;
 import org.knime.ext.textprocessing.data.Document;
@@ -49,7 +51,7 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 
 	@Override
 	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
-			BufferedDataTable metaTable, ExecutionContext exec) {
+			BufferedDataTable metaTable, ExecutionContext exec) throws CanceledExecutionException {
 		TextContainerDataCellFactory textContainerFactory = createTextContainerFactory(exec);
 
 		DataColumnSpecCreator creator = new DataColumnSpecCreator(settings.getOutputColumnName(),
@@ -60,7 +62,7 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 		SpacyDocumentProcessor docProcessor = createSpacyDocumentProcessor();
 
 		if (docProcessor.getTagBuilder() != null) {
-			Set<String> tags = collectAssignedTags(metaTable);
+			Set<String> tags = collectAssignedTags(metaTable, exec);
 			TagBuilder builder = selectTagBuilder(tags, docProcessor.getTagBuilder(), dynamicTagSets);
 			docProcessor.setTagBuilder(builder);
 
@@ -73,10 +75,14 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 				resultColumn);
 	}
 
-	private static Set<String> collectAssignedTags(BufferedDataTable metaTable) {
+	private static Set<String> collectAssignedTags(BufferedDataTable metaTable, ExecutionMonitor exec)
+			throws CanceledExecutionException {
 		Set<String> tags = new HashSet<>();
 		for (DataRow row : metaTable) {
 			tags.add(row.getCell(0).toString());
+
+			exec.checkCanceled();
+			exec.setProgress((double) tags.size() / metaTable.size());
 		}
 		return tags;
 	}

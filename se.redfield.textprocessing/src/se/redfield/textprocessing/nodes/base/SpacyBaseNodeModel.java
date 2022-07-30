@@ -152,23 +152,26 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
 
 		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand(), 2)) {
-			ctx.putDataTable(0, prepareInputTable(inTable, exec), exec);
-			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec);
+			BufferedDataTable inputTable = prepareInputTable(inTable, exec.createSubExecutionContext(0.05));
+			ctx.putDataTable(0, inputTable, exec.createSubProgress(0.05));
+			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec.createSubProgress(0.8));
 
-			return new PortObject[] { model, buildOutputTable(inTable, ctx, exec) };
+			BufferedDataTable result = buildOutputTable(inTable, ctx, exec.createSubExecutionContext(0.1));
+			return new PortObject[] { model, result };
 		}
 	}
 
 	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec)
 			throws CanceledExecutionException, PythonIOException {
-		BufferedDataTable res = ctx.getDataTable(0, exec, exec);
-		BufferedDataTable meta = ctx.getDataTable(1, exec, exec);
+		BufferedDataTable res = ctx.getDataTable(0, exec.createSubExecutionContext(0.05));
+		BufferedDataTable meta = ctx.getDataTable(1, exec.createSubExecutionContext(0.05));
 
-		BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec);
+		BufferedDataTable joined = exec.createJoinedTable(inTable, res, exec.createSubProgress(0.05));
 
 		int inColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
 		int resColIdx = joined.getDataTableSpec().getNumColumns() - 1;
-		CellFactory fac = createCellFactory(inColIdx, resColIdx, joined.getDataTableSpec(), meta, exec);
+		CellFactory fac = createCellFactory(inColIdx, resColIdx, joined.getDataTableSpec(), meta,
+				exec.createSubExecutionContext(0.05));
 
 		ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
 		if (settings.getReplaceColumn()) {
@@ -178,7 +181,9 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		}
 		r.remove(resColIdx);
 
-		return exec.createColumnRearrangeTable(joined, r, exec);
+		BufferedDataTable result = exec.createColumnRearrangeTable(joined, r, exec.createSubProgress(0.80));
+		exec.setProgress(1.0);
+		return result;
 	}
 
 	private String createExecuteScript(String modelPath) {
@@ -210,7 +215,9 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		}
 
 		r.keepOnly(idx);
-		return exec.createColumnRearrangeTable(inTable, r, exec);
+		BufferedDataTable result = exec.createColumnRearrangeTable(inTable, r, exec);
+		exec.setProgress(1.0);
+		return result;
 	}
 
 	protected TextContainerDataCellFactory createTextContainerFactory(ExecutionContext exec) {
@@ -220,7 +227,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	}
 
 	protected abstract CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
-			BufferedDataTable metaTable, ExecutionContext exec);
+			BufferedDataTable metaTable, ExecutionContext exec) throws CanceledExecutionException;
 
 	protected abstract String getSpacyMethod();
 

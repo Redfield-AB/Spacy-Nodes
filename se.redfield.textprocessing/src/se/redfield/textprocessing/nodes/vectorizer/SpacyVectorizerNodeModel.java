@@ -52,12 +52,14 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 	@Override
 	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec)
 			throws CanceledExecutionException, PythonIOException {
-		BufferedDataTable res = ctx.getDataTable(exec, exec);
-		BufferedDataTable joined = joinResultTable(inTable, res, exec);
+		BufferedDataTable res = ctx.getDataTable(exec.createSubExecutionContext(0.5));
+		BufferedDataTable joined = joinResultTable(inTable, res, exec.createSubExecutionContext(0.5));
 
 		DataTableSpecCreator c = new DataTableSpecCreator(joined.getDataTableSpec());
 		c.replaceColumn(joined.getDataTableSpec().findColumnIndex(PYTHON_RES_COLUMN_NAME), createOutputColumnSpec());
-		return exec.createSpecReplacerTable(joined, c.createSpec());
+		BufferedDataTable result = exec.createSpecReplacerTable(joined, c.createSpec());
+		exec.setProgress(1.0);
+		return result;
 	}
 
 	private BufferedDataTable joinResultTable(BufferedDataTable inTable, BufferedDataTable resTable,

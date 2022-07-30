@@ -13,6 +13,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.BasicFileAttributes;
 
+import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionMonitor;
 import org.knime.core.node.InvalidSettingsException;
 import org.knime.core.node.NodeLogger;
@@ -102,34 +103,76 @@ public class FsModelDownloader extends SpacyModelDownloader {
 	}
 
 	@Override
-	protected void download(ExecutionMonitor exec) throws IOException, InvalidSettingsException {
+	protected void download(ExecutionMonitor exec)
+			throws IOException, InvalidSettingsException, CanceledExecutionException {
 		if (!isLocal) {
 			try (ReadPathAccessor accessor = fsPath.createReadPathAccessor()) {
 				FSPath path = accessor.getRootPath(m -> {
 				});
 				Path target = getModelDownloadDir(accessor).toPath();
 
-				Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
-
-					@Override
-					public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-						Files.createDirectories(resolve(dir));
-						return FileVisitResult.CONTINUE;
-					}
-
-					@Override
-					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-						Files.copy(file, resolve(file), StandardCopyOption.REPLACE_EXISTING);
-						return FileVisitResult.CONTINUE;
-					}
-
-					private Path resolve(Path p) {
-						return target.resolve(path.relativize(p).toString());
-					}
-				});
-
+				ComputeSizeVisitor sizeCalculator = new ComputeSizeVisitor();
+				Files.walkFileTree(path, sizeCalculator);
+				Files.walkFileTree(path, new CopyDirectoryVisitor(path, target, sizeCalculator.getSize(), exec));
+				exec.checkCanceled();
 			}
 		}
 	}
 
+	private class ComputeSizeVisitor extends SimpleFileVisitor<Path> {
+
+		private long size = 0;
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			size += Files.size(file);
+			return FileVisitResult.CONTINUE;
+		}
+
+		public long getSize() {
+			return size;
+		}
+	}
+
+	private class CopyDirectoryVisitor extends SimpleFileVisitor<Path> {
+
+		private final ExecutionMonitor exec;
+		private final Path source;
+		private final Path target;
+		private final long totalSize;
+		private long done;
+
+		public CopyDirectoryVisitor(Path source, Path target, long totalSize, ExecutionMonitor exec) {
+			this.exec = exec;
+			this.source = source;
+			this.target = target;
+			this.totalSize = totalSize;
+			this.done = 0;
+		}
+
+		@Override
+		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+			Files.createDirectories(resolve(dir));
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			Files.copy(file, resolve(file), StandardCopyOption.REPLACE_EXISTING);
+
+			done += Files.size(file);
+			exec.setProgress((double) done / totalSize);
+
+			try {
+				exec.checkCanceled();
+				return FileVisitResult.CONTINUE;
+			} catch (CanceledExecutionException e) {
+				return FileVisitResult.TERMINATE;
+			}
+		}
+
+		private Path resolve(Path p) {
+			return target.resolve(source.relativize(p).toString());
+		}
+	}
 }

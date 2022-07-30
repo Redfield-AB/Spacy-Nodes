@@ -3,6 +3,7 @@ import spacy
 import pyarrow as pa
 import numpy as np
 import knime_io as knio
+from tqdm import tqdm
 
 
 class SpacyNlp:
@@ -14,12 +15,14 @@ class SpacyNlp:
     def process_table(self, input_table: knio.ReadTable, column: str) -> pa.Table:
         self.setup_pipeline()
         write_table = knio.batch_write_table()
+        rows_done = 0
         for batch in input_table.batches():
             batch = batch.to_pyarrow()
-            docs = self.nlp.pipe(batch[column].to_pylist())
+            docs = tqdm(self.nlp.pipe(batch[column].to_pylist()), total=input_table.num_rows, initial=rows_done)
             results = self.collect_results(docs)
             output_batch = pa.RecordBatch.from_arrays([batch[0], results], names=[batch.field(0).name, 'result'])
             write_table.append(output_batch)
+            rows_done += len(batch)
         return write_table
     
     def collect_results(self, docs):

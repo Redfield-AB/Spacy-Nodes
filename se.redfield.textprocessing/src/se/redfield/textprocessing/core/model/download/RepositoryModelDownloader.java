@@ -5,9 +5,12 @@ package se.redfield.textprocessing.core.model.download;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -15,7 +18,7 @@ import java.nio.file.StandardCopyOption;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
-import org.apache.commons.io.FileUtils;
+import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionMonitor;
 
 import se.redfield.textprocessing.core.model.SpacyModelDefinition;
@@ -30,6 +33,8 @@ import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
  *
  */
 public class RepositoryModelDownloader extends SpacyModelDownloader {
+	private static final int BUFFER_SIZE = 10 * 1024;// 10 KB
+	private static final int TIMEOUT = 10 * 1000; // 10s
 
 	private SpacyModelDefinition def;
 
@@ -51,14 +56,41 @@ public class RepositoryModelDownloader extends SpacyModelDownloader {
 	}
 
 	@Override
-	protected void download(ExecutionMonitor exec) throws IOException {
+	protected void download(ExecutionMonitor exec) throws IOException, CanceledExecutionException {
+		File archive = downloadArchive(exec);
+		unpackArchive(archive);
+	}
+
+	private File downloadArchive(ExecutionMonitor exec) throws IOException, CanceledExecutionException {
 		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
 		File archive = new File(cacheDir, def.getId() + ".tar.gz");
 
-		exec.setProgress("Downloading the model");
-		FileUtils.copyURLToFile(new URL(def.getUrl()), archive);
-		exec.setProgress("Unpacking the model");
+		URL url = new URL(def.getUrl());
+		URLConnection connection = url.openConnection();
+		connection.setConnectTimeout(TIMEOUT);
+		connection.setReadTimeout(TIMEOUT);
 
+		byte[] buffer = new byte[BUFFER_SIZE];
+		long contentLength = connection.getContentLengthLong();
+		long readCount = 0;
+
+		try (InputStream in = connection.getInputStream(); //
+				OutputStream out = new FileOutputStream(archive)) {
+			int n;
+			while ((n = in.read(buffer)) != -1) {
+				out.write(buffer, 0, n);
+
+				readCount += n;
+				exec.checkCanceled();
+				exec.setProgress((double) readCount / contentLength);
+			}
+		}
+
+		return archive;
+	}
+
+	private void unpackArchive(File archive) throws IOException {
+		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
 		String packagePrefix = findPackagePrefix(archive);
 
 		try (InputStream fi = Files.newInputStream(archive.toPath());
