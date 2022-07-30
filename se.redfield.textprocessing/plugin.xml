@@ -9,31 +9,31 @@
    <extension
          point="org.knime.workbench.repository.nodes">   
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeFactory">
       </node>
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.ner.SpacyNerTaggerNodeFactory">
       </node>
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.lemmatizer.SpacyLemmatizerNodeFactory">
       </node>
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.pos.SpacyPosTaggerNodeFactory">
       </node>
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.morph.SpacyMorphologizerNodeFactory">
       </node>
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.vectorizer.SpacyVectorizerNodeFactory">
       </node>
       <node
-            category-path="/redfield-textprocessing"
+            category-path="/community/redfield-textprocessing"
             factory-class="se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeFactory">
       </node>    
    </extension>
@@ -49,7 +49,7 @@
                icon="resources/redfield_logo.png"
                level-id="redfield-textprocessing"
                name="Redfield NLP Nodes"
-               path="/">
+               path="/community">
          </category>
       </extension>
       <extension
