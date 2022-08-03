@@ -1,0 +1,15 @@
+name: py39_spacy # Name of the created environment
+channels:                # Repositories to search for packages
+- conda-forge
+dependencies:            # List of packages that should be installed
+- python=3.9             # Python
+- py4j                   # used for KNIME <-> Python communication
+- nomkl                  # Prevents the use of Intel's MKL !!! Can't install pytorch with conda if nomkl is present !!! MKL doesn't work at all on Mac M1
+- pandas                 # Table data structures
+- numpy                  # N-dimensional arrays
+- pyarrow                # Arrow serialization TODO check if it works or pin to version 7
+- pip
+- pip:
+  - torch                # needed by spacy-transformers
+  - spacy
+  - spacy-transformers # needed for models using transformers

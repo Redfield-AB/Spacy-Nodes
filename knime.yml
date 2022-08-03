@@ -1,0 +1,15 @@
+group_id: se.redfield
+name: textprocessing
+author: Redfield AB
+vendor: Redfield AB
+description: "Redfield NLP Nodes"
+# TODO long description
+env_yml_path: se.redfield.textprocessing/config/spacy_cpu.yml
+version: 1.0.1
+copyright: "Copyright (c) 2021 Redfield AB"
+# TODO license
+java_bundles:
+  - se.redfield.textprocessing
+feature_dependencies:
+  - org.knime.features.ext.textprocessing
+  - org.knime.features.python2
