@@ -3,13 +3,13 @@
 */
 package se.redfield.textprocessing.prefs;
 
-import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.knime.conda.Conda;
+import org.knime.conda.prefs.CondaPreferences;
 import org.knime.core.node.NodeLogger;
-
-import se.redfield.textprocessing.SpacyPlugin;
+import org.knime.python2.config.PythonConfig;
 
 /**
  * Preferences initializer.
@@ -24,26 +24,35 @@ public class SpacyPreferenceInitializer extends AbstractPreferenceInitializer {
 	/**
 	 * The cache directory setting key
 	 */
-	public static final String PREF_CACHE_DIR = "redfield.textprocessing.cachedir";
-
-	private static final String DEFAULT_CACHE_DIR = System.getProperty("java.io.tmpdir") + File.separator
-			+ "spacy-cache";
+	static final String PREF_CACHE_DIR = "redfield.textprocessing.cachedir";
+	
+	
 
 	@Override
 	public void initializeDefaultPreferences() {
-		IPreferenceStore store = SpacyPlugin.getDefault().getPreferenceStore();
-
-		store.setDefault(PREF_CACHE_DIR, DEFAULT_CACHE_DIR);
+		saveToDefault(//
+				SpacyPreferences.createBundledEnvConfig(), //
+				SpacyPreferences.getDefaultPythonEnvironmentTypeConfig(), //
+				SpacyPreferences.getDefaultCondaEnvironmentsConfig(), //
+				SpacyPreferences.getDefaultManualEnvironmentsConfig(), //
+				SpacyPreferences.getDefaultCacheDirConfig()//
+		);
 	}
 
-	/**
-	 * @return the cache directory for the downloaded spacy models.
-	 */
-	public static String getCacheDir() {
-		final IPreferenceStore pStore = SpacyPlugin.getDefault().getPreferenceStore();
-		if (!pStore.contains(PREF_CACHE_DIR)) {
-			return DEFAULT_CACHE_DIR;
+	private static void saveToDefault(final PythonConfig... configs) {
+		for (var config : configs) {
+			config.saveConfigTo(SpacyPreferences.DEFAULT);
 		}
-		return pStore.getString(PREF_CACHE_DIR);
+	}
+
+	static boolean isCondaConfigured() {
+		try {
+			final var condaDir = CondaPreferences.getCondaInstallationDirectory();
+			final var conda = new Conda(condaDir);
+			conda.testInstallation();
+			return true;
+		} catch (IOException ex) { // NOSONAR: we handle the exception by returning false, no need to rethrow
+			return false;
+		}
 	}
 }

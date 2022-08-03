@@ -11,7 +11,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.python2.PythonVersion;
 import org.knime.python2.config.PythonCommandConfig;
-import org.knime.python2.prefs.PythonPreferences;
+import se.redfield.textprocessing.prefs.SpacyPreferences;
 
 /**
  * The node settings for the different SpaCy nodes.
@@ -47,12 +47,12 @@ public class SpacyNodeSettings {
 		replaceColumn = new SettingsModelBoolean(KEY_REPLACE_COLUMN, defReplaceColumn);
 		appendedColumnName = new SettingsModelString(KEY_APPENDED_COLUMN_NAME, defAppendedColumnName);
 		pythonCommand = new PythonCommandConfig(KEY_PYTHON_COMMAND, PythonVersion.PYTHON3,
-				CondaPreferences::getCondaInstallationDirectory, PythonPreferences::getPython3CommandPreference);
+				CondaPreferences::getCondaInstallationDirectory, SpacyPreferences::getPythonCommandPreference);
 
 		appendedColumnName.setEnabled(!defReplaceColumn);
 		replaceColumn.addChangeListener(e -> appendedColumnName.setEnabled(!replaceColumn.getBooleanValue()));
 	}
-
+	
 	/**
 	 * @return the column settings model
 	 */
