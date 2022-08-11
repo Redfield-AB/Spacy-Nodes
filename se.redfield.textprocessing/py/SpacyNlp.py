@@ -5,6 +5,7 @@ import numpy as np
 import knime_io as knio
 from tqdm import tqdm
 
+_use_gpu = spacy.prefer_gpu()
 
 class SpacyNlp:
     pipeline = ['tok2vec', 'transformer', 'parser', 'senter']
@@ -96,6 +97,7 @@ class SpacyVectorizer(SpacyNlp):
 
     def get_vector(self, doc):
         if len(doc.vector) > 0:
-            return doc.vector
+            vector = doc.vector
         else:
-            return doc._.trf_data.model_output.pooler_output[0]
+            vector = doc._.trf_data.model_output.pooler_output[0]
+        return vector.get() if _use_gpu else vector
