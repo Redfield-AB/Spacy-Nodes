@@ -1,4 +1,4 @@
-name: py39_spacy # Name of the created environment
+name: py39_spacy_cpu     # Name of the created environment
 channels:                # Repositories to search for packages
 - conda-forge
 dependencies:            # List of packages that should be installed
@@ -7,9 +7,9 @@ dependencies:            # List of packages that should be installed
 - nomkl                  # Prevents the use of Intel's MKL !!! Can't install pytorch with conda if nomkl is present !!! MKL doesn't work at all on Mac M1
 - pandas                 # Table data structures
 - numpy                  # N-dimensional arrays
-- pyarrow                # Arrow serialization TODO check if it works or pin to version 7
+- pyarrow<8.0                # Arrow serialization
 - pip
 - pip:
-  - torch                # needed by spacy-transformers
-  - spacy
-  - spacy-transformers # needed for models using transformers
+  - torch==1.12.1               # needed by spacy-transformers
+  - spacy==3.4.1
+  - spacy-transformers==1.1.7   # needed for models using transformers
