@@ -58,6 +58,7 @@
       <extension
             point="org.eclipse.ui.preferencePages">
          <page
+               category="org.knime.workbench.ui.preferences"
                class="se.redfield.textprocessing.prefs.SpacyPreferencePage"
                id="se.redfield.textprocessing.prefs.SpacyPreferencePage"
                name="Redfield NLP Nodes">
