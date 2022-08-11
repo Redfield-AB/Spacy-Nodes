@@ -63,6 +63,7 @@ public class RepositoryModelDownloader extends SpacyModelDownloader {
 
 	private File downloadArchive(ExecutionMonitor exec) throws IOException, CanceledExecutionException {
 		File cacheDir = new File(SpacyPreferences.getCacheDir());
+		Files.createDirectories(cacheDir.toPath());
 		File archive = new File(cacheDir, def.getId() + ".tar.gz");
 
 		URL url = new URL(def.getUrl());
