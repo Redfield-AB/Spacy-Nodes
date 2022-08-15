@@ -41,7 +41,7 @@ import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver.CondaEn
 import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver.CondaEnvironmentCreationStatusListener;
 
 final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements CondaEnvironmentCreationDialog {
-	
+
 	private static final String ENVIRONMENT_NAME_PLACEHOLDER = "Collecting existing environment names...";
 
 	private static final int DESCRIPTION_LABEL_WIDTH_HINTS = 300;
@@ -69,7 +69,7 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 	private Text m_errorTextBox;
 
 	private Button m_cancelButton;
-	
+
 	private final Map<Button, CondaEnvironmentCreationOption> m_buttonMap = new LinkedHashMap<>();
 
 	/**
@@ -84,16 +84,16 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 	private CondaEnvironmentCreationStatusListener m_statusChangeListener;
 
 	private volatile boolean m_environmentCreationTerminated = false;
-	
+
 	public MultiOptionCondaEnvironmentCreationDialog(final MultiOptionEnvironmentCreator environmentCreator,
-        final Shell parent, String name, String description) {
-        super(parent, SWT.NONE);
-        m_environmentCreator = environmentCreator;
-        m_shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.SHEET | SWT.RESIZE);
-        m_shell.setText(String.format("New %s Conda environment", name));
-        createContents(description);
-        m_shell.pack();
-    }
+			final Shell parent, String name, String description) {
+		super(parent, SWT.NONE);
+		m_environmentCreator = environmentCreator;
+		m_shell = new Shell(parent, SWT.DIALOG_TRIM | SWT.SHEET | SWT.RESIZE);
+		m_shell.setText(String.format("New %s Conda environment", name));
+		createContents(description);
+		m_shell.pack();
+	}
 
 	private void createContents(String description) {
 		m_shell.setLayout(new GridLayout());
@@ -178,7 +178,7 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 		gridData.verticalIndent = 15;
 		buttonContainer.setLayoutData(gridData);
 		buttonContainer.setLayout(new RowLayout());
-		
+
 		for (var option : m_environmentCreator.getCreationOptions()) {
 			var button = new Button(buttonContainer, SWT.NONE);
 			button.setText(String.format("Create new %s environment", option.getName()));
@@ -194,11 +194,11 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 				public void widgetDefaultSelected(SelectionEvent e) {
 					widgetSelected(e);
 				}
-				
+
 			});
 			m_buttonMap.put(button, option);
 		}
-		
+
 		m_cancelButton = new Button(buttonContainer, SWT.NONE);
 		m_cancelButton.setText("Cancel");
 
@@ -210,7 +210,6 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 		}).start();
 
 		// Internal hooks:
-
 
 		m_cancelButton.addSelectionListener(new SelectionListener() {
 
@@ -346,7 +345,7 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 			if (!m_environmentNameTextBox.isDisposed()) {
 				m_environmentNameTextBox.setEnabled(true);
 			}
-			
+
 			for (var entry : m_buttonMap.entrySet()) {
 				var button = entry.getKey();
 				if (!button.isDisposed()) {
@@ -355,7 +354,7 @@ final class MultiOptionCondaEnvironmentCreationDialog extends Dialog implements 
 					button.setEnabled(option.isEnabled());
 				}
 			}
-			
+
 			m_shell.layout(true, true);
 			return null;
 		}, false);

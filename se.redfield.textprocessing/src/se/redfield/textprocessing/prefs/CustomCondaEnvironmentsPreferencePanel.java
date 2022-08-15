@@ -59,10 +59,9 @@ final class CustomCondaEnvironmentsPreferencePanel {
 				openCreationDialog//
 		);
 		final GridData gridData = new GridData();
-        gridData.horizontalAlignment = SWT.FILL;
-//        gridData.horizontalIndent = 20;
-        gridData.grabExcessHorizontalSpace = true;
-        envSelectionBox.setLayoutData(gridData);
+		gridData.horizontalAlignment = SWT.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		envSelectionBox.setLayoutData(gridData);
 	}
 
 	Control getPanel() {

@@ -34,9 +34,9 @@ final class PythonEnvironmentSelectionPanel {
 	private final Composite m_bundledCondaEnvironmentPanel;
 
 	private final BundledEnvironmentConfigsObserver m_configObserver;
-	
+
 	private final IPropertyChangeListener m_condaDirPropertyChangeListener;
-	
+
 	PythonEnvironmentSelectionPanel(Composite parent, final PythonEnvironmentSelectionConfig config,
 			final MultiOptionEnvironmentCreator envCreator, BundledEnvironmentConfigsObserver configObserver) {
 		m_config = config;
@@ -62,10 +62,10 @@ final class PythonEnvironmentSelectionPanel {
 				m_config.getCondaEnvironmentsConfig(), "Spacy", m_condaEnvironmentCreator,
 				shell -> new MultiOptionCondaEnvironmentCreationDialog(m_condaEnvironmentCreator, shell, //
 						m_condaEnvironmentCreator.getDescription(), //
-						String.format(
-						"This will create a new preconfigured Python 3 Conda environment for the %s. "
+						String.format("This will create a new preconfigured Python 3 Conda environment for the %s. "
 								+ "Creating the Conda environment may take several minutes and requires "
-								+ "an active internet connection.", m_condaEnvironmentCreator.getDescription())).open());
+								+ "an active internet connection.", m_condaEnvironmentCreator.getDescription()))
+										.open());
 
 		// Manual environment:
 		m_manualEnvironmentPanel = new ManualEnvironmentsPreferencePanel(m_config.getManualEnvironmentsConfig(),
@@ -74,11 +74,11 @@ final class PythonEnvironmentSelectionPanel {
 		// Bundled Conda environment:
 		m_bundledCondaEnvironmentPanel = createBundledEnvPanel(envConfigPanel);
 	}
-	
+
 	private Composite createBundledEnvPanel(final Composite parent) {
 		final Composite panel = new Composite(parent, SWT.NONE);
-        panel.setLayout(new GridLayout());
-        var featureName = m_condaEnvironmentCreator.getDescription();
+		panel.setLayout(new GridLayout());
+		var featureName = m_condaEnvironmentCreator.getDescription();
 		final String bundledEnvDescription = String.format("The %s extension provides its own Python environment.\n"
 				+ "If you select this option, then all its nodes that are configured to use\n"
 				+ " the settings from the preference page will make use of this bundled Python environment.\n\n\n"
@@ -88,13 +88,13 @@ final class PythonEnvironmentSelectionPanel {
 				+ "or use the Conda Environment Propagation node to set a Conda environment for selected nodes.\n",
 				featureName, featureName);
 
-        final Label environmentSelectionLabel = new Label(panel, SWT.NONE);
-        final var gridData = new GridData();
-        environmentSelectionLabel.setLayoutData(gridData);
-        environmentSelectionLabel.setText(bundledEnvDescription);
-        return panel;
+		final Label environmentSelectionLabel = new Label(panel, SWT.NONE);
+		final var gridData = new GridData();
+		environmentSelectionLabel.setLayoutData(gridData);
+		environmentSelectionLabel.setText(bundledEnvDescription);
+		return panel;
 	}
-	
+
 	String reflectLoadedConfigurations() {
 		final var envType = m_config.getEnvironmentTypeConfig().getEnvironmentType();
 		var pythonEnvType = PythonEnvironmentType.fromId(envType.getStringValue());
@@ -116,7 +116,7 @@ final class PythonEnvironmentSelectionPanel {
 		displayPanelForEnvironmentType(envType.getStringValue());
 		return warning;
 	}
-	
+
 	private void displayPanelForEnvironmentType(final String environmentTypeId) {
 		final var environmentType = PythonEnvironmentType.fromId(environmentTypeId);
 		if (PythonEnvironmentType.CONDA == environmentType) {
@@ -130,10 +130,10 @@ final class PythonEnvironmentSelectionPanel {
 					"Selected Python environment type is neither Bundled, Conda, nor Manual. This is an implementation error.");
 		}
 	}
-	
+
 	void setupHooksAfterInitialization(Runnable resizeRunnable) {
-		m_config.getEnvironmentTypeConfig().getEnvironmentType().addChangeListener(
-				e -> displayPanelForEnvironmentType(m_config.getEnvironmentTypeConfig().getEnvironmentType().getStringValue()));
+		m_config.getEnvironmentTypeConfig().getEnvironmentType().addChangeListener(e -> displayPanelForEnvironmentType(
+				m_config.getEnvironmentTypeConfig().getEnvironmentType().getStringValue()));
 
 		// Displaying installation test results may require resizing the scroll view.
 		m_configObserver.addConfigsTestStatusListener(new PythonConfigsInstallationTestStatusChangeListener() {

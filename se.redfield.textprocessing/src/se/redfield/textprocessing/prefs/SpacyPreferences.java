@@ -34,38 +34,38 @@ public final class SpacyPreferences {
 
 	private static final PreferenceStorage CURRENT_SCOPE_PREFS = new PreferenceStorage(PLUGIN_ID,
 			InstanceScope.INSTANCE, DefaultScope.INSTANCE);
-	
-	/**
-     * Accessed by preference page.
-     */
-    static final PythonConfigStorage CURRENT = new PreferenceWrappingConfigStorage(CURRENT_SCOPE_PREFS);
 
-    /**
-     * Accessed by preference page and preferences initializer.
-     */
-    static final PythonConfigStorage DEFAULT = new PreferenceWrappingConfigStorage(DEFAULT_SCOPE_PREFS);
-    
-    static final String BUNDLED_ENV_ID = "se_redfield_textprocessing";
-    
-    private static final String DEFAULT_CACHE_DIR = System.getProperty("java.io.tmpdir") + File.separator
+	/**
+	 * Accessed by preference page.
+	 */
+	static final PythonConfigStorage CURRENT = new PreferenceWrappingConfigStorage(CURRENT_SCOPE_PREFS);
+
+	/**
+	 * Accessed by preference page and preferences initializer.
+	 */
+	static final PythonConfigStorage DEFAULT = new PreferenceWrappingConfigStorage(DEFAULT_SCOPE_PREFS);
+
+	static final String BUNDLED_ENV_ID = "se_redfield_textprocessing";
+
+	private static final String DEFAULT_CACHE_DIR = System.getProperty("java.io.tmpdir") + File.separator
 			+ "spacy-cache";
-    
-    private static PythonEnvironmentType getEnvironmentTypePreference() {
-    	var config = createAndLoadCurrent(PythonEnvironmentTypeConfig::new);
-    	return PythonEnvironmentType.fromId(config.getEnvironmentType().getStringValue());
-    }
-    
-    private static <T extends PythonConfig> T createAndLoadCurrent(final Supplier<T> supplier) {
-    	var config = supplier.get();
-    	config.loadConfigFrom(CURRENT);
-    	return config;
-    }
-    
-    static BundledCondaEnvironmentConfig createBundledEnvConfig() {
-    	return new BundledCondaEnvironmentConfig(BUNDLED_ENV_ID);
-    }
-    
-    static PythonEnvironmentTypeConfig getDefaultPythonEnvironmentTypeConfig() {
+
+	private static PythonEnvironmentType getEnvironmentTypePreference() {
+		var config = createAndLoadCurrent(PythonEnvironmentTypeConfig::new);
+		return PythonEnvironmentType.fromId(config.getEnvironmentType().getStringValue());
+	}
+
+	private static <T extends PythonConfig> T createAndLoadCurrent(final Supplier<T> supplier) {
+		var config = supplier.get();
+		config.loadConfigFrom(CURRENT);
+		return config;
+	}
+
+	static BundledCondaEnvironmentConfig createBundledEnvConfig() {
+		return new BundledCondaEnvironmentConfig(BUNDLED_ENV_ID);
+	}
+
+	static PythonEnvironmentTypeConfig getDefaultPythonEnvironmentTypeConfig() {
 		return new PythonEnvironmentTypeConfig(PythonEnvironmentType.BUNDLED);
 	}
 
@@ -76,14 +76,14 @@ public final class SpacyPreferences {
 	static ManualEnvironmentsConfig getDefaultManualEnvironmentsConfig() {
 		return new ManualEnvironmentsConfig();
 	}
-	
+
 	static StringPythonConfig getDefaultCacheDirConfig() {
 		return new StringPythonConfig("cachedir", DEFAULT_CACHE_DIR);
 	}
-    
-    private static PythonEnvironmentsConfig getCurrentEnvironmentConfig() {
-    	var envType = getEnvironmentTypePreference();
-    	switch (envType) {
+
+	private static PythonEnvironmentsConfig getCurrentEnvironmentConfig() {
+		var envType = getEnvironmentTypePreference();
+		switch (envType) {
 		case BUNDLED:
 			return createAndLoadCurrent(SpacyPreferences::createBundledEnvConfig);
 		case CONDA:
@@ -92,25 +92,25 @@ public final class SpacyPreferences {
 			return createAndLoadCurrent(ManualEnvironmentsConfig::new);
 		default:
 			throw new IllegalStateException("Unknown environment type encountered: " + envType);
-    	}
-    }
-    
-    /**
-     * @return the PythonCommand configured on the preference page
-     */
-    public static PythonCommand getPythonCommandPreference() {
-    	return getCurrentEnvironmentConfig()//
-    			.getPython3Config()//
-    			.getPythonCommand();
-    }
-    
+		}
+	}
+
+	/**
+	 * @return the PythonCommand configured on the preference page
+	 */
+	public static PythonCommand getPythonCommandPreference() {
+		return getCurrentEnvironmentConfig()//
+				.getPython3Config()//
+				.getPythonCommand();
+	}
+
 	/**
 	 * @return the absolute path to the cache directory
 	 */
 	public static String getCacheDir() {
-    	return createAndLoadCurrent(SpacyPreferences::getDefaultCacheDirConfig).getValue();
-    }
-    
+		return createAndLoadCurrent(SpacyPreferences::getDefaultCacheDirConfig).getValue();
+	}
+
 	private SpacyPreferences() {
 	}
 }
