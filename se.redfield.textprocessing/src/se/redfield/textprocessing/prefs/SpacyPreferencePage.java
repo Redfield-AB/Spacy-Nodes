@@ -60,7 +60,6 @@ public final class SpacyPreferencePage extends AbstractPythonPreferencePage {
 		configs.add(m_pyEnvSelectConfig);
 		var configObserver = new BundledEnvironmentConfigsObserver(m_pyEnvSelectConfig, m_condaEnvironmentCreator,
 				FEATURE_NAME, List.of(//
-						// TODO double check requirements
 						new PythonModuleSpec("py4j"), //
 						new PythonModuleSpec("pyarrow", new Version(6, 0, 0), true), //
 						new PythonModuleSpec("spacy"))//

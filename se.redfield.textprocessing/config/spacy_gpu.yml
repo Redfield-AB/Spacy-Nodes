@@ -8,6 +8,7 @@ dependencies:            # List of packages that should be installed
 - pandas                 # Table data structures
 - numpy                  # N-dimensional arrays
 - pyarrow<8.0            # Arrow serialization
+- tokenizers=0.12.1      # Needed by spacy
 - cudatoolkit=11.6
 - cupy=11.0
 - pip
