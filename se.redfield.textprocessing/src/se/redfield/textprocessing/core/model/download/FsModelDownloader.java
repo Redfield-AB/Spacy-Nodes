@@ -26,7 +26,7 @@ import org.knime.filehandling.core.defaultnodesettings.filechooser.reader.Settin
 import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.core.model.SpacyModelDescription;
 import se.redfield.textprocessing.core.model.SpacyModelMeta;
-import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
+import se.redfield.textprocessing.prefs.SpacyPreferences;
 
 /**
  * {@link SpacyModelDownloader} for the models provided by FS Path
@@ -99,7 +99,7 @@ public class FsModelDownloader extends SpacyModelDownloader {
 	}
 
 	private static File getCacheDir() {
-		return new File(SpacyPreferenceInitializer.getCacheDir(), "fs");
+		return new File(SpacyPreferences.getCacheDir(), "fs");
 	}
 
 	@Override

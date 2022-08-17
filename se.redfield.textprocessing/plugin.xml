@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.0"?>
+<?eclipse version="3.4"?>
 <plugin>
 	<!-- Activator -->
-	<extension point="org.eclipse.ui.startup">
-		<startup class="se.redfield.textprocessing.SpacyPlugin"/>
-	</extension>
 	
    <extension
          point="org.knime.workbench.repository.nodes">   
@@ -61,6 +58,7 @@
       <extension
             point="org.eclipse.ui.preferencePages">
          <page
+               category="org.knime.workbench.ui.preferences"
                class="se.redfield.textprocessing.prefs.SpacyPreferencePage"
                id="se.redfield.textprocessing.prefs.SpacyPreferencePage"
                name="Redfield NLP Nodes">

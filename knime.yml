@@ -1,0 +1,21 @@
+group_id: se.redfield
+name: textprocessing
+author: Redfield AB
+vendor: Redfield AB
+description: "Redfield NLP Nodes"
+long_description: |
+  This extension provides nodes that make the functionality of the spaCy library (https://spacy.io/) available in the KNIME Analytics Platform.
+  You can select one of spaCy's pretrained pipelines and apply it to your text data to perform various textprocessing tasks from part-of-speech tagging to lemmatization.
+
+  NOTE: The installation of this extension can fail on Windows if the installation folder of your Analytics Platform has a long path.
+  This is due to Windows' long path limitations. You can circumvent this problem by enabling long path support as outlined here:
+  https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry
+env_yml_path: se.redfield.textprocessing/config/spacy_cpu.yml
+version: 1.0.1
+copyright: "Copyright (c) 2022 Redfield AB"
+license_file: LICENSE.txt
+java_bundles:
+  - se.redfield.textprocessing
+feature_dependencies:
+  - org.knime.features.ext.textprocessing
+  - org.knime.features.python2

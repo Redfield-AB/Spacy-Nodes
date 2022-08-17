@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
+import se.redfield.textprocessing.prefs.SpacyPreferences;
 
 /**
  * Class holding different information about available official SpaCy models.
@@ -99,7 +99,7 @@ public class SpacyModelDefinition {
 	 * @return The directory the model is (or will be) downloaded.
 	 */
 	public File getModelDownloadDir() {
-		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
+		File cacheDir = new File(SpacyPreferences.getCacheDir());
 		return new File(cacheDir, getId());
 	}
 

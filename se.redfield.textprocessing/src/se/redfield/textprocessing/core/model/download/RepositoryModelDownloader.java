@@ -23,7 +23,7 @@ import org.knime.core.node.ExecutionMonitor;
 
 import se.redfield.textprocessing.core.model.SpacyModelDefinition;
 import se.redfield.textprocessing.core.model.SpacyModelDescription;
-import se.redfield.textprocessing.prefs.SpacyPreferenceInitializer;
+import se.redfield.textprocessing.prefs.SpacyPreferences;
 
 /**
  * {@link SpacyModelDownloader} for downloading models from the official SpaCy
@@ -62,7 +62,8 @@ public class RepositoryModelDownloader extends SpacyModelDownloader {
 	}
 
 	private File downloadArchive(ExecutionMonitor exec) throws IOException, CanceledExecutionException {
-		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
+		File cacheDir = new File(SpacyPreferences.getCacheDir());
+		Files.createDirectories(cacheDir.toPath());
 		File archive = new File(cacheDir, def.getId() + ".tar.gz");
 
 		URL url = new URL(def.getUrl());
@@ -90,7 +91,7 @@ public class RepositoryModelDownloader extends SpacyModelDownloader {
 	}
 
 	private void unpackArchive(File archive) throws IOException {
-		File cacheDir = new File(SpacyPreferenceInitializer.getCacheDir());
+		File cacheDir = new File(SpacyPreferences.getCacheDir());
 		String packagePrefix = findPackagePrefix(archive);
 
 		try (InputStream fi = Files.newInputStream(archive.toPath());
