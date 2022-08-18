@@ -10,7 +10,10 @@ long_description: |
   NOTE: The installation of this extension can fail on Windows if the installation folder of your Analytics Platform has a long path.
   This is due to Windows' long path limitations. You can circumvent this problem by enabling long path support as outlined here:
   https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry
-env_yml_path: se.redfield.textprocessing/config/spacy_cpu.yml
+env_yml_path: 
+  win-64: se.redfield.textprocessing/config/spacy_win_cpu.yml
+  linux-64: se.redfield.textprocessing/config/spacy_linux_cpu.yml
+  osx-64: se.redfield.textprocessing/config/spacy_osx_cpu.yml
 version: 1.0.1
 copyright: "Copyright (c) 2022 Redfield AB"
 license_file: LICENSE.txt

@@ -29,11 +29,35 @@ public final class SpacyPreferencePage extends AbstractPythonPreferencePage {
 	private final MultiOptionEnvironmentCreator m_condaEnvironmentCreator = new MultiOptionEnvironmentCreator(
 			FEATURE_NAME, "redfield_nlp", getCondaEnvOptions());
 	
+	private enum Processor {
+		CPU("cpu", "CPU"), GPU("gpu", "GPU");
+		
+		private final String m_id;
+		
+		private final String m_displayName;
+		
+		private Processor(String id, String displayName) {
+			m_id = id;
+			m_displayName = displayName;
+		}
+		
+		String getDisplayName() {
+			return m_displayName;
+		}
+		
+		String getId() {
+			return m_id;
+		}
+	}
+	
 	private static CondaEnvironmentCreationOption[] getCondaEnvOptions() {
-		var options = Stream.of(new CondaEnvironmentCreationOption("CPU", true, getEnvPath("cpu")));
-		if (Platform.OS_LINUX.equals(Platform.getOS()) || Platform.OS_WIN32.equals(Platform.getOS())) {
+		var options = Stream.of(
+				new CondaEnvironmentCreationOption(Processor.CPU.getDisplayName(), true, getEnvPath(Processor.CPU)));
+		var os = Platform.getOS();
+		if (Platform.OS_LINUX.equals(os) || Platform.OS_WIN32.equals(os)) {
 			options = Stream.concat(options,
-					Stream.of(new CondaEnvironmentCreationOption("GPU", true, getEnvPath("gpu"))));
+					Stream.of(new CondaEnvironmentCreationOption(Processor.GPU.getDisplayName(), true,
+							getEnvPath(Processor.GPU))));
 		}
 		return options.toArray(CondaEnvironmentCreationOption[]::new);
 	}
@@ -78,12 +102,33 @@ public final class SpacyPreferencePage extends AbstractPythonPreferencePage {
 		new DirectoryChooser(SpacyPreferenceInitializer.PREF_CACHE_DIR, "", cacheDirGroup, cacheDirModel);
 	}
 
-	private static String getEnvPath(final String tag) {
-		return PythonSourceDirectoryLocator.getPathFor(SpacyPreferencePage.class, "config/spacy_" + tag + ".yml")//
+	private static String getEnvPath(final Processor processor) {
+		return PythonSourceDirectoryLocator.getPathFor(SpacyPreferencePage.class, getPluginRelativeEnvPath(processor))//
 				.toAbsolutePath()//
 				.toString();
 	}
-
+	
+	private static String getPluginRelativeEnvPath(final Processor processor) {
+		if (processor == Processor.CPU) {
+			return "config/spacy_" + getOsId() + "_" + processor.getId() + ".yml";
+		} else {
+			return "config/spacy_" + processor.getId() + ".yml";
+		}
+	}
+	
+	private static String getOsId() {
+		var os = Platform.getOS();
+		if (Platform.OS_WIN32.equals(os)) {
+			return "win";
+		} else if (Platform.OS_LINUX.equals(os)) {
+			return "linux";
+		} else if (Platform.OS_MACOSX.equals(os)) {
+			return "osx";
+		} else {
+			throw new IllegalStateException("Unsupported OS: " + os);
+		}
+	}
+	
 	@Override
 	protected void reflectLoadedConfigurations() {
 		String warning = m_pyEnvSelectPanel.reflectLoadedConfigurations();
