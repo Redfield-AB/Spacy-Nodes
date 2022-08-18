@@ -4,8 +4,10 @@ import pyarrow as pa
 import numpy as np
 import knime_io as knio
 from tqdm import tqdm
+import sys
 
-_use_gpu = spacy.prefer_gpu()
+# On Mac GPU support doesn't work yet
+_use_gpu = sys.platform != "darwin" and spacy.prefer_gpu()
 
 class SpacyNlp:
     pipeline = ['tok2vec', 'transformer', 'parser', 'senter']
