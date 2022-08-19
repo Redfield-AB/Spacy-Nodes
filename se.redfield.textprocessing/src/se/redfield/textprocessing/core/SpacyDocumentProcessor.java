@@ -33,4 +33,9 @@ public interface SpacyDocumentProcessor {
 	 * @param builder The tag builder.
 	 */
 	public void setTagBuilder(TagBuilder builder);
+	
+	/**
+	 * @return the type of tags produced by this model (e.g. POS)
+	 */
+	public String getTagType();
 }

@@ -93,5 +93,10 @@ public class SpacyLemmatizerNodeModel extends SpacyDocumentProcessorNodeModel {
 			return new Sentence(terms);
 		}
 
+		@Override
+		public String getTagType() {
+			return "LEMMA";
+		}
+
 	}
 }

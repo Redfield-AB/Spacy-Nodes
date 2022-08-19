@@ -60,7 +60,7 @@ public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 
 	@Override
 	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
-			BufferedDataTable metaTable, ExecutionContext exec) {
+			BufferedDataTable metaTable, ExecutionContext exec, String modelName) {
 		return new DocumentCellFactory(createOutputColumnSpec(), createTextContainerFactory(exec), resultColumn);
 	}
 

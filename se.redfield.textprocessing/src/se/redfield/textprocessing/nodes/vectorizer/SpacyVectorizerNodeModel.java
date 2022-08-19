@@ -50,8 +50,8 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 	}
 
 	@Override
-	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec)
-			throws CanceledExecutionException, PythonIOException {
+	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec,
+			String modelName) throws CanceledExecutionException, PythonIOException {
 		BufferedDataTable res = ctx.getDataTable(exec.createSubExecutionContext(0.5));
 		BufferedDataTable joined = joinResultTable(inTable, res, exec.createSubExecutionContext(0.5));
 
@@ -79,7 +79,7 @@ public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 
 	@Override
 	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
-			BufferedDataTable metaTable, ExecutionContext exec) {
+			BufferedDataTable metaTable, ExecutionContext exec, String modelName) {
 		return null;
 	}
 

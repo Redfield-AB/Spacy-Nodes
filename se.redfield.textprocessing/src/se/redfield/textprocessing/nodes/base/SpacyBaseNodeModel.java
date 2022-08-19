@@ -149,6 +149,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	@Override
 	protected PortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
 		ISpacyModelPortObject model = (ISpacyModelPortObject) inData[PORT_MODEL];
+		var spec = model.getSpec();
 		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
 		exec.setMessage("spaCy");
 
@@ -159,12 +160,13 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			applyModelProgress.setMessage(() -> "Applying the pipeline.");
 			ctx.executeInKernel(createExecuteScript(model.getModelPath()), applyModelProgress);
 
-			BufferedDataTable result = buildOutputTable(inTable, ctx, exec.createSubExecutionContext(0.1));
+			BufferedDataTable result = buildOutputTable(inTable, ctx, exec.createSubExecutionContext(0.1),
+					spec.getModel().getName());
 			return new PortObject[] { model, result };
 		}
 	}
 
-	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec)
+	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec, String modelName)
 			throws CanceledExecutionException, PythonIOException {
 		exec.setMessage(() -> "Retrieving the output table.");
 		BufferedDataTable res = ctx.getDataTable(0, exec.createSubExecutionContext(0.05));
@@ -175,7 +177,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		int inColIdx = joined.getDataTableSpec().findColumnIndex(settings.getColumn());
 		int resColIdx = joined.getDataTableSpec().getNumColumns() - 1;
 		CellFactory fac = createCellFactory(inColIdx, resColIdx, joined.getDataTableSpec(), meta,
-				exec.createSubExecutionContext(0.05));
+				exec.createSubExecutionContext(0.05), modelName);
 
 		ColumnRearranger r = new ColumnRearranger(joined.getDataTableSpec());
 		if (settings.getReplaceColumn()) {
@@ -232,7 +234,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	}
 
 	protected abstract CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
-			BufferedDataTable metaTable, ExecutionContext exec) throws CanceledExecutionException;
+			BufferedDataTable metaTable, ExecutionContext exec, String modelName) throws CanceledExecutionException;
 
 	protected abstract String getSpacyMethod();
 

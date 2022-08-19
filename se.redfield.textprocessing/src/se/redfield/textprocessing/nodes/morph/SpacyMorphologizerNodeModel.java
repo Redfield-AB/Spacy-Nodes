@@ -60,5 +60,10 @@ public class SpacyMorphologizerNodeModel extends SpacyDocumentProcessorNodeModel
 			return tags;
 		}
 
+		@Override
+		public String getTagType() {
+			return "MORPH";
+		}
+
 	}
 }
