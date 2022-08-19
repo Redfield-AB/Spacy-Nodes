@@ -150,11 +150,14 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	protected PortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
 		SpacyModelPortObject model = (SpacyModelPortObject) inData[PORT_MODEL];
 		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
+		exec.setMessage("spaCy");
 
 		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand(), 2)) {
 			BufferedDataTable inputTable = prepareInputTable(inTable, exec.createSubExecutionContext(0.05));
 			ctx.putDataTable(0, inputTable, exec.createSubProgress(0.05));
-			ctx.executeInKernel(createExecuteScript(model.getModelPath()), exec.createSubProgress(0.8));
+			final var applyModelProgress = exec.createSubProgress(0.8);
+			applyModelProgress.setMessage(() -> "Applying the pipeline.");
+			ctx.executeInKernel(createExecuteScript(model.getModelPath()), applyModelProgress);
 
 			BufferedDataTable result = buildOutputTable(inTable, ctx, exec.createSubExecutionContext(0.1));
 			return new PortObject[] { model, result };
@@ -163,6 +166,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec)
 			throws CanceledExecutionException, PythonIOException {
+		exec.setMessage(() -> "Retrieving the output table.");
 		BufferedDataTable res = ctx.getDataTable(0, exec.createSubExecutionContext(0.05));
 		BufferedDataTable meta = ctx.getDataTable(1, exec.createSubExecutionContext(0.05));
 
@@ -197,6 +201,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	private BufferedDataTable prepareInputTable(BufferedDataTable inTable, ExecutionContext exec)
 			throws CanceledExecutionException {
+		exec.setMessage(() -> "Preparing the input data.");
 		final var spec = inTable.getDataTableSpec();
 		ColumnRearranger r = new ColumnRearranger(spec);
 		int idx = spec.findColumnIndex(settings.getColumn());
