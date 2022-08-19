@@ -87,6 +87,24 @@
                specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
                specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
          </portType>
+         <portType
+               color="#09a4d7"
+               hidden="false"
+               name="spaCy pipeline"
+               objectClass="se.redfield.textprocessing.nodes.port.SpacyModelFileStorePortObject"
+               objectSerializer="se.redfield.textprocessing.nodes.port.SpacyModelFileStorePortObject$Serializer"
+               specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
+               specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
+         </portType>
+         <portType
+               color="#09a4d7"
+               hidden="false"
+               name="spaCy pipeline"
+               objectClass="se.redfield.textprocessing.nodes.port.ISpacyModelPortObject"
+               objectSerializer="se.redfield.textprocessing.nodes.port.ISpacyModelPortObject$Serializer"
+               specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
+               specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
+         </portType>
       </extension>
    
 </plugin>

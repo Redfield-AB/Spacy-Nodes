@@ -11,7 +11,7 @@ import org.knime.core.node.NodeView;
 import org.knime.core.node.context.NodeCreationConfiguration;
 import org.knime.filehandling.core.port.FileSystemPortObject;
 
-import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
+import se.redfield.textprocessing.nodes.port.ISpacyModelPortObject;
 
 /**
  * The factory class for the {@link SpacyModelSelectorNodeModel} node.
@@ -30,7 +30,7 @@ public class SpacyModelSelectorNodeFactory extends ConfigurableNodeFactory<Spacy
 	protected Optional<PortsConfigurationBuilder> createPortsConfigBuilder() {
 		PortsConfigurationBuilder builder = new PortsConfigurationBuilder();
 		builder.addOptionalInputPortGroup(FILE_SYSTEM_CONNECTION_PORT_NAME, FileSystemPortObject.TYPE);
-		builder.addFixedOutputPortGroup("Spacy Model", SpacyModelPortObject.TYPE);
+		builder.addFixedOutputPortGroup("Spacy Model", ISpacyModelPortObject.TYPE);
 		return Optional.of(builder);
 	}
 

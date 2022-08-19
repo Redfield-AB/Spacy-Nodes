@@ -41,7 +41,7 @@ import org.knime.python2.kernel.PythonIOException;
 
 import se.redfield.textprocessing.core.PythonContext;
 import se.redfield.textprocessing.core.model.SpacyFeature;
-import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
+import se.redfield.textprocessing.nodes.port.ISpacyModelPortObject;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
 
 /**
@@ -66,8 +66,8 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	private final boolean acceptStringColumn;
 
 	protected SpacyBaseNodeModel(SpacyNodeSettings settings, boolean acceptStringColumn) {
-		super(new PortType[] { SpacyModelPortObject.TYPE, BufferedDataTable.TYPE },
-				new PortType[] { SpacyModelPortObject.TYPE, BufferedDataTable.TYPE });
+		super(new PortType[] { ISpacyModelPortObject.TYPE, BufferedDataTable.TYPE },
+				new PortType[] { ISpacyModelPortObject.TYPE, BufferedDataTable.TYPE });
 		this.settings = settings;
 		this.acceptStringColumn = acceptStringColumn;
 	}
@@ -148,7 +148,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	@Override
 	protected PortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-		SpacyModelPortObject model = (SpacyModelPortObject) inData[PORT_MODEL];
+		ISpacyModelPortObject model = (ISpacyModelPortObject) inData[PORT_MODEL];
 		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
 		exec.setMessage("spaCy");
 

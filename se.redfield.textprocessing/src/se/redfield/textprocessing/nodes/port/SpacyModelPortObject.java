@@ -17,9 +17,10 @@ import org.knime.core.node.port.PortTypeRegistry;
  * The SpaCy model port object.
  * 
  * @author Alexander Bondaletov
- *
+ * @deprecated use {@link SpacyModelFileStorePortObject} instead
  */
-public class SpacyModelPortObject extends AbstractSimplePortObject {
+@Deprecated
+public class SpacyModelPortObject extends AbstractSimplePortObject implements ISpacyModelPortObject {
 
 	/**
 	 * Serializer for the {@link SpacyModelPortObject}.

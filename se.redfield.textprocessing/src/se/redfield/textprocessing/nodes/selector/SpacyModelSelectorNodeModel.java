@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;
 
+import org.knime.core.data.filestore.FileStoreFactory;
 import org.knime.core.node.CanceledExecutionException;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.ExecutionMonitor;
@@ -24,7 +25,7 @@ import se.redfield.textprocessing.core.model.SpacyModelDescription;
 import se.redfield.textprocessing.core.model.download.FsModelDownloader;
 import se.redfield.textprocessing.core.model.download.RepositoryModelDownloader;
 import se.redfield.textprocessing.core.model.download.SpacyModelDownloader;
-import se.redfield.textprocessing.nodes.port.SpacyModelPortObject;
+import se.redfield.textprocessing.nodes.port.SpacyModelFileStorePortObject;
 import se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec;
 import se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeSettings.SpacyModelSelectionMode;
 
@@ -62,7 +63,9 @@ public class SpacyModelSelectorNodeModel extends NodeModel {
 	protected PortObject[] execute(PortObject[] inObjects, ExecutionContext exec) throws Exception {
 		SpacyModelDownloader downloader = createDownloader();
 		downloader.ensureDownloaded(exec);
-		return new PortObject[] { new SpacyModelPortObject(createSpec(downloader.getModelDescription(false))) };
+		final var spec = createSpec(downloader.getModelDescription(false));
+		var model = SpacyModelFileStorePortObject.create(spec, FileStoreFactory.createFileStoreFactory(exec));
+		return new PortObject[] { model };
 	}
 
 	private SpacyModelDownloader createDownloader() {
