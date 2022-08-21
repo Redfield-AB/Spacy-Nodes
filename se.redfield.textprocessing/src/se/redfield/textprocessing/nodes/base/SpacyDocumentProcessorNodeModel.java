@@ -51,7 +51,7 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 
 	@Override
 	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
-			BufferedDataTable metaTable, ExecutionContext exec) throws CanceledExecutionException {
+			BufferedDataTable metaTable, ExecutionContext exec, String modelName) throws CanceledExecutionException {
 		TextContainerDataCellFactory textContainerFactory = createTextContainerFactory(exec);
 
 		DataColumnSpecCreator creator = new DataColumnSpecCreator(settings.getOutputColumnName(),
@@ -63,7 +63,7 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 
 		if (docProcessor.getTagBuilder() != null) {
 			Set<String> tags = collectAssignedTags(metaTable, exec);
-			TagBuilder builder = selectTagBuilder(tags, docProcessor.getTagBuilder(), dynamicTagSets);
+			TagBuilder builder = selectTagBuilder(tags, docProcessor, dynamicTagSets, modelName);
 			docProcessor.setTagBuilder(builder);
 
 			if (builder instanceof DynamicTagBuilder) {
@@ -87,8 +87,9 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 		return tags;
 	}
 
-	private static TagBuilder selectTagBuilder(Set<String> tags, TagBuilder staticBuilder,
-			Set<TagSet> availableTagSets) {
+	private static TagBuilder selectTagBuilder(Set<String> tags, SpacyDocumentProcessor docProcessor,
+			Set<TagSet> availableTagSets, String modelName) {
+		var staticBuilder = docProcessor.getTagBuilder();
 		if (tags.stream().allMatch(t -> staticBuilder.buildTag(t) != null)) {
 			return staticBuilder;
 		}
@@ -100,7 +101,7 @@ public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel
 			}
 		}
 
-		return new DynamicTagBuilder(availableTagSets, tags);
+		return new DynamicTagBuilder(availableTagSets, tags, modelName, docProcessor.getTagType());
 	}
 
 	protected abstract SpacyDocumentProcessor createSpacyDocumentProcessor();

@@ -171,5 +171,10 @@ public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 			return new Sentence(terms);
 		}
 
+		@Override
+		public String getTagType() {
+			return "NE";
+		}
+
 	}
 }

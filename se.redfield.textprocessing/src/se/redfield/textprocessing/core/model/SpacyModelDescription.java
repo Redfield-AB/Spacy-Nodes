@@ -3,6 +3,7 @@
 */
 package se.redfield.textprocessing.core.model;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -68,7 +69,7 @@ public class SpacyModelDescription {
 			features = null;
 		}
 	}
-
+	
 	/**
 	 * @return The model download path.
 	 */
@@ -81,5 +82,12 @@ public class SpacyModelDescription {
 	 */
 	public Set<SpacyFeature> getFeatures() {
 		return features;
+	}
+	
+	/**
+	 * @return the name of the model
+	 */
+	public String getName() {
+		return Path.of(path).getFileName().toString();
 	}
 }

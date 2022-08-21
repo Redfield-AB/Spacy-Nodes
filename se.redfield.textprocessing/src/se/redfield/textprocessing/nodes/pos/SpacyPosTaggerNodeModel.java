@@ -58,5 +58,10 @@ public class SpacyPosTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 				return Collections.emptyList();
 			}
 		}
+
+		@Override
+		public String getTagType() {
+			return "POS";
+		}
 	}
 }
