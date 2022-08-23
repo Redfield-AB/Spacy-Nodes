@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<!-- Activator -->
+	
+   <extension
+         point="org.knime.workbench.repository.nodes">   
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.ner.SpacyNerTaggerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.lemmatizer.SpacyLemmatizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.pos.SpacyPosTaggerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.morph.SpacyMorphologizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.vectorizer.SpacyVectorizerNodeFactory">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.selector.SpacyModelSelectorNodeFactory">
+      </node>    
+   </extension>
+	<extension
+		point="org.knime.python.modules">
+      <directory
+            path="py/">
+      </directory>
+   </extension>
+      <extension
+            point="org.knime.workbench.repository.categories">
+         <category
+               icon="resources/redfield_logo.png"
+               level-id="redfield-textprocessing"
+               name="Redfield NLP Nodes"
+               path="/community">
+         </category>
+      </extension>
+      <extension
+            point="org.eclipse.core.runtime.preferences">
+         <initializer
+               class="se.redfield.textprocessing.prefs.SpacyPreferenceInitializer">
+         </initializer>
+      </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               category="org.knime.workbench.ui.preferences"
+               class="se.redfield.textprocessing.prefs.SpacyPreferencePage"
+               id="se.redfield.textprocessing.prefs.SpacyPreferencePage"
+               name="Redfield NLP Nodes">
+         </page>
+      </extension>
+      <extension
+            point="org.knime.ext.textprocessing.TagSet">
+         <TagSet
+               TagBuilder="se.redfield.textprocessing.data.tag.SpacyNerTagBuilder">
+         </TagSet>
+         <TagSet
+               TagBuilder="se.redfield.textprocessing.data.tag.SpacyMorphTagBuilder">
+         </TagSet>
+         <TagSet
+               TagBuilder="se.redfield.textprocessing.data.tag.SpacyPosTagBuilder">
+         </TagSet>
+      </extension>
+      <extension
+            point="org.knime.core.PortType">
+         <portType
+               color="#09a4d7"
+               hidden="false"
+               name="se.redfield.textprocessing.nodes.port.SpacyModelPortObject"
+               objectClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObject"
+               objectSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObject$Serializer"
+               specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
+               specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
+         </portType>
+         <portType
+               color="#09a4d7"
+               hidden="false"
+               name="spaCy pipeline"
+               objectClass="se.redfield.textprocessing.nodes.port.SpacyModelFileStorePortObject"
+               objectSerializer="se.redfield.textprocessing.nodes.port.SpacyModelFileStorePortObject$Serializer"
+               specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
+               specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
+         </portType>
+         <portType
+               color="#09a4d7"
+               hidden="false"
+               name="spaCy pipeline"
+               objectClass="se.redfield.textprocessing.nodes.port.ISpacyModelPortObject"
+               objectSerializer="se.redfield.textprocessing.nodes.port.ISpacyModelPortObject$Serializer"
+               specClass="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec"
+               specSerializer="se.redfield.textprocessing.nodes.port.SpacyModelPortObjectSpec$Serializer">
+         </portType>
+      </extension>
+   
+</plugin>

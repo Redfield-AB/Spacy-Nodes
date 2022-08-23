@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./ner.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy NER</name>
+    
+    <shortDescription>
+        The node assigns recognized named entities in the document. Generalized spaCy NE tag set is used.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        	The node assigns recognized named entities in the document. Generalized spaCy NE tag set is used.
+        	Different spaCy models might have different tag sets. Different spaCy models might lack this model.
+        </intro>
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column that will be affected by NER tagging.
+        	</option>
+        	<option name="Replace column">
+				If checked, the document column will be replaced by the new preprocessed documents.
+				Otherwise the preprocessed documents will be appended as a new column.
+        	</option>
+        	<option name="Append column">
+        		The name of the new appended column, containing the preprocessed documents.
+        	</option>        	
+        </tab>
+        <tab name="Model">
+        	<option name="spaCy model">
+        		Pick one of the official spaCy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files.
+        	</option>
+        </tab>          
+        <tab name="Python">
+    		<option name="Python">
+    			Select one of Python execution environment options:
+    			<ul>
+        			<li>use default Python environment for Deep Learning</li>
+        			<li>use Conda environment</li>
+        		</ul>
+    		</option>
+        </tab>              
+    </fullDescription>
+    
+    <ports>
+    	<inPort name="Spacy Model" index="0">The Spacy model</inPort>
+		<inPort name="Input Table" index="1">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
+		<outPort name="Output Table" index="1">The output table which contains the preprocessed documents.</outPort>
+    </ports>    
+</knimeNode>
