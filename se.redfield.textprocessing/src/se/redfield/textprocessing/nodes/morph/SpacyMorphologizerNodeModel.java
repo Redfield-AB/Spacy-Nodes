@@ -24,8 +24,8 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
  */
 public class SpacyMorphologizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
-	protected SpacyMorphologizerNodeModel() {
-		super(new SpacyNodeSettings());
+	protected SpacyMorphologizerNodeModel(SpacyNodeSettings settings, boolean hasModelPorts) {
+		super(settings, hasModelPorts);
 	}
 
 	@Override

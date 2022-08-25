@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<knimeNode icon="./tokenizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+<knimeNode icon="./tokenizer.png" type="Manipulator" deprecated="true" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
     <name>Spacy Tokenizer</name>
     
     <shortDescription>
@@ -31,7 +31,7 @@
     		<option name="Python">
     			Select one of Python execution environment options:
     			<ul>
-        			<li>use default Python environment for Deep Learning</li>
+        			<li>use default Python environment for the Redfield NLP nodes</li>
         			<li>use Conda environment</li>
         		</ul>
     		</option>
@@ -39,9 +39,7 @@
     </fullDescription>
     
     <ports>
-    	<inPort name="Spacy Model" index="0">The Spacy model</inPort>
-		<inPort name="Input Table" index="1">The input table which contains the documents to preprocess.</inPort>
-		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
-		<outPort name="Output Table" index="1">The output table which contains the preprocessed documents.</outPort>
+    	<inPort name="Input Table" index="0">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Output Table" index="0">The output table which contains the preprocessed documents.</outPort>
     </ports>    
 </knimeNode>

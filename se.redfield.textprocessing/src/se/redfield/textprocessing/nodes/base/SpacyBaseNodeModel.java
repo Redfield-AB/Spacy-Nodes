@@ -5,6 +5,7 @@ package se.redfield.textprocessing.nodes.base;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Set;
 
 import org.knime.core.data.DataCell;
@@ -55,26 +56,37 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	 * The input port containing SpaCy model.
 	 */
 	public static final int PORT_MODEL = 0;
-	/**
-	 * The input port containing the input table.
-	 */
-	public static final int PORT_TABLE = 1;
 
 	protected static final String PYTHON_RES_COLUMN_NAME = "result";
 
 	protected final SpacyNodeSettings settings;
+	
 	private final boolean acceptStringColumn;
+	
+	private final boolean hasModelPorts;
+	
+	private final int tablePortIdx;
 
-	protected SpacyBaseNodeModel(SpacyNodeSettings settings, boolean acceptStringColumn) {
-		super(new PortType[] { ISpacyModelPortObject.TYPE, BufferedDataTable.TYPE },
-				new PortType[] { ISpacyModelPortObject.TYPE, BufferedDataTable.TYPE });
+	protected SpacyBaseNodeModel(SpacyNodeSettings settings, boolean acceptStringColumn, boolean hasModelPorts) {
+		super(createPorts(hasModelPorts), createPorts(hasModelPorts));
 		this.settings = settings;
 		this.acceptStringColumn = acceptStringColumn;
+		this.hasModelPorts = hasModelPorts;
+		this.tablePortIdx = hasModelPorts ? 1 : 0;
 	}
-
+	
+	private static PortType[] createPorts(boolean hasModelPorts) {
+		if (hasModelPorts) {
+			return new PortType[] { ISpacyModelPortObject.TYPE, BufferedDataTable.TYPE };
+		} else {
+			return new PortType[] { BufferedDataTable.TYPE };
+		}
+	}
+	
+	
 	@Override
 	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		DataTableSpec inSpec = (DataTableSpec) inSpecs[PORT_TABLE];
+		DataTableSpec inSpec = (DataTableSpec) inSpecs[this.tablePortIdx];
 
 		if (settings.getColumn().isEmpty()) {
 			attemptAutoconfigureColumn(inSpec);
@@ -82,7 +94,13 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		settings.validate();
 		validateSpec(inSpecs);
 
-		return new PortObjectSpec[] { inSpecs[PORT_MODEL], createSpec(inSpec) };
+		final var outputSpec = createSpec(inSpec);
+		
+		if (this.hasModelPorts) {
+			return new PortObjectSpec[] { inSpecs[PORT_MODEL], outputSpec };
+		} else {
+			return new PortObjectSpec[] { outputSpec };
+		}
 	}
 
 	private void attemptAutoconfigureColumn(DataTableSpec spec) {
@@ -116,7 +134,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	}
 
 	private void validateSpec(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
-		DataTableSpec tableSpec = (DataTableSpec) inSpecs[PORT_TABLE];
+		DataTableSpec tableSpec = (DataTableSpec) inSpecs[this.tablePortIdx];
 		int idx = tableSpec.findColumnIndex(settings.getColumn());
 		if (idx < 0) {
 			throw new InvalidSettingsException(
@@ -129,16 +147,18 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			throw new InvalidSettingsException(String.format("Column '%s' has unsupported type", column.getName()));
 		}
 
-		SpacyModelPortObjectSpec modelSpec = (SpacyModelPortObjectSpec) inSpecs[PORT_MODEL];
-		Set<SpacyFeature> features = modelSpec.getModel().getFeatures();
+		if (hasModelPorts) {
+			SpacyModelPortObjectSpec modelSpec = (SpacyModelPortObjectSpec) inSpecs[PORT_MODEL];
+			Set<SpacyFeature> features = modelSpec.getModel().getFeatures();
 
-		if (features == null) {
-			throw new InvalidSettingsException(
-					"Model features are not available. Please execute the model selector node first.");
-		}
+			if (features == null) {
+				throw new InvalidSettingsException(
+						"Model features are not available. Please execute the model selector node first.");
+			}
 
-		if (!features.contains(getFeature())) {
-			throw new InvalidSettingsException(getFeature() + " is not supported by the provided model.");
+			if (!features.contains(getFeature())) {
+				throw new InvalidSettingsException(getFeature() + " is not supported by the provided model.");
+			}
 		}
 	}
 
@@ -148,9 +168,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	@Override
 	protected PortObject[] execute(PortObject[] inData, ExecutionContext exec) throws Exception {
-		ISpacyModelPortObject model = (ISpacyModelPortObject) inData[PORT_MODEL];
-		var spec = model.getSpec();
-		BufferedDataTable inTable = (BufferedDataTable) inData[PORT_TABLE];
+		BufferedDataTable inTable = (BufferedDataTable) inData[this.tablePortIdx];
 		exec.setMessage("spaCy");
 
 		try (PythonContext ctx = new PythonContext(settings.getPythonCommand().getCommand(), 2)) {
@@ -158,11 +176,36 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			ctx.putDataTable(0, inputTable, exec.createSubProgress(0.05));
 			final var applyModelProgress = exec.createSubProgress(0.8);
 			applyModelProgress.setMessage(() -> "Applying the pipeline.");
-			ctx.executeInKernel(createExecuteScript(model.getModelPath()), applyModelProgress);
+			ctx.executeInKernel(createExecuteScript(getModelPath(inData)), applyModelProgress);
 
 			BufferedDataTable result = buildOutputTable(inTable, ctx, exec.createSubExecutionContext(0.1),
-					spec.getModel().getName());
-			return new PortObject[] { model, result };
+					getModelName(inData));
+			if (this.hasModelPorts) {
+				return new PortObject[] { inData[PORT_MODEL], result };
+			} else {
+				return new PortObject[] { result };
+			}
+		}
+	}
+	
+	private String getModelName(final PortObject[] inData) {
+		if (this.hasModelPorts) {
+			var model = (ISpacyModelPortObject) inData[PORT_MODEL];
+			return model.getSpec().getModel().getName();
+		} else {
+			var oldSettings = (OldSpacyNodeSettings)settings;
+			return Path.of(oldSettings.getSpacyModelPath()).getFileName().toString();
+		}
+	}
+	
+	private String getModelPath(final PortObject[] inData) throws IOException {
+		if (this.hasModelPorts) {
+			var model = (ISpacyModelPortObject) inData[PORT_MODEL];
+			return model.getModelPath();
+		} else {
+			var oldSettings = (OldSpacyNodeSettings)settings;
+			oldSettings.getSpacyModel().ensureDownloaded();
+			return oldSettings.getSpacyModelPath();
 		}
 	}
 

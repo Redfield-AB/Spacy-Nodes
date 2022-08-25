@@ -7,7 +7,8 @@ import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
-import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
+import se.redfield.textprocessing.nodes.base.OldSpacyNodeDialog;
+import se.redfield.textprocessing.nodes.base.OldSpacyNodeSettings;
 
 /**
  * Factory class for the {@link SpacyTokenizerNodeModel} node.
@@ -15,11 +16,12 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
  * @author Alexander Bondaletov
  *
  */
+@Deprecated
 public class SpacyTokenizerNodeFactory extends NodeFactory<SpacyTokenizerNodeModel> {
 
 	@Override
 	public SpacyTokenizerNodeModel createNodeModel() {
-		return new SpacyTokenizerNodeModel();
+		return new SpacyTokenizerNodeModel(new OldSpacyNodeSettings(), false);
 	}
 
 	@Override
@@ -39,7 +41,7 @@ public class SpacyTokenizerNodeFactory extends NodeFactory<SpacyTokenizerNodeMod
 
 	@Override
 	protected NodeDialogPane createNodeDialogPane() {
-		return new SpacyNodeDialog(true);
+		return new OldSpacyNodeDialog(new OldSpacyNodeSettings(), true);
 	}
 
 }

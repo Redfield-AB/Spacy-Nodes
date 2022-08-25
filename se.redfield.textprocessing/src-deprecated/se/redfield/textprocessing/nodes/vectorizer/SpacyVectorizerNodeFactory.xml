@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./vectorization.png" type="Manipulator" deprecated="true" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy Vectorizer</name>
+    
+    <shortDescription>
+        The node converts String or Document data to the vectors (list of doubles) according to the embedder provided by the selected Spacy model.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+			The node converts String or Document data to the vectors (list of doubles) according to the embedder provided by the selected Spacy model.
+        </intro>
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a String or Document column that will be converted to vector.
+        	</option>
+        	<option name="Replace column">
+				 If checked, the selected column will be replaced by the vector column.
+				 Otherwise the vector will be appended as a new column.
+        	</option>
+        	<option name="Append column">
+        		The name of the new appended column, containing the vector.
+        	</option>        	
+        </tab>
+        <tab name="Model">
+        	<option name="spaCy model">
+        		Pick one of the official spaCy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files. 
+        	</option>
+        </tab>      
+        <tab name="Python">
+    		<option name="Python">
+    			Select one of Python execution environment options:
+    			<ul>
+        			<li>use default Python environment for the Redfield NLP nodes</li>
+        			<li>use Conda environment</li>
+        		</ul>
+    		</option>
+        </tab>   
+    </fullDescription>
+    
+    <ports>
+    	<inPort name="Input Table" index="0">The input table</inPort>
+		<outPort name="Output Table" index="0">The output table</outPort>
+    </ports>    
+</knimeNode>

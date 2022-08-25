@@ -4,30 +4,62 @@
 	<!-- Activator -->
 	
    <extension
-         point="org.knime.workbench.repository.nodes">   
+         point="org.knime.workbench.repository.nodes">
+         
       <node
             category-path="/community/redfield-textprocessing"
+            deprecated="true"
             factory-class="se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeFactory">
       </node>
       <node
             category-path="/community/redfield-textprocessing"
+            deprecated="true"
             factory-class="se.redfield.textprocessing.nodes.ner.SpacyNerTaggerNodeFactory">
       </node>
       <node
             category-path="/community/redfield-textprocessing"
+            deprecated="true"
             factory-class="se.redfield.textprocessing.nodes.lemmatizer.SpacyLemmatizerNodeFactory">
       </node>
       <node
             category-path="/community/redfield-textprocessing"
+            deprecated="true"
             factory-class="se.redfield.textprocessing.nodes.pos.SpacyPosTaggerNodeFactory">
       </node>
       <node
             category-path="/community/redfield-textprocessing"
+            deprecated="true"
             factory-class="se.redfield.textprocessing.nodes.morph.SpacyMorphologizerNodeFactory">
       </node>
       <node
             category-path="/community/redfield-textprocessing"
+            deprecated="true"
             factory-class="se.redfield.textprocessing.nodes.vectorizer.SpacyVectorizerNodeFactory">
+      </node>   
+         
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.tokenizer.SpacyTokenizerNodeFactory2">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.ner.SpacyNerTaggerNodeFactory2">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.lemmatizer.SpacyLemmatizerNodeFactory2">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.pos.SpacyPosTaggerNodeFactory2">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.morph.SpacyMorphologizerNodeFactory2">
+      </node>
+      <node
+            category-path="/community/redfield-textprocessing"
+            factory-class="se.redfield.textprocessing.nodes.vectorizer.SpacyVectorizerNodeFactory2">
       </node>
       <node
             category-path="/community/redfield-textprocessing"

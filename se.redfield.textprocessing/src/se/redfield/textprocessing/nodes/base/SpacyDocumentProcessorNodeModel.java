@@ -45,8 +45,8 @@ import se.redfield.textprocessing.data.tag.GenericTagBuilder;
 public abstract class SpacyDocumentProcessorNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyDocumentProcessorNodeModel.class);
 
-	protected SpacyDocumentProcessorNodeModel(SpacyNodeSettings settings) {
-		super(settings, false);
+	protected SpacyDocumentProcessorNodeModel(SpacyNodeSettings settings, boolean hasModelPorts) {
+		super(settings, false, hasModelPorts);
 	}
 
 	@Override

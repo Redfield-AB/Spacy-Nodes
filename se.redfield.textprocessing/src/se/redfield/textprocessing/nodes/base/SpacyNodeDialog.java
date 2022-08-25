@@ -24,14 +24,21 @@ import org.knime.python2.config.PythonFixedVersionExecutableSelectionPanel;
  *
  */
 public class SpacyNodeDialog extends DefaultNodeSettingsPane {
-	private SpacyNodeSettings settings = new SpacyNodeSettings();
+	private final SpacyNodeSettings settings;
 	private final PythonFixedVersionExecutableSelectionPanel selector;
-
+	
 	/**
 	 * Default constructor
 	 */
 	public SpacyNodeDialog() {
 		this(false);
+	}
+	
+	/**
+	 * @param acceptStringColumns indicating whether string columns should be allowed
+	 */
+	public SpacyNodeDialog(boolean acceptStringColumns) {
+		this(new SpacyNodeSettings(), 1, acceptStringColumns);
 	}
 
 	/**
@@ -40,20 +47,21 @@ public class SpacyNodeDialog extends DefaultNodeSettingsPane {
 	 *                             columns are accepted.
 	 */
 	@SuppressWarnings("unchecked")
-	public SpacyNodeDialog(boolean acceptStringsColumns) {
+	protected SpacyNodeDialog(SpacyNodeSettings spacySettings, int tablePortIdx, boolean acceptStringsColumns) {
+		this.settings = spacySettings;
 		selector = new PythonFixedVersionExecutableSelectionPanel(this, settings.getPythonCommand());
 
 		Class<? extends DataValue> classFilter = acceptStringsColumns ? StringValue.class : DocumentValue.class;
 
 		addDialogComponent(new DialogComponentColumnNameSelection(settings.getColumnModel(), "Select column:",
-				SpacyBaseNodeModel.PORT_TABLE, true, classFilter));
+				tablePortIdx, true, classFilter));
 		addDialogComponent(new DialogComponentBoolean(settings.getReplaceColumnModel(), "Replace column"));
 		setHorizontalPlacement(true);
 		addDialogComponent(new DialogComponentString(settings.getAppendedColumnNameModel(), "Append Column"));
 
 		addTab("Python", selector);
 	}
-
+	
 	@Override
 	public void loadAdditionalSettingsFrom(NodeSettingsRO settings, PortObjectSpec[] specs)
 			throws NotConfigurableException {
