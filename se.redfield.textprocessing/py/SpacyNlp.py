@@ -100,6 +100,8 @@ class SpacyVectorizer(SpacyNlp):
     def get_vector(self, doc):
         if len(doc.vector) > 0:
             vector = doc.vector
-        else:
+        elif hasattr(doc._, "trf_data"):
             vector = doc._.trf_data.model_output.pooler_output[0]
+        else:
+            raise ValueError("The pipeline produced no vectors. Try another model.")
         return vector.get() if _use_gpu else vector
