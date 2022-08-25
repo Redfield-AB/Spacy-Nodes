@@ -22,3 +22,4 @@ java_bundles:
 feature_dependencies:
   - org.knime.features.ext.textprocessing
   - org.knime.features.python2
+feature_name: se.redfield.textprocessing.feature
