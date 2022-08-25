@@ -1,25 +1,26 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.ner;
+package se.redfield.textprocessing.nodes.lemmatizer;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
+import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 /**
- * The factory class for the {@link SpacyNerTaggerNodeModel} node.
+ * The node factory for the {@link SpacyLemmatizerNodeModel} node.
  * 
  * @author Alexander Bondaletov
  *
  */
-public class SpacyNerTaggerNodeFactory extends NodeFactory<SpacyNerTaggerNodeModel> {
+public class SpacyLemmatizerNodeFactory2 extends NodeFactory<SpacyLemmatizerNodeModel> {
 
 	@Override
-	public SpacyNerTaggerNodeModel createNodeModel() {
-		return new SpacyNerTaggerNodeModel();
+	public SpacyLemmatizerNodeModel createNodeModel() {
+		return new SpacyLemmatizerNodeModel(new SpacyNodeSettings(), true);
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class SpacyNerTaggerNodeFactory extends NodeFactory<SpacyNerTaggerNodeMod
 	}
 
 	@Override
-	public NodeView<SpacyNerTaggerNodeModel> createNodeView(int viewIndex, SpacyNerTaggerNodeModel nodeModel) {
+	public NodeView<SpacyLemmatizerNodeModel> createNodeView(int viewIndex, SpacyLemmatizerNodeModel nodeModel) {
 		return null;
 	}
 

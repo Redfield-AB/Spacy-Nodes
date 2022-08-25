@@ -11,6 +11,7 @@ import org.knime.core.node.defaultnodesettings.SettingsModelBoolean;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.python2.PythonVersion;
 import org.knime.python2.config.PythonCommandConfig;
+
 import se.redfield.textprocessing.prefs.SpacyPreferences;
 
 /**
@@ -30,7 +31,7 @@ public class SpacyNodeSettings {
 	private final SettingsModelBoolean replaceColumn;
 	private final SettingsModelString appendedColumnName;
 	private final PythonCommandConfig pythonCommand;
-
+	
 	/**
 	 * Default constructor
 	 */
@@ -145,9 +146,13 @@ public class SpacyNodeSettings {
 	 * @throws InvalidSettingsException
 	 */
 	public void validateSettings(NodeSettingsRO settings) throws InvalidSettingsException {
-		SpacyNodeSettings temp = new SpacyNodeSettings();
+		SpacyNodeSettings temp = newInstance();
 		temp.loadSettingsFrom(settings);
 		temp.validate();
+	}
+	
+	protected SpacyNodeSettings newInstance() {
+		return new SpacyNodeSettings();
 	}
 
 	/**
@@ -163,6 +168,7 @@ public class SpacyNodeSettings {
 		if (!replaceColumn.getBooleanValue() && appendedColumnName.getStringValue().isEmpty()) {
 			throw new InvalidSettingsException("Appended column name cannot be empty");
 		}
+		
 	}
-
+	
 }

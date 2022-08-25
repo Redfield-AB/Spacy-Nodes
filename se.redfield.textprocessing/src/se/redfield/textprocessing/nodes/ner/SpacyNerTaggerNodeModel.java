@@ -31,8 +31,8 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
  */
 public class SpacyNerTaggerNodeModel extends SpacyDocumentProcessorNodeModel {
 
-	protected SpacyNerTaggerNodeModel() {
-		super(new SpacyNodeSettings());
+	protected SpacyNerTaggerNodeModel(SpacyNodeSettings settings, boolean hasModelPorts) {
+		super(settings, hasModelPorts);
 	}
 
 	@Override

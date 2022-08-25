@@ -29,8 +29,8 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
  */
 public class SpacyVectorizerNodeModel extends SpacyBaseNodeModel {
 
-	protected SpacyVectorizerNodeModel() {
-		super(new SpacyNodeSettings(false, "Embeddings"), true);
+	protected SpacyVectorizerNodeModel(SpacyNodeSettings settings, boolean hasModelPorts) {
+		super(settings, true, hasModelPorts);
 	}
 
 	@Override

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<knimeNode icon="./morphologizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
-    <name>Spacy Morphologizer</name>
+<knimeNode icon="./tokenizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy Tokenizer</name>
     
     <shortDescription>
-        The node performs morphology analysis of the text and assigns the tags for singular/plural, gender, case, conjugation, animacy, etc. for the tokens.
+        The node converts a string column with raw text to a Knime Document format, using its own tokenizer based on the selected spaCy model.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        The node performs morphology analysis of the text and assigns the tags for singular/plural, gender, case, conjugation, animacy, etc. for the tokens.
-        Different spaCy models might have different tag sets. Different spaCy models might lack this model.
-        </intro>
+        	The node converts a string column with raw text to a Knime Document format, using its own tokenizer based on the selected spaCy model.
+        </intro>    
         <tab name="Options">
         	<option name="Select column">
-        		Select a Document column that will be affected by morphologizer.
+        		Select a String column that will be tokenized and converted to Document.
         	</option>
         	<option name="Replace column">
 				If checked, the document column will be replaced by the new preprocessed documents.
@@ -23,20 +22,15 @@
         		The name of the new appended column, containing the preprocessed documents.
         	</option>        	
         </tab>
-        <tab name="Model">
-        	<option name="spaCy model">
-        		Pick one of the official spaCy models, or refer to a custom model stored in the filesystem. In the latter case refer to a folder with meta.json and config files.
-        	</option>
-        </tab>    
         <tab name="Python">
     		<option name="Python">
     			Select one of Python execution environment options:
     			<ul>
-        			<li>use default Python environment for Deep Learning</li>
+        			<li>use default Python environment for the Redfield NLP nodes</li>
         			<li>use Conda environment</li>
         		</ul>
     		</option>
-        </tab>        
+        </tab>                     
     </fullDescription>
     
     <ports>

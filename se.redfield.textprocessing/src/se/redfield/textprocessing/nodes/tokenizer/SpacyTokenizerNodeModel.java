@@ -44,8 +44,8 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 	private static final NodeLogger LOGGER = NodeLogger.getLogger(SpacyTokenizerNodeModel.class);
 
-	protected SpacyTokenizerNodeModel() {
-		super(new SpacyNodeSettings(), true);
+	protected SpacyTokenizerNodeModel(SpacyNodeSettings settings, boolean hasModelPorts) {
+		super(settings, true, hasModelPorts);
 	}
 
 	@Override

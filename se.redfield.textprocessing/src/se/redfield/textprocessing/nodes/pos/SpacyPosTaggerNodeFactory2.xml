@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./pos.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy POS Tagger</name>
+    
+    <shortDescription>
+        The node assigns part of speech to each token of the document.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        	The node assigns part of speech to each token of the document. Generalized Spacy POS tag set is used.
+        	Different Spacy model might have different tag sets. POS or UDPOS tag sets are used.
+        </intro> 
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column that will be affected by POS tagging.
+        	</option>
+        	<option name="Replace column">
+				If checked, the document column will be replaced by the new preprocessed documents.
+				Otherwise the preprocessed documents will be appended as a new column.
+        	</option>
+        	<option name="Append column">
+        		The name of the new appended column, containing the preprocessed documents.
+        	</option>        	
+        </tab>
+        <tab name="Python">
+    		<option name="Python">
+    			Select one of Python execution environment options:
+    			<ul>
+        			<li>use default Python environment for the Redfield NLP nodes</li>
+        			<li>use Conda environment</li>
+        		</ul>
+    		</option>
+        </tab>           
+    </fullDescription>
+    
+    <ports>
+	    <inPort name="Spacy Model" index="0">The Spacy model</inPort>
+		<inPort name="Input Table" index="1">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
+		<outPort name="Output Table" index="1">The output table which contains the preprocessed documents.</outPort>
+    </ports>    
+</knimeNode>

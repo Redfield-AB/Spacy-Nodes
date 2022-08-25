@@ -8,6 +8,7 @@ import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
+import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 /**
  * The factory class for the {@link SpacyVectorizerNodeModel} node.
@@ -15,11 +16,11 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
  * @author Alexander Bondaletov
  *
  */
-public class SpacyVectorizerNodeFactory extends NodeFactory<SpacyVectorizerNodeModel> {
+public class SpacyVectorizerNodeFactory2 extends NodeFactory<SpacyVectorizerNodeModel> {
 
 	@Override
 	public SpacyVectorizerNodeModel createNodeModel() {
-		return new SpacyVectorizerNodeModel();
+		return new SpacyVectorizerNodeModel(new SpacyNodeSettings(false, "Embeddings"), true);
 	}
 
 	@Override

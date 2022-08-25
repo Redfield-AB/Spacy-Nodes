@@ -1,25 +1,26 @@
 /*
  * Copyright (c) 2021 Redfield AB.
 */
-package se.redfield.textprocessing.nodes.morph;
+package se.redfield.textprocessing.nodes.pos;
 
 import org.knime.core.node.NodeDialogPane;
 import org.knime.core.node.NodeFactory;
 import org.knime.core.node.NodeView;
 
 import se.redfield.textprocessing.nodes.base.SpacyNodeDialog;
+import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
 /**
- * Node factory for the {@link SpacyMorphologizerNodeModel} node.
+ * The factory class for the {@link SpacyPosTaggerNodeModel} node.
  * 
  * @author Alexander Bondaletov
  *
  */
-public class SpacyMorphologizerNodeFactory extends NodeFactory<SpacyMorphologizerNodeModel> {
+public class SpacyPosTaggerNodeFactory2 extends NodeFactory<SpacyPosTaggerNodeModel> {
 
 	@Override
-	public SpacyMorphologizerNodeModel createNodeModel() {
-		return new SpacyMorphologizerNodeModel();
+	public SpacyPosTaggerNodeModel createNodeModel() {
+		return new SpacyPosTaggerNodeModel(new SpacyNodeSettings(), true);
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class SpacyMorphologizerNodeFactory extends NodeFactory<SpacyMorphologize
 	}
 
 	@Override
-	public NodeView<SpacyMorphologizerNodeModel> createNodeView(int viewIndex, SpacyMorphologizerNodeModel nodeModel) {
+	public NodeView<SpacyPosTaggerNodeModel> createNodeView(int viewIndex, SpacyPosTaggerNodeModel nodeModel) {
 		return null;
 	}
 

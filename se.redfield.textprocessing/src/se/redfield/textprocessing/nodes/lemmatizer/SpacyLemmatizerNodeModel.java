@@ -28,8 +28,8 @@ import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
  */
 public class SpacyLemmatizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
-	protected SpacyLemmatizerNodeModel() {
-		super(new SpacyNodeSettings());
+	protected SpacyLemmatizerNodeModel(SpacyNodeSettings settings, boolean hasModelPorts) {
+		super(settings, hasModelPorts);
 	}
 
 	@Override
