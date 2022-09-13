@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<knimeNode icon="./lemmatizer.png" type="Manipulator" xmlns="http://knime.org/node/v2.10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://knime.org/node/v2.10 http://knime.org/node/v2.10.xsd">
+    <name>Spacy Stop Word Filter</name>
+    
+    <shortDescription>
+        The node filters out words that are identified as stop words by the provided spaCy model.
+    </shortDescription>
+    
+    <fullDescription>
+        <intro>
+        	The node filters out words that are identified as stop words by the provided spaCy model.
+        	Stop words are those words of a language that are commonly used.
+        	Examples in the English language include "the", "for" or "but".
+        </intro>
+        <tab name="Options">
+        	<option name="Select column">
+        		Select a Document column in which to remove stop words.
+        	</option>
+        	<option name="Replace column">
+				If checked, the document column will be replaced by the new preprocessed documents.
+				Otherwise the preprocessed documents will be appended as a new column.
+        	</option>
+        	<option name="Append column">
+        		The name of the newly appended column, containing the preprocessed documents.
+        	</option>
+        </tab>
+        <tab name="Python">
+    		<option name="Python">
+    			Select one of Python execution environment options:
+    			<ul>
+        			<li>use default Python environment for the Redfield NLP nodes</li>
+        			<li>use Conda environment specified by a Conda flow variable (only selectable if such a flow variable is available)</li>
+        		</ul>
+    		</option>
+        </tab>        
+    </fullDescription>
+    
+    <ports>
+	    <inPort name="Spacy Model" index="0">The Spacy model</inPort>
+		<inPort name="Input Table" index="1">The input table which contains the documents to preprocess.</inPort>
+		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
+		<outPort name="Output Table" index="1">The output table which contains the preprocessed documents.</outPort>
+    </ports>    
+</knimeNode>

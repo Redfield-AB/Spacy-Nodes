@@ -38,7 +38,11 @@ public enum SpacyFeature {
 	/**
 	 * Vectorizaton
 	 */
-	VECTORIZATION("Vectorization", "tok2vec", "transformer");
+	VECTORIZATION("Vectorization", "tok2vec", "transformer"),
+	/**
+	 * Stop word filter
+	 */
+	STOP_WORD_FILTER("Stop word filter");
 
 	private String title;
 	private Set<String> components;
