@@ -3,13 +3,49 @@
     <name>Spacy Model Selector</name>
     
     <shortDescription>
-        The node allows downloading the Spacy models.
+        The node allows to select and load a spaCy model.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	The node allows downloading the Spacy models.
-        </intro>      
+        	The node allows to select and load a spaCy model.
+        	It's possible to either select one of the official spaCy models or loading a model from file.
+        	Once the node is executed, the model is part of the workflow in order to allow for easy sharing of workflows.
+        	However, any model that is downloaded is also cached in the location specified in the Redfield NLP Nodes preference page
+        	to avoid downloading the same model more than once.
+        </intro>
+        <tab name="SpaCy official model">
+        	<description>
+        		The official spaCy models follow a naming scheme that splits the name into multiple components separated by '_'.
+        		<ol>
+        			<li>The first component indicates the language (e.g. <tt>en</tt>). Multi-language models use the code <tt>xx</tt>.</li>
+        			<li>The second component indicates the model type and its capabilities.
+        				The type <tt>core</tt> is for general-purpose pipelines that support tagging, parsing, lemmatization and named entity recognition, 
+        				while the type <tt>dep</tt> only supports tagging, parsing and lemmatization.</li>
+        			<li>The genre of text the pipeline is trained on</li>
+        			<li>The size of the pipeline on disc. <tt>sm</tt> means small, <tt>md</tt> medium and <tt>lg</tt> large.
+        			Besides the previously sizes there are also <tt>trf.sm</tt> and <tt>trf</tt> for transformer based models which tend to be large in general because they contain an entire deep learning model.</li>
+        		</ol>
+        		For more information also see the <a href="https://spacy.io/models#conventions">official spaCy documentation</a>.
+        	</description>
+        	<option name="Spacy Model Selection">
+        		Select a model by selecting the corresponding line in the table.
+        		You can sort the table by any of the columns by clicking on the column header.
+        	</option>
+        </tab>
+        <tab name="Local model">
+        	<description>
+        		Allows to read a model from a file system.
+        	</description>
+    		<option name="Read from">
+	        	The file system to read from.
+	        	If no file system connection is connected to the node, you can choose from the local file system, a KNIME mountpoint or a relative location.
+        	</option>
+        	<option name="Folder">
+        		The folder containing the pipeline you want to load.
+        		Click the <i>Browse...</i> button to open a file browser.
+        	</option>
+        </tab>
     </fullDescription>
     
     <ports>

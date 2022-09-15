@@ -3,13 +3,21 @@
     <name>Spacy NER</name>
     
     <shortDescription>
-        The node assigns recognized named entities in the document. Generalized spaCy NE tag set is used.
+        The node assigns named entity tags to the words of the document.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	The node assigns recognized named entities in the document. Generalized spaCy NE tag set is used.
-        	Different spaCy models might have different tag sets. Different spaCy models might lack this model.
+        	The node assigns named entity tags to the words of the document.
+        	<p>
+        		Most models use the <tt>SPACY_NE</tt> tag set but some models might have additional tags.
+        		In such a case a dynamic tag set is created for the model whose tag type is <tt>SPACY_NE_model</tt>
+        		where <tt>model</tt> is the name of the model (as displayed in the Spacy Model Selector node) followed by its version.
+        	</p>
+			<p>
+				Not all models provide this functionality.
+				If a model doesn't provide it, a corresponding error is displayed upon configuration of the node.
+			</p>
         </intro>
         <tab name="Options">
         	<option name="Select column">
@@ -28,7 +36,7 @@
     			Select one of Python execution environment options:
     			<ul>
         			<li>use default Python environment for the Redfield NLP nodes</li>
-        			<li>use Conda environment</li>
+        			<li>use Conda environment specified by a Conda flow variable (only selectable if such a flow variable is available)</li>
         		</ul>
     		</option>
         </tab>              
