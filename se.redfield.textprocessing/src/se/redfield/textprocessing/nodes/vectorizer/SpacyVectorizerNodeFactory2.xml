@@ -3,13 +3,14 @@
     <name>Spacy Vectorizer</name>
     
     <shortDescription>
-        The node converts String or Document data to the vectors (list of doubles) according to the embedder provided by the selected Spacy model.
+    	Maps String or Document data to a numerical vector (list of doubles) according to the embedder provided by the spaCy model.
     </shortDescription>
     
     <fullDescription>
         <intro>
-			The node converts String or Document data to the vectors (list of doubles) according to the embedder provided by the selected Spacy model.
-        </intro>
+        	Maps String or Document data to a numerical vector (list of doubles) according to the embedder provided by the spaCy model.
+        	This can be useful for applying more general machine learning algorithm or to visualize the data.
+		</intro>
         <tab name="Options">
         	<option name="Select column">
         		Select a String or Document column that will be converted to vector.
@@ -19,7 +20,7 @@
 				 Otherwise the vector will be appended as a new column.
         	</option>
         	<option name="Append column">
-        		The name of the new appended column, containing the vector.
+        		The name of the newly appended column, containing the vector.
         	</option>        	
         </tab>
         <tab name="Python">
@@ -27,7 +28,7 @@
     			Select one of Python execution environment options:
     			<ul>
         			<li>use default Python environment for the Redfield NLP nodes</li>
-        			<li>use Conda environment</li>
+        			<li>use Conda environment specified by a Conda flow variable (only selectable if such a flow variable is available)</li>
         		</ul>
     		</option>
         </tab>   
@@ -37,6 +38,6 @@
     	<inPort name="Spacy Model" index="0">The Spacy model</inPort>
 		<inPort name="Input Table" index="1">The input table</inPort>
 		<outPort name="Spacy Model" index="0">The Spacy model</outPort>
-		<outPort name="Output Table" index="1">The output table</outPort>
+		<outPort name="Output Table" index="1">The output table containing the embeddings</outPort>
     </ports>    
 </knimeNode>

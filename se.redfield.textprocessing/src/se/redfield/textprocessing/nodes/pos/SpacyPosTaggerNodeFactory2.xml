@@ -8,8 +8,12 @@
     
     <fullDescription>
         <intro>
-        	The node assigns part of speech to each token of the document. Generalized Spacy POS tag set is used.
-        	Different Spacy model might have different tag sets. POS or UDPOS tag sets are used.
+        	The node assigns part of speech to each token of the document. 
+        	<p>
+        		Typically the tag type used is <tt>SPACY_POS</tt> but a model can have a specialized tag set.
+        		In such a case a dynamic tag set is created whose tag type follows the naming scheme <tt>SPACY_POS_model</tt>
+        		where <tt>model</tt> is the name of the model that assigned the tags (as displayed in the Spacy Model Selector) followed by the version of the model.
+        	</p>
         </intro> 
         <tab name="Options">
         	<option name="Select column">
@@ -20,7 +24,7 @@
 				Otherwise the preprocessed documents will be appended as a new column.
         	</option>
         	<option name="Append column">
-        		The name of the new appended column, containing the preprocessed documents.
+        		The name of the newly appended column, containing the preprocessed documents.
         	</option>        	
         </tab>
         <tab name="Python">
@@ -28,7 +32,7 @@
     			Select one of Python execution environment options:
     			<ul>
         			<li>use default Python environment for the Redfield NLP nodes</li>
-        			<li>use Conda environment</li>
+        			<li>use Conda environment specified by a Conda flow variable (only selectable if such a flow variable is available)</li>
         		</ul>
     		</option>
         </tab>           

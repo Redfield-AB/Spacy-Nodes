@@ -41,7 +41,9 @@ class SpacyNlp:
         cur_sentence = []
 
         for token in doc:
-            cur_sentence.append(self.token_to_dict(token))
+            d = self.token_to_dict(token)
+            if d is not None:
+                cur_sentence.append(self.token_to_dict(token))
             if(token.is_sent_end):
                 sentences.append({'words': cur_sentence})
                 cur_sentence = []
@@ -105,3 +107,8 @@ class SpacyVectorizer(SpacyNlp):
         else:
             raise ValueError("The pipeline produced no vectors. Try another model.")
         return vector.get() if _use_gpu else vector
+
+class SpacyStopWordFilter(SpacyNlp):
+    
+    def token_to_dict(self, token):
+        return None if token.is_stop else super().token_to_dict(token)

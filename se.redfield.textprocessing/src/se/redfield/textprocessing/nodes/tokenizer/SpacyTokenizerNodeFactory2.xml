@@ -3,23 +3,23 @@
     <name>Spacy Tokenizer</name>
     
     <shortDescription>
-        The node converts a string column with raw text to a Knime Document format, using its own tokenizer based on the selected spaCy model.
+        The node converts a string column with raw text to a KNIME Document column using the tokenizer of the provided spaCy model.
     </shortDescription>
     
     <fullDescription>
         <intro>
-        	The node converts a string column with raw text to a Knime Document format, using its own tokenizer based on the selected spaCy model.
-        </intro>    
+        	The node converts a string column with raw text to a KNIME Document column using the tokenizer of the provided spaCy model.
+       	</intro>    
         <tab name="Options">
         	<option name="Select column">
-        		Select a String column that will be tokenized and converted to Document.
+        		Select a String or Document column that will be tokenized and converted to Document.
         	</option>
         	<option name="Replace column">
-				If checked, the document column will be replaced by the new preprocessed documents.
-				Otherwise the preprocessed documents will be appended as a new column.
+				If checked, the selected column will be replaced by the new documents.
+				Otherwise the documents will be appended as a new column.
         	</option>
         	<option name="Append column">
-        		The name of the new appended column, containing the preprocessed documents.
+        		The name of the newly appended column, containing the preprocessed documents.
         	</option>        	
         </tab>
         <tab name="Python">
@@ -27,7 +27,7 @@
     			Select one of Python execution environment options:
     			<ul>
         			<li>use default Python environment for the Redfield NLP nodes</li>
-        			<li>use Conda environment</li>
+        			<li>use Conda environment specified by a Conda flow variable (only selectable if such a flow variable is available)</li>
         		</ul>
     		</option>
         </tab>                     

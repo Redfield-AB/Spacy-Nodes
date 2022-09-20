@@ -9,7 +9,15 @@
     <fullDescription>
         <intro>
         The node performs morphology analysis of the text and assigns the tags for singular/plural, gender, case, conjugation, animacy, etc. for the tokens.
-        Different spaCy models might have different tag sets. Different spaCy models might lack this model.
+        <p>
+        	The attached tags are typically of type <tt>SPACY_MORPH</tt> but models may have specialized tag sets.
+        	In such a case a dynamic tag set is created whose name follows the naming convention
+        	<tt>SPACY_MORPH_model</tt> where <tt>model</tt> is the name displayed in the Spacy Model Selector followed by the version of the model.
+        </p>
+        <p>
+        	Different spaCy models might lack this model.
+        	If a model doesn't support this functionality a corresponding error is displayed upon configuration of the node.
+        </p>
         </intro>
         <tab name="Options">
         	<option name="Select column">
@@ -20,7 +28,7 @@
 				Otherwise the preprocessed documents will be appended as a new column.
         	</option>
         	<option name="Append column">
-        		The name of the new appended column, containing the preprocessed documents.
+        		The name of the newly appended column, containing the preprocessed documents.
         	</option>        	
         </tab>    
         <tab name="Python">
@@ -28,7 +36,7 @@
     			Select one of Python execution environment options:
     			<ul>
         			<li>use default Python environment for the Redfield NLP nodes</li>
-        			<li>use Conda environment</li>
+        			<li>use Conda environment specified by a Conda flow variable (only selectable if such a flow variable is available)</li>
         		</ul>
     		</option>
         </tab>        
