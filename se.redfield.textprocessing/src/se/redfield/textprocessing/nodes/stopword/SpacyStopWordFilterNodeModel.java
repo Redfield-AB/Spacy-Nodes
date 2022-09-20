@@ -80,7 +80,7 @@ public class SpacyStopWordFilterNodeModel extends SpacyDocumentProcessorNodeMode
 				}
 			}
 			if (spacyWordIdx != spacyWords.length) {
-				throw new IllegalStateException(
+				throw new DocumentProcessingException(
 						"There are fewer words in the input sentence than in the sentence returned by spacy. "
 						+ "This is most likely a coding error.");
 			}
