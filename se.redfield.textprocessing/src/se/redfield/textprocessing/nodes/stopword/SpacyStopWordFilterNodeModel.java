@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.knime.core.node.util.CheckUtils;
 import org.knime.ext.textprocessing.data.Sentence;
 import org.knime.ext.textprocessing.data.Term;
 import org.knime.ext.textprocessing.data.Word;
@@ -39,7 +38,7 @@ public class SpacyStopWordFilterNodeModel extends SpacyDocumentProcessorNodeMode
 
 	@Override
 	protected SpacyFeature getFeature() {
-		return SpacyFeature.STOP_WORD_FILTER;
+		return SpacyFeature.TOKENIZATION;
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class SpacyStopWordFilterNodeModel extends SpacyDocumentProcessorNodeMode
 
 		@Override
 		public String getTagType() {
-			return "STOP_WORD";
+			return null;
 		}
 
 		@Override
