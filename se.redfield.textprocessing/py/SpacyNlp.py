@@ -2,7 +2,7 @@ import json
 import spacy
 import pyarrow as pa
 import numpy as np
-import knime_io as knio
+import knime.scripting.io as knio
 from tqdm import tqdm
 import sys
 
@@ -15,9 +15,9 @@ class SpacyNlp:
         self.nlp = spacy.load(model_handle)
         self.assigned_tags = set()
 
-    def process_table(self, input_table: knio.ReadTable, column: str) -> pa.Table:
+    def process_table(self, input_table: knio.Table, column: str) -> pa.Table:
         self.setup_pipeline()
-        write_table = knio.batch_write_table()
+        write_table = knio.BatchOutputTable.create()
         rows_done = 0
         for batch in input_table.batches():
             batch = batch.to_pyarrow()
@@ -54,15 +54,15 @@ class SpacyNlp:
         return {'text': token.text}
 
     @classmethod
-    def run(cls, model_handle: str, input_table: knio.ReadTable, column:str):
+    def run(cls, model_handle: str, input_table: knio.Table, column:str):
         nlp = cls(model_handle)
         result_table =  nlp.process_table(input_table, column)
 
         tags = nlp.assigned_tags.difference({'', None})
-        meta_table = pa.Table.from_arrays([['Row' + str(i) for i in range(len(tags))], tags], names=['RowId','tags'])
+        meta_table = pa.Table.from_arrays([tags], names=['tags'])
 
         knio.output_tables[0] = result_table
-        knio.output_tables[1] = knio.write_table(meta_table)
+        knio.output_tables[1] = knio.Table.from_pyarrow(meta_table)
 
 
 class SpacyLemmatizer(SpacyNlp):
