@@ -57,7 +57,6 @@ public class PythonContext implements AutoCloseable {
 		try {
 			PythonKernel kernel = PythonKernelQueue.getNextKernel(command, PythonKernelBackendType.PYTHON3,
 					Collections.emptySet(), Collections.emptySet(), options, PythonCancelable.NOT_CANCELABLE);
-			kernel.execute("import knime_io as knio");
 			kernel.execute(setupPythonPath());
 			return kernel;
 		} catch (PythonIOException e) {
@@ -144,7 +143,8 @@ public class PythonContext implements AutoCloseable {
 	public void executeInKernel(String code, ExecutionMonitor exec)
 			throws PythonIOException, CanceledExecutionException {
 		progressListener.setMonitor(exec);
-		kernel.execute(code, new PythonExecutionMonitorCancelable(exec));
+		// we need to check the outputs in order for them to being actually written
+		kernel.executeAndCheckOutputs(code, new PythonExecutionMonitorCancelable(exec));
 		progressListener.setMonitor(null);
 		exec.setProgress(1.0);
 	}

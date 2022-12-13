@@ -237,6 +237,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 
 	private String createExecuteScript(String modelPath) {
 		DLPythonSourceCodeBuilder b = DLPythonUtils.createSourceCodeBuilder("from SpacyNlp import " + getSpacyMethod());
+		b.a("import knime.scripting.io as knio").n();
 		b.a(getSpacyMethod()).a(".run(").n();
 		b.a("model_handle = ").asr(modelPath).a(",").n();
 		PythonContext.putInputTableArgs(b, "input_table", 0);
