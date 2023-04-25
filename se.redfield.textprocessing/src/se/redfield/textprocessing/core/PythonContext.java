@@ -20,6 +20,7 @@ import org.knime.python2.kernel.PythonExecutionMonitorCancelable;
 import org.knime.python2.kernel.PythonIOException;
 import org.knime.python2.kernel.PythonKernel;
 import org.knime.python2.kernel.PythonKernelBackendRegistry.PythonKernelBackendType;
+import org.knime.python2.kernel.PythonKernelCleanupException;
 import org.knime.python2.kernel.PythonKernelOptions;
 import org.knime.python2.kernel.PythonKernelQueue;
 import org.knime.python3.PythonSourceDirectoryLocator;
@@ -81,7 +82,7 @@ public class PythonContext implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
+	public void close() throws PythonKernelCleanupException {
 		kernel.close();
 	}
 
