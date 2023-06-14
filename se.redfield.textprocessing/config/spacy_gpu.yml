@@ -15,5 +15,5 @@ dependencies:            # List of packages that should be installed
 - pip:
   - --extra-index-url https://download.pytorch.org/whl/cu116
   - torch==1.12.1                # needed by spacy-transformers
-  - spacy==3.4.1
+  - spacy==3.5.3
   - spacy-transformers==1.1.7   # needed for models using transformers

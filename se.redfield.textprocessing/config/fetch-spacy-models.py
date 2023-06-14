@@ -5,7 +5,7 @@ from bs4.element import Tag
 
 
 RELEASES_URL = 'https://github.com/explosion/spacy-models/releases?page='
-MODEL_VERSIONS = {'3.2.0', '3.3.0'}
+MODEL_VERSIONS = {'3.2.0', '3.3.0', '3.5.0'}
 fetched_versions = set()
 
 def parse_table(tag: Tag, prefix=''):
@@ -28,7 +28,7 @@ def parse_page(html: str):
     result = []
     done = False
 
-    for div in soup.findAll('div', attrs={'data-test-selector':'release-card'}):
+    for div in soup.findAll('div', attrs={'class':'Box-body'}):
         release = parse_release(div)
 
         version = release['Version']
@@ -73,4 +73,4 @@ def process_models(df: pd.DataFrame):
 if __name__ == '__main__':
     df = query_models()
     res = process_models(df)
-    res.to_json('spacy-models.json', orient='records')
+    res.to_json('spacy-models.json', orient='records', lines=True)
