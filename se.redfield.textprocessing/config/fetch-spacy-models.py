@@ -73,4 +73,4 @@ def process_models(df: pd.DataFrame):
 if __name__ == '__main__':
     df = query_models()
     res = process_models(df)
-    res.to_json('spacy-models.json', orient='records', lines=True)
+    res.to_json('spacy-models.json', orient='records', indent=2)
