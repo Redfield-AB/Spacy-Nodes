@@ -9,13 +9,13 @@ dependencies:            # List of packages that should be installed
 - numpy                  # N-dimensional arrays
 - pyarrow<8.0            # Arrow serialization
 - tokenizers=0.12.1      # Needed by spacy
-- pymorphy3              # Needed by russian models
-- pymorphy3-dicts-uk     # Needed by ukrainian models
-- sudachipy              # Needed by japanese models
-- sudachidict-core       # Needed by japanese models
 - spacy-pkuseg<0.1.0     # Needed by chinese models
 - pip
 - pip:
   - torch==1.12.1               # needed by spacy-transformers
   - spacy==3.5.3
   - spacy-transformers==1.1.7   # needed for models using transformers
+  - pymorphy3              # Needed by russian models
+  - pymorphy3-dicts-uk     # Needed by ukrainian models
+  - sudachipy              # Needed by japanese models
+  - sudachidict-core       # Needed by japanese models
