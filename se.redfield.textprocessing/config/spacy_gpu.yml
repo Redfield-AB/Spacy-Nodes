@@ -9,6 +9,11 @@ dependencies:            # List of packages that should be installed
 - numpy                  # N-dimensional arrays
 - pyarrow<8.0            # Arrow serialization
 - tokenizers=0.12.1      # Needed by spacy
+- pymorphy3              # Needed by russian models
+- pymorphy3-dicts-uk     # Needed by ukrainian models
+- sudachipy              # Needed by japanese models
+- sudachidict-core       # Needed by japanese models
+- spacy-pkuseg<0.1.0     # Needed by chinese models
 - cudatoolkit=11.6
 - cupy=11.0
 - pip
