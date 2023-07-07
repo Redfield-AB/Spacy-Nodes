@@ -14,6 +14,7 @@ dependencies:            # List of packages that should be installed
 - spacy-transformers=1.1.8
 - pip
 - pip:
+  - pymorphy2              # Needed by russian models
   - pymorphy3              # Needed by russian models
   - pymorphy3-dicts-uk     # Needed by ukrainian models
   - sudachipy              # Needed by japanese models
