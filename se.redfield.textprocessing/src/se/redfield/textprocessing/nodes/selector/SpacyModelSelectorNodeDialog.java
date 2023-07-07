@@ -5,21 +5,33 @@ package se.redfield.textprocessing.nodes.selector;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.knime.core.node.FlowVariableModel;
 import org.knime.core.node.InvalidSettingsException;
@@ -51,8 +63,12 @@ public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 	private Map<SpacyModelSelectionMode, JRadioButton> modeButtons;
 
 	private JTable modelsTable;
+	private TableRowSorter<ModelsTableModel> tableRowSorter;
 
 	private DialogComponentReaderFileChooser fileChooser;
+
+	private ModelsRowFilter langFilter;
+	private ModelsRowFilter versionFilter;
 
 	/**
 	 * @param portsConfig the ports configuration.
@@ -120,10 +136,31 @@ public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 	}
 
 	private JComponent createModelSelectorPanel() {
+		Box box = new Box(BoxLayout.Y_AXIS);
+
 		JScrollPane pane = new JScrollPane(createModelsTable());
 		pane.setBorder(BorderFactory.createTitledBorder("Spacy Model Selection"));
 		pane.setPreferredSize(new Dimension(400, 200));
-		return pane;
+
+		box.add(createFiltersPanel());
+		box.add(pane);
+
+		return box;
+	}
+
+	private JComponent createFiltersPanel() {
+		langFilter = new ModelsRowFilter(collectValues(SpacyModelDefinition::getLang), ModelsTableModel.COLUMN_LANG);
+		versionFilter = new ModelsRowFilter(collectValues(SpacyModelDefinition::getVersion),
+				ModelsTableModel.COLUMN_VERSION);
+
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panel.add(langFilter.getComponent());
+		panel.add(versionFilter.getComponent());
+		return panel;
+	}
+
+	private static List<String> collectValues(Function<SpacyModelDefinition, String> func) {
+		return SpacyModelDefinition.list().stream().map(func).distinct().collect(Collectors.toList());
 	}
 
 	private JTable createModelsTable() {
@@ -133,6 +170,9 @@ public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 		modelsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		modelsTable.getSelectionModel().addListSelectionListener(e -> onTableSelectionChanged());
 		modelsTable.setAutoCreateRowSorter(true);
+
+		tableRowSorter = new TableRowSorter<>(model);
+		modelsTable.setRowSorter(tableRowSorter);
 
 		return modelsTable;
 	}
@@ -234,5 +274,46 @@ public class SpacyModelSelectorNodeDialog extends NodeDialogPane {
 			return COLUMN_NAMES[column];
 		}
 
+	}
+
+	private class ModelsRowFilter extends RowFilter<ModelsTableModel, Integer> {
+		private static final String ALL_FILTER = "All";
+
+		private final JComboBox<String> combo;
+		private final int column;
+
+		public ModelsRowFilter(Collection<String> values, int column) {
+			this.column = column;
+
+			List<String> items = new ArrayList<>();
+			items.add(ALL_FILTER);
+			items.addAll(values);
+			combo = new JComboBox<>(items.toArray(String[]::new));
+			combo.addActionListener(e -> applyFilters());
+		}
+
+		private void applyFilters() {
+			tableRowSorter.setRowFilter(RowFilter.andFilter(Arrays.asList(langFilter, versionFilter)));
+		}
+
+		@Override
+		public boolean include(Entry<? extends ModelsTableModel, ? extends Integer> entry) {
+			String selected = (String) combo.getSelectedItem();
+			if (ALL_FILTER.equals(selected)) {
+				return true;
+			}
+
+			String value = (String) entry.getModel().getValueAt(entry.getIdentifier(), column);
+
+			return selected == null || selected.equals(value);
+		}
+
+		public JComponent getComponent() {
+			JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+			JLabel label = new JLabel(ModelsTableModel.COLUMN_NAMES[column] + ":");
+			panel.add(label);
+			panel.add(combo);
+			return panel;
+		}
 	}
 }
