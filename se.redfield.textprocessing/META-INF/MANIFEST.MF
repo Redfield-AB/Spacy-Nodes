@@ -3,7 +3,7 @@ Automatic-Module-Name: se.redfield.textprocessing
 Bundle-ManifestVersion: 2
 Bundle-Name: Redfield Textprocessing extension for KNIME Workbench
 Bundle-SymbolicName: se.redfield.textprocessing;singleton:=true
-Bundle-Version: 1.1.2.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-ClassPath: spacy.jar
 Bundle-Vendor: Redfield AB
 Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.13.0,4.0.0)",

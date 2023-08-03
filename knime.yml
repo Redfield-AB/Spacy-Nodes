@@ -14,7 +14,7 @@ env_yml_path:
   win-64: se.redfield.textprocessing/config/spacy_win_cpu.yml
   linux-64: se.redfield.textprocessing/config/spacy_linux_cpu.yml
   osx-64: se.redfield.textprocessing/config/spacy_osx_cpu.yml
-version: 1.1.2
+version: 1.2.0
 copyright: "Copyright (c) 2022 Redfield AB"
 license_file: LICENSE.txt
 java_bundles:
