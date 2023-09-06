@@ -5,6 +5,9 @@ package se.redfield.textprocessing.data.dto;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.knime.ext.textprocessing.data.Word;
+
 /**
  * The word with the associated tags.
  * 
@@ -75,5 +78,21 @@ public class SpacyWord {
 	@Override
 	public String toString() {
 		return text;
+	}
+
+	/**
+	 * Tests whether the text of this word is equal to the text of the provided
+	 * {@link Word} object. Any two blank string are considered to be equal in this
+	 * case.
+	 * 
+	 * @param word The word to test.
+	 * @return <code>true</code> if the words are the same.
+	 */
+	public boolean isSame(Word word) {
+		if (text == null) {
+			return word.getText() == null;
+		}
+
+		return text.equals(word.getText()) || StringUtils.isAllBlank(text, word.getText());
 	}
 }

@@ -10,15 +10,20 @@ import java.util.List;
 
 import org.knime.core.data.DataCell;
 import org.knime.core.data.DataColumnSpec;
+import org.knime.core.data.DataColumnSpecCreator;
 import org.knime.core.data.DataRow;
 import org.knime.core.data.DataTableSpec;
 import org.knime.core.data.MissingCell;
+import org.knime.core.data.StringValue;
 import org.knime.core.data.container.CellFactory;
 import org.knime.core.data.container.SingleCellFactory;
+import org.knime.core.data.def.StringCell;
+import org.knime.core.data.def.StringCell.StringCellFactory;
 import org.knime.core.node.BufferedDataTable;
 import org.knime.core.node.ExecutionContext;
 import org.knime.core.node.NodeLogger;
 import org.knime.ext.textprocessing.data.DocumentBuilder;
+import org.knime.ext.textprocessing.data.DocumentValue;
 import org.knime.ext.textprocessing.data.Paragraph;
 import org.knime.ext.textprocessing.data.SectionAnnotation;
 import org.knime.ext.textprocessing.data.Sentence;
@@ -62,6 +67,11 @@ public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 	protected CellFactory createCellFactory(int inputColumn, int resultColumn, DataTableSpec inSpec,
 			BufferedDataTable metaTable, ExecutionContext exec, String modelName) {
 		return new DocumentCellFactory(createOutputColumnSpec(), createTextContainerFactory(exec), resultColumn);
+	}
+
+	@Override
+	protected CellFactory createInputProcessingFactory(DataTableSpec spec, int columnIdx) {
+		return new InputTextCleanupFactory(columnIdx);
 	}
 
 	private static class DocumentCellFactory extends SingleCellFactory {
@@ -112,5 +122,32 @@ public class SpacyTokenizerNodeModel extends SpacyBaseNodeModel {
 			return new Term(Arrays.asList(new Word(word.getText(), " ")), Collections.emptyList(), false);
 		}
 
+	}
+
+	private class InputTextCleanupFactory extends SingleCellFactory {
+
+		private final int columnIdx;
+
+		public InputTextCleanupFactory(int columnIdx) {
+			super(new DataColumnSpecCreator(settings.getColumn(), StringCell.TYPE).createSpec());
+			this.columnIdx = columnIdx;
+		}
+
+		@Override
+		public DataCell getCell(DataRow row) {
+			var result = getText(row) //
+					.strip() // remove all leading and trailing whitespace chars
+					.replaceAll("(\\s)\\s+", "$1"); // remove consecutive whitespace chars
+			return StringCellFactory.create(result);
+		}
+
+		private String getText(DataRow row) {
+			var cell = row.getCell(columnIdx);
+			if (cell instanceof DocumentValue) {
+				return ((DocumentValue) cell).getDocument().getDocumentBodyText();
+			} else {
+				return ((StringValue) cell).getStringValue();
+			}
+		}
 	}
 }

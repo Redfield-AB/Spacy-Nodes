@@ -40,7 +40,7 @@ public abstract class TaggerDocumentProcessor extends AbstractSpacyDocumentProce
 			Term orig = getNextTerm();
 
 			if (orig.getWords().size() == 1) {
-				if (!orig.getWords().get(0).getText().equals(word.getText())) {
+				if (!word.isSame(orig.getWords().get(0))) {
 					throw new DocumentProcessingException();
 				}
 

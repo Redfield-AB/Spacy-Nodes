@@ -4,11 +4,12 @@
 package se.redfield.textprocessing.core;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.knime.core.node.NodeLogger;
 import org.knime.ext.textprocessing.data.Document;
 import org.knime.ext.textprocessing.data.DocumentBuilder;
@@ -103,7 +104,7 @@ public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentPro
 	private void init(SpacyDocument spacyDoc, Document doc) {
 		builder = new DocumentBuilder(doc);
 
-		spacySentenceIter = Arrays.asList(spacyDoc.getSentences()).iterator();
+		spacySentenceIter = Stream.of(spacyDoc.getSentences()).filter(s -> !isBlankSentence(s)).iterator();
 		sectionIter = doc.getSections().iterator();
 
 		curSpacySent = null;
@@ -116,6 +117,10 @@ public abstract class AbstractSpacyDocumentProcessor implements SpacyDocumentPro
 		termIter = null;
 		curTerm = null;
 		outSentences = new ArrayList<>();
+	}
+
+	private static boolean isBlankSentence(SpacySentence sent) {
+		return Stream.of(sent.getWords()).allMatch(w -> StringUtils.isBlank(w.getText()));
 	}
 
 	protected boolean hasMoreSpacySentences() {

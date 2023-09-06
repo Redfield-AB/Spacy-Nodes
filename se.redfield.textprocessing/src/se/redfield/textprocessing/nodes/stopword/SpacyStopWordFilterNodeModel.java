@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.knime.ext.textprocessing.data.Sentence;
 import org.knime.ext.textprocessing.data.Term;
 import org.knime.ext.textprocessing.data.Word;
@@ -16,6 +17,7 @@ import se.redfield.textprocessing.core.AbstractSpacyDocumentProcessor;
 import se.redfield.textprocessing.core.SpacyDocumentProcessor;
 import se.redfield.textprocessing.core.model.SpacyFeature;
 import se.redfield.textprocessing.data.dto.SpacySentence;
+import se.redfield.textprocessing.data.dto.SpacyWord;
 import se.redfield.textprocessing.nodes.base.SpacyDocumentProcessorNodeModel;
 import se.redfield.textprocessing.nodes.base.SpacyNodeSettings;
 
@@ -69,7 +71,7 @@ public class SpacyStopWordFilterNodeModel extends SpacyDocumentProcessorNodeMode
 					if (spacyWordIdx >= spacyWords.length) {
 						break;
 					}
-					if (spacyWords[spacyWordIdx].getText().equals(word.getText())) {
+					if (spacyWords[spacyWordIdx].isSame(word)) {
 						words.add(word);
 						spacyWordIdx++;
 					}
@@ -78,12 +80,21 @@ public class SpacyStopWordFilterNodeModel extends SpacyDocumentProcessorNodeMode
 					terms.add(new Term(words, term.getTags(), term.isUnmodifiable()));
 				}
 			}
-			if (spacyWordIdx != spacyWords.length) {
+			if (spacyWordIdx != spacyWords.length && !theRestIsBlank(spacyWordIdx, spacyWords)) {
 				throw new DocumentProcessingException(
 						"There are fewer words in the input sentence than in the sentence returned by spacy. "
-						+ "This is most likely a coding error.");
+								+ "This is most likely a coding error.");
 			}
 			return new Sentence(terms);
+		}
+
+		private static boolean theRestIsBlank(int idx, SpacyWord[] words) {
+			for (int i = idx; i < words.length; i++) {
+				if (!StringUtils.isBlank(words[i].getText())) {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		@Override

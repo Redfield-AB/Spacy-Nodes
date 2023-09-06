@@ -72,7 +72,7 @@ public class SpacyLemmatizerNodeModel extends SpacyDocumentProcessorNodeModel {
 
 					SpacyWord sw = spacySent.getWords()[idx++];
 
-					if (!w.getText().equals(sw.getText())) {
+					if (!sw.isSame(w)) {
 						throw new DocumentProcessingException(w.getText() + "!=" + sw.getText());
 					}
 

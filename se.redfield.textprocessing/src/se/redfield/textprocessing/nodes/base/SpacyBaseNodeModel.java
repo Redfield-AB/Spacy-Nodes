@@ -60,11 +60,11 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 	protected static final String PYTHON_RES_COLUMN_NAME = "result";
 
 	protected final SpacyNodeSettings settings;
-	
+
 	private final boolean acceptStringColumn;
-	
+
 	private final boolean hasModelPorts;
-	
+
 	private final int tablePortIdx;
 
 	protected SpacyBaseNodeModel(SpacyNodeSettings settings, boolean acceptStringColumn, boolean hasModelPorts) {
@@ -74,7 +74,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		this.hasModelPorts = hasModelPorts;
 		this.tablePortIdx = hasModelPorts ? 1 : 0;
 	}
-	
+
 	private static PortType[] createPorts(boolean hasModelPorts) {
 		if (hasModelPorts) {
 			return new PortType[] { ISpacyModelPortObject.TYPE, BufferedDataTable.TYPE };
@@ -82,8 +82,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			return new PortType[] { BufferedDataTable.TYPE };
 		}
 	}
-	
-	
+
 	@Override
 	protected PortObjectSpec[] configure(PortObjectSpec[] inSpecs) throws InvalidSettingsException {
 		DataTableSpec inSpec = (DataTableSpec) inSpecs[this.tablePortIdx];
@@ -95,7 +94,7 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		validateSpec(inSpecs);
 
 		final var outputSpec = createSpec(inSpec);
-		
+
 		if (this.hasModelPorts) {
 			return new PortObjectSpec[] { inSpecs[PORT_MODEL], outputSpec };
 		} else {
@@ -187,30 +186,30 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 			}
 		}
 	}
-	
+
 	private String getModelName(final PortObject[] inData) {
 		if (this.hasModelPorts) {
 			var model = (ISpacyModelPortObject) inData[PORT_MODEL];
 			return model.getSpec().getModel().getName();
 		} else {
-			var oldSettings = (OldSpacyNodeSettings)settings;
+			var oldSettings = (OldSpacyNodeSettings) settings;
 			return Path.of(oldSettings.getSpacyModelPath()).getFileName().toString();
 		}
 	}
-	
+
 	private String getModelPath(final PortObject[] inData) throws IOException {
 		if (this.hasModelPorts) {
 			var model = (ISpacyModelPortObject) inData[PORT_MODEL];
 			return model.getModelPath();
 		} else {
-			var oldSettings = (OldSpacyNodeSettings)settings;
+			var oldSettings = (OldSpacyNodeSettings) settings;
 			oldSettings.getSpacyModel().ensureDownloaded();
 			return oldSettings.getSpacyModelPath();
 		}
 	}
 
-	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec, String modelName)
-			throws CanceledExecutionException, PythonIOException {
+	protected BufferedDataTable buildOutputTable(BufferedDataTable inTable, PythonContext ctx, ExecutionContext exec,
+			String modelName) throws CanceledExecutionException, PythonIOException {
 		exec.setMessage(() -> "Retrieving the output table.");
 		BufferedDataTable res = ctx.getDataTable(0, exec.createSubExecutionContext(0.05));
 		BufferedDataTable meta = ctx.getDataTable(1, exec.createSubExecutionContext(0.05));
@@ -252,16 +251,8 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		ColumnRearranger r = new ColumnRearranger(spec);
 		int idx = spec.findColumnIndex(settings.getColumn());
 
-		if (spec.getColumnSpec(idx).getType().isCompatible(DocumentValue.class)) {
-			SingleCellFactory fac = new SingleCellFactory(
-					new DataColumnSpecCreator(settings.getColumn(), StringCell.TYPE).createSpec()) {
-
-				@Override
-				public DataCell getCell(DataRow row) {
-					return new StringCell(((DocumentValue) row.getCell(idx)).getDocument().getDocumentBodyText());
-				}
-			};
-
+		var fac = createInputProcessingFactory(spec, idx);
+		if (fac != null) {
 			r.replace(fac, idx);
 		}
 
@@ -269,6 +260,21 @@ public abstract class SpacyBaseNodeModel extends NodeModel {
 		BufferedDataTable result = exec.createColumnRearrangeTable(inTable, r, exec);
 		exec.setProgress(1.0);
 		return result;
+	}
+
+	protected CellFactory createInputProcessingFactory(DataTableSpec spec, int columnIdx) {
+		if (spec.getColumnSpec(columnIdx).getType().isCompatible(DocumentValue.class)) {
+			return new SingleCellFactory(
+					new DataColumnSpecCreator(settings.getColumn(), StringCell.TYPE).createSpec()) {
+
+				@Override
+				public DataCell getCell(DataRow row) {
+					return new StringCell(((DocumentValue) row.getCell(columnIdx)).getDocument().getDocumentBodyText());
+				}
+			};
+		} else {
+			return null;
+		}
 	}
 
 	protected TextContainerDataCellFactory createTextContainerFactory(ExecutionContext exec) {
