@@ -5,12 +5,12 @@ package se.redfield.textprocessing.prefs;
 
 import java.util.List;
 
+import org.knime.python2.config.BundledCondaEnvironmentConfig;
 import org.knime.python2.config.CondaEnvironmentsConfig;
 import org.knime.python2.config.ManualEnvironmentsConfig;
 import org.knime.python2.config.PythonConfig;
 import org.knime.python2.config.PythonConfigStorage;
 import org.knime.python2.config.PythonEnvironmentTypeConfig;
-import org.knime.python3.scripting.nodes.prefs.BundledCondaEnvironmentConfig;
 
 final class PythonEnvironmentSelectionConfig implements PythonConfig {
 

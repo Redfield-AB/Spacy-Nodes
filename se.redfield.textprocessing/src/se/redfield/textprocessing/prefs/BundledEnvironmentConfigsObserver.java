@@ -61,12 +61,15 @@ import org.knime.conda.prefs.CondaPreferences;
 import org.knime.core.node.defaultnodesettings.SettingsModelString;
 import org.knime.python2.PythonCommand;
 import org.knime.python2.PythonKernelTester;
+import org.knime.python2.PythonKernelTester.PythonKernelTestResult;
 import org.knime.python2.PythonModuleSpec;
 import org.knime.python2.PythonVersion;
-import org.knime.python2.PythonKernelTester.PythonKernelTestResult;
 import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver;
+import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver.CondaEnvironmentCreationStatus;
+import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver.CondaEnvironmentCreationStatusListener;
 import org.knime.python2.config.AbstractCondaEnvironmentsPanel;
 import org.knime.python2.config.AbstractPythonConfigsObserver;
+import org.knime.python2.config.BundledCondaEnvironmentConfig;
 import org.knime.python2.config.CondaEnvironmentConfig;
 import org.knime.python2.config.CondaEnvironmentsConfig;
 import org.knime.python2.config.ManualEnvironmentConfig;
@@ -77,9 +80,6 @@ import org.knime.python2.config.PythonEnvironmentType;
 import org.knime.python2.config.PythonEnvironmentTypeConfig;
 import org.knime.python2.config.PythonEnvironmentsConfig;
 import org.knime.python2.config.SerializerConfig;
-import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver.CondaEnvironmentCreationStatus;
-import org.knime.python2.config.AbstractCondaEnvironmentCreationObserver.CondaEnvironmentCreationStatusListener;
-import org.knime.python3.scripting.nodes.prefs.BundledCondaEnvironmentConfig;
 
 /**
  * Specialization of the {@link PythonConfigsObserver} for nodes that come with

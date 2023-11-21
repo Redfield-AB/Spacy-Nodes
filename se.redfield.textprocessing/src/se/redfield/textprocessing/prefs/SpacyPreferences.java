@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.knime.python2.PythonCommand;
+import org.knime.python2.config.BundledCondaEnvironmentConfig;
 import org.knime.python2.config.CondaEnvironmentsConfig;
 import org.knime.python2.config.ManualEnvironmentsConfig;
 import org.knime.python2.config.PythonConfig;
@@ -18,7 +19,6 @@ import org.knime.python2.config.PythonEnvironmentTypeConfig;
 import org.knime.python2.config.PythonEnvironmentsConfig;
 import org.knime.python2.prefs.PreferenceStorage;
 import org.knime.python2.prefs.PreferenceWrappingConfigStorage;
-import org.knime.python3.scripting.nodes.prefs.BundledCondaEnvironmentConfig;
 
 /**
  * Convenience front-end of the Spacy preferences.

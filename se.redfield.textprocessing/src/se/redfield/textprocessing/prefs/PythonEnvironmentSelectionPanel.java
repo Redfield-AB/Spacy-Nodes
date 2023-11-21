@@ -12,12 +12,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.knime.conda.prefs.CondaPreferences;
-import org.knime.python2.PythonVersion;
 import org.knime.python2.PythonKernelTester.PythonKernelTestResult;
-import org.knime.python2.config.PythonEnvironmentType;
+import org.knime.python2.PythonVersion;
 import org.knime.python2.config.AbstractPythonConfigsObserver.PythonConfigsInstallationTestStatusChangeListener;
+import org.knime.python2.config.PythonEnvironmentType;
 import org.knime.python2.prefs.ManualEnvironmentsPreferencePanel;
-import org.knime.python3.scripting.nodes.prefs.PythonBundledEnvironmentTypePreferencePanel;
+import org.knime.python2.prefs.PythonBundledEnvironmentTypePreferencePanel;
 
 final class PythonEnvironmentSelectionPanel {
 
