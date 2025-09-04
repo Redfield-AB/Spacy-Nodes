@@ -1,29 +1,58 @@
 [workspace]
 authors = ["AbderrahimAl <abderrahimalakouche@gmail.com>"]
 channels = ["knime/label/githubTest", "knime", "conda-forge"]
-name = "py39_bert_cpu"
+name = "py39-spacy-cpu"
 platforms = ["win-64", "linux-64", "osx-64"]
 version = "0.1.0"
 
-[tasks]
 
+# Shared dependencies across all platforms
 [dependencies]
-python = "3.9.*"
+python = "3.9"
 py4j = "*"
-nomkl = "*"
 pandas = "*"
 numpy = "*"
 pyarrow = "<8.0"
-tokenizers = "==0.12.1"      # Needed by spacy
-spacy-pkuseg = "<0.1.0"     # Needed by chinese models
+tokenizers = "0.12.1"
+spacy-pkuseg = "<0.1.0"
+
+# -------------------------------
+# Win64 and Linux64: pip-based torch + spacy
+# -------------------------------
+[target.win-64.pip-dependencies]
+torch = "==1.12.1"
 spacy = "==3.5.3"
-pytorch = "==1.12.1"
-spacy-transformers = "==1.1.8"
+spacy-transformers = "==1.1.7"
 pymorphy2 = "*"
+pymorphy3 = "*"
 pymorphy3-dicts-uk = "*"
 sudachipy = "*"
 sudachidict-core = "*"
-pip = "*"
+
+[target.linux-64.pip-dependencies]
+torch = "==1.12.1"
+spacy = "==3.5.3"
+spacy-transformers = "==1.1.7"
+pymorphy2 = "*"
+pymorphy3 = "*"
+pymorphy3-dicts-uk = "*"
+sudachipy = "*"
+sudachidict-core = "*"
+
+# -------------------------------
+# OSX: conda-based spacy + torch + spacy-transformers
+# -------------------------------
+[target.osx-64.dependencies]
+spacy = "3.5.3"
+pytorch = "1.12.1"
+spacy-transformers = "1.1.8"
+
+[target.osx-64.pip-dependencies]
+pymorphy2 = "*"
+pymorphy3 = "*"
+pymorphy3-dicts-uk = "*"
+sudachipy = "*"
+sudachidict-core = "*"
 
 
 [feature.build.dependencies]
