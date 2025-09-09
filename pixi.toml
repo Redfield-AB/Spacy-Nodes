@@ -1,63 +1,35 @@
 [workspace]
 authors = ["AbderrahimAl <abderrahimalakouche@gmail.com>"]
-channels = ["knime/label/githubTest", "knime", "conda-forge"]
+channels = ["knime/label/nightly", "knime", "conda-forge", "anaconda"]
 name = "py39-spacy-cpu"
-platforms = ["win-64", "linux-64", "osx-64"]
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 version = "0.1.0"
 
 
 # Shared dependencies across all platforms
 [dependencies]
-python = "3.9"
+python = "3.11.*"
+knime-python-versions = "5.7.*"
 py4j = "*"
 pandas = "*"
 numpy = "*"
-pyarrow = "<8.0"
-tokenizers = "0.12.1"
-spacy-pkuseg = "<0.1.0"
-
-# -------------------------------
-# Win64 and Linux64: pip-based torch + spacy
-# -------------------------------
-[target.win-64.pypi-dependencies]
-torch = "==1.12.1"
-spacy = "==3.5.3"
-spacy-transformers = "==1.1.7"
+pyarrow = "*"
+tokenizers = "*"
+spacy-pkuseg = "*"
+docopt = "*"
+spacy = "3.5.3.*"
+spacy-transformers = "1.1.7.*"
 pymorphy2 = "*"
 pymorphy3 = "*"
 pymorphy3-dicts-uk = "*"
 sudachipy = "*"
 sudachidict-core = "*"
-
-[target.linux-64.pypi-dependencies]
-torch = "==1.12.1"
-spacy = "==3.5.3"
-spacy-transformers = "==1.1.7"
-pymorphy2 = "*"
-pymorphy3 = "*"
-pymorphy3-dicts-uk = "*"
-sudachipy = "*"
-sudachidict-core = "*"
-
-# -------------------------------
-# OSX: conda-based spacy + torch + spacy-transformers
-# -------------------------------
-[target.osx-64.dependencies]
-spacy = "3.5.3"
-pytorch = "1.12.1"
-spacy-transformers = "1.1.8"
-
-[target.osx-64.pypi-dependencies]
-pymorphy2 = "*"
-pymorphy3 = "*"
-pymorphy3-dicts-uk = "*"
-sudachipy = "*"
-sudachidict-core = "*"
+pytorch = "*"
 
 
 [feature.build.dependencies]
 python = "3.9.*"
-knime-extension-bundling = "5.6.*"
+knime-extension-bundling = "5.7.*"
 
 [feature.debug.dependencies]
 debugpy = "*"
