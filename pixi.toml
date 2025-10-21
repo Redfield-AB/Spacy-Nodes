@@ -1,0 +1,42 @@
+[workspace]
+authors = ["AbderrahimAl <abderrahimalakouche@gmail.com>"]
+channels = ["knime", "conda-forge", "anaconda"]
+name = "py39-spacy-cpu"
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+version = "0.1.0"
+
+
+# Shared dependencies across all platforms
+[dependencies]
+python = "3.11.*"
+knime-python-versions = "5.*"
+py4j = "*"
+pandas = "*"
+numpy = "*"
+pyarrow = "*"
+tokenizers = "*"
+spacy-pkuseg = "*"
+docopt = "*"
+spacy = "3.5.3.*"
+spacy-transformers = "1.1.7.*"
+pymorphy2 = "*"
+pymorphy3 = "*"
+pymorphy3-dicts-uk = "*"
+sudachipy = "*"
+sudachidict-core = "*"
+pytorch = "*"
+
+
+[feature.build.dependencies]
+python = "3.9.*"
+knime-extension-bundling = "5.*"
+
+[feature.debug.dependencies]
+debugpy = "*"
+
+[feature.build.tasks]
+build = { args = [{ "arg" = "dest", "default" = "./local-update-site" }], cmd = "build-python-extension . {{ dest }}"}
+
+[environments]
+build = {features = ["build"], no-default-feature = true}
+debug = {features = ["debug"]}
